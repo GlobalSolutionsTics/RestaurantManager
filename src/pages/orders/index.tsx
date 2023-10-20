@@ -52,8 +52,8 @@ const HomeOrderPage = () => {
         </div>
         <div>
           {orderDetail &&
-            orderDetail.map((itm) => (
-              <div>
+            orderDetail.map((itm, i) => (
+              <div key={"itm-" + i}>
                 <div>Platillo: {itm.name}</div>
                 <div>Numero de platillos: {itm.numberOfDishes}</div>
               </div>
