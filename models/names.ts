@@ -1,0 +1,1 @@
+export const RT_ORDER_TABLE_NAME = "ORDERS_IN_REALTIME";

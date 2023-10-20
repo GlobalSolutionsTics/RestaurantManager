@@ -14,7 +14,23 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*", "../../../../../*"],
+      "@firebase/*": [
+        "../../../../../firebase/*",
+        "../../../../firebase/*",
+        "../../../firebase/*",
+        "../../firebase/*",
+        "../firebase/*",
+        "./firebase/*"
+      ],
+      "@models/*": [
+        "../../../../../models/*",
+        "../../../../models/*",
+        "../../../models/*",
+        "../../models/*",
+        "../models/*",
+        "./models/*"
+      ]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
