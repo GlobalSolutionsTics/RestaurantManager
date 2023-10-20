@@ -11,6 +11,7 @@ const addOrder = async (
 ) => {
   try {
     let preId = 0;
+    let error = false;
     const dbRef = ref(getDatabase());
     get(child(dbRef, RT_ORDER_TABLE_NAME))
       .then((snapshot) => {
@@ -40,8 +41,12 @@ const addOrder = async (
         }
       })
       .catch((error) => {
-        console.error(error);
+        error = true;
       });
+
+    if (error) {
+      return false;
+    }
     return true;
   } catch (e) {
     console.log("Error al insertar en DB:", e);
