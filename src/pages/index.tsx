@@ -54,8 +54,8 @@ export default function Home() {
           content="URL de la imagen representativa"
         ></meta>
         <title>
-          Marisquerida | Marisquería en Valle de Aragón, Nezahualcóyotl |
-          Delicias del Mar a tu Mesa"
+          Marisquerida | Marisque&iacute;a en Valle de Arag&oacute;n,
+          Nezahualc&oacute;yotl | Delicias del Mar a tu Mesa
         </title>
       </Head>
       <nav>
