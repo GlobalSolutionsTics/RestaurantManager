@@ -58,7 +58,7 @@ export default function Home() {
           Nezahualc&oacute;yotl | Delicias del Mar a tu Mesa
         </title>
       </Head>
-      <nav>
+      <nav className="navbar">
         <Image
           src="/logo_sin_fondo.png"
           alt="Logo marisquerida"
@@ -66,6 +66,11 @@ export default function Home() {
           height={100}
         />
       </nav>
+      <div itemScope className="wood-font pt-4">
+        <h1 itemProp="name" className="title">
+          Marisquerida La Delicia del Mar | Desde 1978
+        </h1>
+      </div>
     </>
   );
 }
