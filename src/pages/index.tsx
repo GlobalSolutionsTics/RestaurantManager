@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import Head from "next/head";
+import SectionComp from "@/components/section/Section";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -62,15 +63,97 @@ export default function Home() {
         <Image
           src="/logo_sin_fondo.png"
           alt="Logo marisquerida"
-          width={100}
-          height={100}
+          width={64}
+          height={64}
         />
       </nav>
-      <div itemScope className="wood-font pt-4">
+      <div itemScope className="wood-font p-4">
         <h1 itemProp="name" className="title">
           Marisquerida La Delicia del Mar | Desde 1978
         </h1>
+        <h2 className="text-center text-white">Menú</h2>
+        <div className="flex flex-col md:flex-row flex-wrap">
+          <SectionComp
+            title="Especialidades"
+            description="Desde $100.00"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/3 jaiba-bg"
+          />
+          <SectionComp
+            title="Empanadas"
+            description="Desde $40.00"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+          />
+          <SectionComp
+            title="Mojarras"
+            description="Pregunta por nuestros precios"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+          />
+          <SectionComp
+            title="Pulpo"
+            description="Desde $180.00"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+          />
+          <SectionComp
+            title="Calamar"
+            description="Desde $135.00"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+          />
+          <SectionComp
+            title="Tostadas"
+            description="Desde $60.00"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+          />
+          <SectionComp
+            title="Cocteles"
+            description="Desde $60.00"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+          />
+          <SectionComp
+            title="Camarones"
+            description="Desde $160.00"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+          />
+          <SectionComp
+            title="Ceviches"
+            description="Desde $65.00"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+          />
+          <SectionComp
+            title="Caldos"
+            description="Desde $25.00"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+          />
+          <SectionComp
+            title="Filetes de pescado"
+            description="Desde $80.00"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+          />
+          <SectionComp
+            title="Bebidas"
+            description="Desde $20.00"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+          />
+        </div>
       </div>
+
+      <footer className="p-4 bg-black">
+        <section className="flex flex-col md:flex-row">
+          <section className="basis-full md:basis-1/2">
+            <p className="text-white text-center">Sábados y domingos</p>
+            <p className="text-white text-center text-small">
+              No dude en pedir nuestrá rica paella
+            </p>
+          </section>
+          <address className="basis-full md:basis-1/2">
+            <p className="text-white text-small">Mercado Lázaro Cárdenas</p>
+            <p className="text-white text-small">Valle de Aragón</p>
+            <p className="text-white text-small">2da Sección Nezahualcóyotl</p>
+            <p className="text-white text-small">
+              Horario de 09:30 a 18:00 hrs
+            </p>
+          </address>
+        </section>
+      </footer>
     </>
   );
 }
