@@ -132,7 +132,12 @@
   background-size: cover;
 }
 
+.bg:hover {
+  background-size: 100%;
+}
+
 .container {
+  position: relative;
   height: 6rem;
   flex-direction: row;
   justify-content: space-between;
@@ -141,9 +146,12 @@
 }
 
 .container:hover {
-  background-attachment: scroll;
-  background-size: 100%;
   font-size: larger;
+}
+
+.show__btn {
+  position: absolute;
+  width: 100%;
 }
 
 .map__continer {

@@ -2,10 +2,26 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import Head from "next/head";
 import SectionComp from "@/components/section/Section";
+import { useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
+export default function Home(id: string) {
+  const [displayStyle, setDisplayStyle] = useState<string | null>(null);
+
+  const displayVisibility = (divId: string) => {
+    if (displayStyle === null) {
+      setDisplayStyle(divId);
+    } else {
+      setDisplayStyle(null);
+    }
+  };
+
+  const [isVisisble, setIsVisible] = useState(false);
+  const visible = () => {
+    setIsVisible(!isVisisble);
+  };
+  const changeDisplay = isVisisble ? "grid" : "none";
   return (
     <>
       <Head>
@@ -73,19 +89,50 @@ export default function Home() {
           Marisquerida La Delicia del Mar | Desde 1978
         </h1>
         <h2 className="text-center text-white menu">Menú</h2>
+        <button onClick={() => displayVisibility("")}>show</button>
         <div className="flex  md:flex-row flex-wrap">
-          <SectionComp
-            title="Especialidades"
-            description="Desde $100.00"
-            content=""
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2 jaiba-bg container"
-          />
-          <SectionComp
-            title="Empanadas"
-            description="Desde $40.00"
-            content=""
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2 empanada-bg container"
-          />
+          <div
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 "
+            onClick={(() => displayVisibility("1")) || changeDisplay}
+          >
+            <SectionComp
+              title="Especialidades"
+              description="Desde $100.00"
+              content=""
+              className="container jaiba-bg bg"
+            />
+            <div
+              id="1"
+              className="container"
+              style={{ display: displayStyle === "1" ? "grid" : "none" }}
+            >
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ex iste
+              quos asperiores nulla consectetur atque, praesentium sequi!
+              Consectetur sed a dolores hic harum maiores magni quos veniam
+              possimus. Quaerat, dignissimos?
+            </div>
+          </div>
+          <div
+            onClick={(() => displayVisibility("2")) || changeDisplay}
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 "
+          >
+            <SectionComp
+              title="Empanadas"
+              description="Desde $40.00"
+              content=""
+              className="container empanada-bg"
+            />
+            <div
+              id="2"
+              className="container"
+              style={{ display: displayStyle === "2" ? "grid" : "none" }}
+            >
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Est,
+              corrupti magni! Fuga, reiciendis eos. Quia earum aliquid cum
+              expedita dolores provident, esse blanditiis dolorem maiores
+              laudantium, voluptatibus, eveniet eius ea.
+            </div>
+          </div>
           <SectionComp
             title="Mojarras"
             description="Pregunta por nuestros precios"
