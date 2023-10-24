@@ -61,77 +61,90 @@ export default function Home() {
       </Head>
       <nav className="navbar">
         <Image
+          className="logo"
           src="/logo_sin_fondo.png"
           alt="Logo marisquerida"
-          width={64}
-          height={64}
+          width={96}
+          height={96}
         />
       </nav>
-      <div itemScope className="wood-font p-4">
+      <div itemScope className="wood-font p-4 mid">
         <h1 itemProp="name" className="title">
           Marisquerida La Delicia del Mar | Desde 1978
         </h1>
-        <h2 className="text-center text-white">Menú</h2>
-        <div className="flex flex-col md:flex-row flex-wrap">
+        <h2 className="text-center text-white menu">Menú</h2>
+        <div className="flex  md:flex-row flex-wrap">
           <SectionComp
             title="Especialidades"
             description="Desde $100.00"
-            className="text-white basis-full md:basis-1/2 lg:basis-1/3 jaiba-bg"
+            content=""
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 jaiba-bg container"
           />
           <SectionComp
             title="Empanadas"
             description="Desde $40.00"
-            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+            content=""
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 empanada-bg container"
           />
           <SectionComp
             title="Mojarras"
             description="Pregunta por nuestros precios"
-            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+            content=""
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 mojarra-bg container"
           />
           <SectionComp
             title="Pulpo"
             description="Desde $180.00"
-            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+            content=""
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 pulpo-bg container"
           />
           <SectionComp
             title="Calamar"
             description="Desde $135.00"
-            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+            content=""
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 calamar-bg container"
           />
           <SectionComp
             title="Tostadas"
             description="Desde $60.00"
-            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+            content=""
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 tostadas-bg container"
           />
           <SectionComp
             title="Cocteles"
             description="Desde $60.00"
-            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+            content=""
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 coctel-bg container"
           />
           <SectionComp
             title="Camarones"
             description="Desde $160.00"
-            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+            content=""
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 camarones-bg container"
           />
           <SectionComp
             title="Ceviches"
             description="Desde $65.00"
-            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+            content=""
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 ceviches-bg container"
           />
           <SectionComp
             title="Caldos"
             description="Desde $25.00"
-            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+            content=""
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 caldos-bg container"
           />
           <SectionComp
             title="Filetes de pescado"
             description="Desde $80.00"
-            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+            content=""
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 filetes-bg container"
           />
           <SectionComp
             title="Bebidas"
             description="Desde $20.00"
-            className="text-white basis-full md:basis-1/2 lg:basis-1/3"
+            content=""
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 bebida-bg container"
           />
         </div>
       </div>
@@ -141,16 +154,28 @@ export default function Home() {
           <section className="basis-full md:basis-1/2">
             <p className="text-white text-center">Sábados y domingos</p>
             <p className="text-white text-center text-small">
-              No dude en pedir nuestrá rica paella
+              No dude en pedir nuestrA rica paella
             </p>
           </section>
           <address className="basis-full md:basis-1/2">
-            <p className="text-white text-small">Mercado Lázaro Cárdenas</p>
-            <p className="text-white text-small">Valle de Aragón</p>
-            <p className="text-white text-small">2da Sección Nezahualcóyotl</p>
-            <p className="text-white text-small">
-              Horario de 09:30 a 18:00 hrs
-            </p>
+            <div className="map__continer">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d235.07779539253391!2d-99.04527852136852!3d19.488104147451946!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1fae320e0c44d%3A0xdbe46f7a75737be1!2sMARISQUERIDA!5e0!3m2!1ses-419!2smx!4v1698117503353!5m2!1ses-419!2smx"
+                loading="lazy"
+                className="map"
+              ></iframe>
+            </div>
+            <div className="address__container">
+              <p className="text-white text-small">Mercado Lázaro Cárdenas</p>
+              <p className="text-white text-small">Valle de Aragón</p>
+              <p className="text-white text-small">
+                2da Sección Nezahualcóyotl
+              </p>
+              <p className="text-white text-small">Lunes a Domingo</p>
+              <p className="text-white text-small">
+                Horario de 09:30 a 18:00 hrs
+              </p>
+            </div>
           </address>
         </section>
       </footer>
