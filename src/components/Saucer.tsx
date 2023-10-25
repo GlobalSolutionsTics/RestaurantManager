@@ -1,5 +1,5 @@
 import { FC, useEffect } from "react";
-import { SectionProps } from "../types/section.type";
+import { SectionProps } from "./types/section.type";
 
 const SaucerComp: FC<SectionProps> = ({
   className,

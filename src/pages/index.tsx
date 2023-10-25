@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import Head from "next/head";
 import SectionComp from "@/components/section/Section";
 import { useState } from "react";
-import SaucerComp from "@/components/section/saucer";
+import SaucerComp from "@/components/Saucer";
 
 const inter = Inter({ subsets: ["latin"] });
 
