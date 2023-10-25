@@ -35,105 +35,64 @@
   height: auto;
 }
 
-.jaiba-bg {
-  width: 100%;
-  background-image: url("/platillos/jaiba-rellena.jpeg");
+.bg {
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.jaiba-bg {
+  background-image: url("/platillos/jaiba.webp");
 }
 
 .empanada-bg {
-  background-image: url("/platillos/empanada.png");
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-image: url("/platillos/empanada.webp");
 }
 
 .mojarra-bg {
-  background-image: url("/platillos/mojarra.jpeg");
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-image: url("/platillos/mojarra.webp");
 }
 
 .pulpo-bg {
-  background-image: url("/platillos/pulpo.jpeg");
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-image: url("/platillos/pulpo.webp");
 }
 
 .calamar-bg {
-  background-image: url("/platillos/calamar.jpeg");
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-image: url("/platillos/calamar.webp");
 }
 
 .tostadas-bg {
-  background-image: url("/platillos/tostadas.jpeg");
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-image: url("/platillos/tostadas.webp");
 }
 
 .coctel-bg {
-  background-image: url("/platillos/coctel.jpeg");
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-image: url("/platillos/coctel.webp");
 }
 
 .camarones-bg {
-  background-image: url("/platillos/camarones.jpeg");
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-image: url("/platillos/camarones.webp");
 }
 
 .ceviches-bg {
-  background-image: url("/platillos/ceviche.jpeg");
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-image: url("/platillos/ceviche.webp");
 }
 
 .caldos-bg {
   background-image: url("/platillos/caldo.webp");
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
 }
 
 .filetes-bg {
-  background-image: url("/platillos/filete.png");
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-image: url("/platillos/filete.webp");
 }
 
 .bebida-bg {
-  background-image: url("/platillos/bebidas.jpeg");
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-image: url("/platillos/bebidas.webp");
 }
 
 .bg:hover {
-  background-size: 100%;
+  background-attachment: scroll;
+  background-size: 110%;
 }
 
 .container {
@@ -149,6 +108,14 @@
   font-size: larger;
 }
 
+/*     saucer style     */
+.saucer {
+  justify-content: space-around;
+}
+.note {
+  width: 100%;
+  min-width: 200px;
+}
 .show__btn {
   position: absolute;
   width: 100%;

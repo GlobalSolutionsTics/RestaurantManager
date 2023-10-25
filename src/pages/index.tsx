@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Head from "next/head";
 import SectionComp from "@/components/section/Section";
 import { useState } from "react";
+import SaucerComp from "@/components/section/saucer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -103,96 +104,444 @@ export default function Home(id: string) {
             />
             <div
               id="1"
-              className="container"
+              className="text-white basis-full md:basis-1/2 lg:basis-1/2"
               style={{ display: displayStyle === "1" ? "grid" : "none" }}
             >
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ex iste
-              quos asperiores nulla consectetur atque, praesentium sequi!
-              Consectetur sed a dolores hic harum maiores magni quos veniam
-              possimus. Quaerat, dignissimos?
+              <SaucerComp
+                title="Ensalada griega"
+                description=""
+                content="$150"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Alambre de mariscos"
+                description="Exquisita combinación de jaiba, camarón, pulpo y surimi"
+                content="$200"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Jaibas rellenas (2)"
+                description="200gr"
+                content="$135"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Chile relleno de mariscos"
+                description=""
+                content="$110"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Chile relleno de minilla"
+                description=""
+                content="$100"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Langosta o Langostino"
+                description="Sobre pedido (Precios según tamaño y temporada"
+                content="$110"
+                className="saucer"
+              />
             </div>
           </div>
           <div
-            onClick={(() => displayVisibility("2")) || changeDisplay}
+            onClick={() => displayVisibility("2")}
             className="text-white basis-full md:basis-1/2 lg:basis-1/2 "
           >
             <SectionComp
               title="Empanadas"
               description="Desde $40.00"
               content=""
-              className="container empanada-bg"
+              className="container empanada-bg bg"
             />
             <div
               id="2"
-              className="container"
+              className="saucer__container"
               style={{ display: displayStyle === "2" ? "grid" : "none" }}
             >
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Est,
-              corrupti magni! Fuga, reiciendis eos. Quia earum aliquid cum
-              expedita dolores provident, esse blanditiis dolorem maiores
-              laudantium, voluptatibus, eveniet eius ea.
+              <SaucerComp
+                title="Empanada de pescado"
+                description=""
+                content="$40"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Empanada de camarón"
+                description=""
+                content="$40"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Empanada de Jaiba"
+                description=""
+                content="$50"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Empanada de pulpo"
+                description=""
+                content="$60"
+                className="saucer"
+              />
             </div>
           </div>
-          <SectionComp
-            title="Mojarras"
-            description="Pregunta por nuestros precios"
-            content=""
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2 mojarra-bg container"
-          />
-          <SectionComp
-            title="Pulpo"
-            description="Desde $180.00"
-            content=""
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2 pulpo-bg container"
-          />
-          <SectionComp
-            title="Calamar"
-            description="Desde $135.00"
-            content=""
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2 calamar-bg container"
-          />
-          <SectionComp
-            title="Tostadas"
-            description="Desde $60.00"
-            content=""
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2 tostadas-bg container"
-          />
-          <SectionComp
-            title="Cocteles"
-            description="Desde $60.00"
-            content=""
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2 coctel-bg container"
-          />
-          <SectionComp
-            title="Camarones"
-            description="Desde $160.00"
-            content=""
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2 camarones-bg container"
-          />
-          <SectionComp
-            title="Ceviches"
-            description="Desde $65.00"
-            content=""
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2 ceviches-bg container"
-          />
-          <SectionComp
-            title="Caldos"
-            description="Desde $25.00"
-            content=""
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2 caldos-bg container"
-          />
-          <SectionComp
-            title="Filetes de pescado"
-            description="Desde $80.00"
-            content=""
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2 filetes-bg container"
-          />
-          <SectionComp
-            title="Bebidas"
-            description="Desde $20.00"
-            content=""
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2 bebida-bg container"
-          />
+          <div
+            onClick={() => displayVisibility("3")}
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+          >
+            <SectionComp
+              title="Mojarras"
+              description="Pregunta por nuestros precios"
+              content=""
+              className="container mojarra-bg bg"
+            />
+            <div
+              id="3"
+              className="saucer__container"
+              style={{ display: displayStyle === "3" ? "grid" : "none" }}
+            >
+              <SaucerComp
+                title="Mojarra frita"
+                description=""
+                content=""
+                className="saucer"
+              />
+              <SaucerComp
+                title="Mojarra a la diabla"
+                description=""
+                content=""
+                className="saucer"
+              />
+              <SaucerComp
+                title="Mojarra al mojo de ajo"
+                description=""
+                content=""
+                className="saucer"
+              />
+              <SaucerComp
+                title="Mojarra al chipotle"
+                description=""
+                content=""
+                className="saucer"
+              />
+              <SaucerComp
+                title="Mojarra a la mantequilla"
+                description=""
+                content=""
+                className="saucer"
+              />
+              <SaucerComp
+                title="Mojarra empapelada o rellena"
+                description=""
+                content=""
+                className="saucer"
+              />
+              <SaucerComp
+                title="Acompañadas de arroz y ensalada"
+                description=""
+                content=""
+                className="saucer"
+              />
+              <SaucerComp
+                title=""
+                description=""
+                content="Chica 500gr"
+                className="saucer text-red-400 p-0 font-light note"
+              />
+              <SaucerComp
+                title=""
+                description=""
+                content="Mediana 601 gr - 800 gr"
+                className="saucer text-red-400 p-0"
+              />
+              <SaucerComp
+                title=""
+                description=""
+                content="Grande 801 gr - 1Kg"
+                className="saucer text-red-400 p-0"
+              />
+              <SaucerComp
+                title=""
+                description=""
+                content="Extra Grande 1.1 kg - más"
+                className="saucer text-red-400 p-0 text-end"
+              />
+            </div>
+          </div>
+          <div
+            onClick={() => displayVisibility("4")}
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+          >
+            <SectionComp
+              title="Pulpo"
+              description="Desde $180.00"
+              content=""
+              className="container pulpo-bg bg"
+            />
+            <div
+              id="4"
+              className="saucer__container"
+              style={{ display: displayStyle === "4" ? "grid" : "none" }}
+            >
+              <SaucerComp
+                title="Pulpo al chipotle"
+                description=""
+                content="$180"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Pulpo a la mantequilla"
+                description=""
+                content="$180"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Pulpo a la diabla"
+                description=""
+                content="$180"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Pulpo al mojo de ajo"
+                description=""
+                content="$180"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Pulpo al ajillo"
+                description=""
+                content="$180"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Pulpo en su tinta"
+                description=""
+                content="$180"
+                className="saucer"
+              />
+              <SaucerComp
+                title=""
+                description=""
+                content="Acompañados con arroz y ensalada.Cada platillo contiene 200 gr de pulpo."
+                className="saucer text-red-400 p-0 basis-full md:basis-1/2 lg:basis-1/2"
+              />
+            </div>
+          </div>
+          <div
+            onClick={() => displayVisibility("5")}
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+          >
+            <SectionComp
+              title="Calamar"
+              description="Desde $135.00"
+              content=""
+              className="container calamar-bg bg"
+            />
+            <div
+              id="5"
+              className="saucer__container"
+              style={{ display: displayStyle === "5" ? "grid" : "none" }}
+            >
+              <SaucerComp
+                title="Calamar al chipotle"
+                description=""
+                content="$135"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Calamar a la manteuilla"
+                description=""
+                content="$135"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Calamar a la diabla"
+                description=""
+                content="$135"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Calamar al mojo de ajo"
+                description=""
+                content="$135"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Calamar al ajillo"
+                description=""
+                content="$135"
+                className="saucer"
+              />
+              <SaucerComp
+                title=""
+                description=""
+                content="Acompañados con arroz y ensalada.Cada platillo contiene 200 gr de calamar."
+                className="saucer text-red-400 p-0 basis-full md:basis-1/2 lg:basis-1/2"
+              />
+            </div>
+          </div>
+          <div
+            onClick={() => displayVisibility("6")}
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+          >
+            <SectionComp
+              title="Tostadas"
+              description="Desde $60.00"
+              content=""
+              className="container tostadas-bg bg"
+            />
+            <div
+              id="6"
+              className="saucer__container"
+              style={{ display: displayStyle === "6" ? "grid" : "none" }}
+            >
+              <SaucerComp
+                title="Tostadas de pescado"
+                description=""
+                content="$60"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Tostadas de surimi"
+                description=""
+                content="$60"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Tostadas de calamar"
+                description=""
+                content="$60"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Tostadas de almeja"
+                description=""
+                content="$60"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Tostadas de caracol"
+                description=""
+                content="$70"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Tostadas de jaiba"
+                description=""
+                content="$70"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Tostadas de camarón"
+                description=""
+                content="$70"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Tostadas de pulpo"
+                description=""
+                content="$80"
+                className="saucer"
+              />
+            </div>
+          </div>
+          <div
+            onClick={() => displayVisibility("7")}
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+          >
+            <SectionComp
+              title="Cocteles"
+              description="Desde $60.00"
+              content=""
+              className="container coctel-bg bg"
+            />
+            <div
+              id="7"
+              className="saucer__container"
+              style={{ display: displayStyle === "7" ? "grid" : "none" }}
+            ></div>
+          </div>
+          <div
+            onClick={() => displayVisibility("8")}
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+          >
+            <SectionComp
+              title="Camarones"
+              description="Desde $160.00"
+              content=""
+              className="container camarones-bg bg"
+            />
+            <div
+              id="8"
+              className="saucer__container"
+              style={{ display: displayStyle === "8" ? "grid" : "none" }}
+            ></div>
+          </div>
+          <div
+            onClick={() => displayVisibility("9")}
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+          >
+            <SectionComp
+              title="Ceviches"
+              description="Desde $65.00"
+              content=""
+              className="container ceviches-bg bg"
+            />
+            <div
+              id="9"
+              className="saucer__container"
+              style={{ display: displayStyle === "9" ? "grid" : "none" }}
+            ></div>
+          </div>
+          <div
+            onClick={() => displayVisibility("10")}
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+          >
+            <SectionComp
+              title="Caldos"
+              description="Desde $25.00"
+              content=""
+              className="container caldos-bg bg"
+            />
+            <div
+              id="10"
+              className="saucer__container"
+              style={{ display: displayStyle === "10" ? "grid" : "none" }}
+            ></div>
+          </div>
+          <div
+            onClick={() => displayVisibility("11")}
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+          >
+            <SectionComp
+              title="Filetes de pescado"
+              description="Desde $80.00"
+              content=""
+              className="container filetes-bg bg"
+            />
+            <div
+              id="11"
+              className="saucer__container"
+              style={{ display: displayStyle === "11" ? "grid" : "none" }}
+            ></div>
+          </div>
+          <div
+            onClick={() => displayVisibility("12")}
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+          >
+            <SectionComp
+              title="Bebidas"
+              description="Desde $20.00"
+              content=""
+              className="container bebida-bg bg"
+            />
+            <div
+              id="12"
+              className="saucer__container"
+              style={{ display: displayStyle === "12" ? "grid" : "none" }}
+            ></div>
+          </div>
         </div>
       </div>
 

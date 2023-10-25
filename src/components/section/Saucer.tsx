@@ -1,0 +1,41 @@
+import { FC, useEffect } from "react";
+import { SectionProps } from "../types/section.type";
+
+const SaucerComp: FC<SectionProps> = ({
+  className,
+  title,
+  description,
+  content,
+}) => {
+  const jsonLdData = {
+    "@context": "https://schema.org",
+    "@type": "Section",
+    name: title,
+    description: description,
+    content: content,
+  };
+
+  useEffect(() => {
+    // Agregar el script JSON-LD al <head> de la página
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.innerHTML = JSON.stringify(jsonLdData);
+    document.head.appendChild(script);
+
+    // Limpiar el script al desmontar el componente
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, [jsonLdData]);
+  return (
+    <section className={`flex p-2 ${className}`}>
+      <div className=" text-white basis-full md:basis-1/2 lg:basis-1/2 saucer__header">
+        <h2 className="saucer__title">{title}</h2>
+        <p>{description}</p>
+      </div>
+      <div className="saucer__content">{content}</div>
+    </section>
+  );
+};
+
+export default SaucerComp;
