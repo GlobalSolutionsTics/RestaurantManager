@@ -784,10 +784,152 @@ export default function Home(id: string) {
               id="11"
               className="saucer__container"
               style={{ display: displayStyle === "11" ? "grid" : "none" }}
-            ></div>
+            >
+              <SaucerComp
+                title="Filete a la mexicana."
+                description="200gr."
+                content="$90"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Filete asado."
+                description="200gr."
+                content="$90"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Filete empanizado."
+                description="120gr."
+                content="$80"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Filete al mojo de ajo."
+                description="200gr."
+                content="$90"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Filete a la diabla."
+                description="200gr."
+                content="$90"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Filete al chipotle."
+                description="200gr."
+                content="$90"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Filete a la mantequilla."
+                description="200gr."
+                content="$90"
+                className="saucer"
+              />
+              <SaucerComp
+                title="*Filete relleno."
+                description="200gr."
+                content="$190"
+                className="saucer"
+              />
+              <SaucerComp
+                title="*Filete light con queso."
+                description="200gr."
+                content="$135"
+                className="saucer"
+              />
+            </div>
           </div>
           <div
             onClick={() => displayVisibility("12")}
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+          >
+            <SectionComp
+              title="Tacos"
+              description="Desde $135.00"
+              content=""
+              className="container tacos-bg bg"
+            />
+            <div
+              id="12"
+              className="saucer__container"
+              style={{ display: displayStyle === "12" ? "grid" : "none" }}
+            >
+              <SaucerComp
+                title="Tacos gobernador de camarón o marlín"
+                description="(camarones o marlín guisados y gratinados con queso)."
+                content="$180"
+                className="saucer"
+              />
+              <SaucerComp
+                title=""
+                description="Acompañados con rico guacamole"
+                content=""
+                className="saucer"
+              />
+            </div>
+          </div>
+          <div
+            onClick={() => displayVisibility("13")}
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+          >
+            <SectionComp
+              title="Otros"
+              description="Desde $55.00/Orden"
+              content=""
+              className="container otros-bg bg"
+            />
+            <div
+              id="13"
+              className="saucer__container"
+              style={{ display: displayStyle === "13" ? "grid" : "none" }}
+            >
+              <SaucerTable
+                title="Otros"
+                description=""
+                content=""
+                row1="Orden(3)"
+                row2=""
+                row3="Pza."
+                className="text-lg"
+              />
+              <SaucerTable
+                title="Filetitos fritos"
+                description=""
+                content=""
+                row1="$70"
+                row2=""
+                row3="$26"
+              />
+              <SaucerTable
+                title="Quesadilla de Minilla"
+                description=""
+                content=""
+                row1="$55"
+                row2=""
+                row3="$23"
+              />
+              <SaucerTable
+                title="Quesadilla de Camarón"
+                description=""
+                content=""
+                row1="$75"
+                row2=""
+                row3="$28"
+              />
+              <SaucerTable
+                title="Quesadilla de Jaiba"
+                description=""
+                content=""
+                row1="$75"
+                row2=""
+                row3="$28"
+              />
+            </div>
+          </div>
+          <div
+            onClick={() => displayVisibility("14")}
             className="text-white basis-full md:basis-1/2 lg:basis-1/2"
           >
             <SectionComp
@@ -797,10 +939,124 @@ export default function Home(id: string) {
               className="container bebida-bg bg"
             />
             <div
-              id="12"
+              id="14"
               className="saucer__container"
-              style={{ display: displayStyle === "12" ? "grid" : "none" }}
-            ></div>
+              style={{ display: displayStyle === "14" ? "grid" : "none" }}
+            >
+              <SaucerComp
+                title="Refrescos"
+                description=""
+                content="$20"
+                className=""
+              />
+              <SaucerComp
+                title="Refrescos preparados"
+                description=""
+                content="$35 "
+                className=""
+              />
+              <SaucerComp
+                title="Limonada o Naranjada"
+                description=""
+                content="$35"
+                className=""
+              />
+              <SaucerComp
+                title="Michelada"
+                description=""
+                content="$40"
+                className=""
+              />
+              <SaucerComp
+                title="Cerveza"
+                description=""
+                content="$33"
+                className=""
+              />
+              <SaucerComp
+                title="Michelada con clamato"
+                description=""
+                content="$45"
+                className=""
+              />
+              <SaucerComp
+                title="Michelada con camaron"
+                description=""
+                content="$90"
+                className=""
+              />
+              <SaucerComp
+                title="Michelada con ostión"
+                description=""
+                content="$90"
+                className=""
+              />
+              <SaucerComp
+                title="Michelada especial"
+                description="(Camarón, ostión y clamato)"
+                content="$100"
+                className=""
+              />
+              <SaucerComp
+                title="Querida michelada"
+                description=""
+                content="$180"
+                className=""
+              />
+            </div>
+          </div>
+          <div
+            onClick={() => displayVisibility("15")}
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+          >
+            <SectionComp
+              title="Postres"
+              description="Desde $40.00"
+              content=""
+              className="container postres-bg bg"
+            />
+            <div
+              id="15"
+              className="saucer__container"
+              style={{ display: displayStyle === "15" ? "grid" : "none" }}
+            >
+              <SaucerComp
+                title="Duraznos con crema"
+                description=""
+                content="$40"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Chongos Zamoranos"
+                description=""
+                content="$40"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Flan Horneado"
+                description=""
+                content="$40"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Mousse de Yogurth"
+                description=""
+                content="$40"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Fresas con Crema"
+                description=""
+                content="$40"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Arroz con Leche"
+                description=""
+                content="$40"
+                className="saucer"
+              />
+            </div>
           </div>
         </div>
       </div>
