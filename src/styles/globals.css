@@ -112,6 +112,9 @@
 .saucer {
   justify-content: space-around;
 }
+.saucer__header {
+  text-shadow: #000 1px 0 5px;
+}
 .note {
   width: 100%;
   min-width: 200px;

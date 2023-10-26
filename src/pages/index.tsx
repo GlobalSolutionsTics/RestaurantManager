@@ -3,7 +3,8 @@ import { Inter } from "next/font/google";
 import Head from "next/head";
 import SectionComp from "@/components/section/Section";
 import { useState } from "react";
-import SaucerComp from "@/components/Saucer";
+import SaucerComp from "@/components/saucer/Saucer";
+import SaucerTable from "@/components/saucerTable/SaucerTable";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -460,7 +461,89 @@ export default function Home(id: string) {
               id="7"
               className="saucer__container"
               style={{ display: displayStyle === "7" ? "grid" : "none" }}
-            ></div>
+            >
+              <SaucerTable
+                title="Cocteles"
+                description=""
+                content=""
+                row1="Ch"
+                row2="Med"
+                row3="Gde"
+                className="text-xl"
+              />
+              <SaucerTable
+                title="Pulpo"
+                description=""
+                content=""
+                row1="$80"
+                row2="$120"
+                row3="$160"
+              />
+              <SaucerTable
+                title="Camaron"
+                description=""
+                content=""
+                row1="$65"
+                row2="$100"
+                row3="$135"
+              />
+              <SaucerTable
+                title="Ostión"
+                description=""
+                content=""
+                row1="$65"
+                row2="$100"
+                row3="$135"
+              />
+              <SaucerTable
+                title="Campechana"
+                description=""
+                content=""
+                row1="$65"
+                row2="$100"
+                row3="$135"
+              />
+              <SaucerTable
+                title="Pata de mula"
+                description=""
+                content=""
+                row1="$60"
+                row2="$90"
+                row3="$125"
+              />
+              <SaucerTable
+                title="Vuelve a la vida"
+                description=""
+                content=""
+                row1=""
+                row2="$100"
+                row3="$150"
+              />
+              <SaucerTable
+                title=""
+                description=""
+                content=""
+                row1=""
+                row2="6 pzas"
+                row3="12 pzas"
+              />
+              <SaucerTable
+                title="Ostión en su concha"
+                description=""
+                content=""
+                row1=""
+                row2="$100"
+                row3="$140"
+              />
+              <SaucerTable
+                title="Ostión Rocketfeller"
+                description="(10pzs)"
+                content=""
+                row1=""
+                row2="$190"
+                row3=""
+              />
+            </div>
           </div>
           <div
             onClick={() => displayVisibility("8")}
@@ -476,7 +559,68 @@ export default function Home(id: string) {
               id="8"
               className="saucer__container"
               style={{ display: displayStyle === "8" ? "grid" : "none" }}
-            ></div>
+            >
+              <SaucerComp
+                title="Camarones a la mexicana"
+                description=""
+                content="$160"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Camarones al chipotle"
+                description=""
+                content="$190"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Camarones a la mantequilla"
+                description=""
+                content="$190"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Camarones a la diabla"
+                description=""
+                content="$190"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Camarones al mojo de ajo"
+                description=""
+                content="$190"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Camarones empanizados"
+                description=""
+                content="$190"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Camarones al ajillo"
+                description=""
+                content="$190"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Camarones para pelar"
+                description=""
+                content="$165"
+                className="saucer"
+              />
+              <SaucerComp
+                title="Camarones a la gabardina"
+                description=""
+                content="$190"
+                className="saucer"
+              />
+              <SaucerComp
+                title=""
+                description=""
+                content="Acompañados con arroz y ensalada.Cada platillo contiene 200gr de camarones."
+                className="saucer text-red-400 p-0 basis-full md:basis-1/2 lg:basis-1/2"
+              />
+            </div>
           </div>
           <div
             onClick={() => displayVisibility("9")}
@@ -492,7 +636,73 @@ export default function Home(id: string) {
               id="9"
               className="saucer__container"
               style={{ display: displayStyle === "9" ? "grid" : "none" }}
-            ></div>
+            >
+              <SaucerTable
+                title="Ceviches"
+                description=""
+                content=""
+                row1="Ch"
+                row2="Med"
+                row3="Gde"
+                className="text-xl"
+              />
+              <SaucerTable
+                title="De calamar"
+                description=""
+                content=""
+                row1="$65"
+                row2="$100"
+                row3="$135"
+              />
+              <SaucerTable
+                title="De surimi"
+                description=""
+                content=""
+                row1="$65"
+                row2="$100"
+                row3="135"
+              />
+              <SaucerTable
+                title="De pescado"
+                description=""
+                content=""
+                row1="$65"
+                row2="$100"
+                row3="$135"
+              />
+              <SaucerTable
+                title="De jaiba"
+                description=""
+                content=""
+                row1="$65"
+                row2="$100"
+                row3="$135"
+              />
+              <SaucerTable
+                title="De caracol"
+                description=""
+                content=""
+                row1="$65"
+                row2="$100"
+                row3="$135"
+              />
+              <SaucerTable
+                title="De pulpo"
+                description=""
+                content=""
+                row1="$70"
+                row2="$110"
+                row3="$145"
+              />
+              <SaucerTable
+                title="De almeja"
+                description=""
+                content=""
+                row1="$65"
+                row2="$100"
+                row3="$135"
+              />
+            </div>
           </div>
           <div
             onClick={() => displayVisibility("10")}
@@ -508,7 +718,57 @@ export default function Home(id: string) {
               id="10"
               className="saucer__container"
               style={{ display: displayStyle === "10" ? "grid" : "none" }}
-            ></div>
+            >
+              <SaucerTable
+                title="Caldos"
+                description=""
+                content=""
+                row1="Ch"
+                row2="Med"
+                row3="Gde"
+                className="text-xl"
+              />
+              <SaucerTable
+                title="De camarón"
+                description=""
+                content=""
+                row1="$35"
+                row2="$70"
+                row3="$90"
+              />
+              <SaucerTable
+                title="De pescado"
+                description=""
+                content=""
+                row1="$30"
+                row2="$60"
+                row3="$80"
+              />
+              <SaucerTable
+                title="Campechano"
+                description=""
+                content=""
+                row1="$30"
+                row2="$80"
+                row3="$120"
+              />
+              <SaucerTable
+                title="Sopa de mariscos"
+                description=""
+                content="(Rica combinación de pescado, ostión, camarón, almeja, jaiba y pulpo)"
+                row1=""
+                row2="$200"
+                row3=""
+              />
+              <SaucerTable
+                title="Caldo de jarrito s/camarón"
+                description=""
+                content=""
+                row1=""
+                row2="$25"
+                row3=""
+              />
+            </div>
           </div>
           <div
             onClick={() => displayVisibility("11")}

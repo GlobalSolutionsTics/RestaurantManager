@@ -1,5 +1,5 @@
 import { FC, useEffect } from "react";
-import { SectionProps } from "./types/section.type";
+import { SectionProps } from "../types/section.type";
 
 const SaucerComp: FC<SectionProps> = ({
   className,
@@ -30,7 +30,7 @@ const SaucerComp: FC<SectionProps> = ({
   return (
     <section className={`flex p-2 ${className}`}>
       <div className=" text-white basis-full md:basis-1/2 lg:basis-1/2 saucer__header">
-        <h2 className="saucer__title">{title}</h2>
+        <h3 className="saucer__title">{title}</h3>
         <p>{description}</p>
       </div>
       <div className="saucer__content">{content}</div>
