@@ -22,7 +22,7 @@ const HomeOrderPage = () => {
       const data = snapshot.val();
       if (snapshot.exists()) {
         const elements = Object.values(data).sort(
-          (a: any, b: any) => a.orderId - b.orderId
+          (a: any, b: any) => a.orderId - b.orderId,
         );
         setOrders(elements);
       }
@@ -31,14 +31,14 @@ const HomeOrderPage = () => {
   return (
     <div>
       <h2>Ordenes pendientes</h2>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col px-4">
+      <div className='grid grid-cols-2 gap-4'>
+        <div className='flex flex-col px-4'>
           {orders.length > 0 ? (
             orders
               .sort((el) => el.orderId)
               .map((el) => (
                 <div
-                  className="flex flex-col bg-white text-black my-2"
+                  className='flex flex-col bg-white text-black my-2'
                   key={el.uuid}
                   onClick={() => findByUUID(el.uuid)}
                 >

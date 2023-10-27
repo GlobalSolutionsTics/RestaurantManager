@@ -7,7 +7,7 @@ const addOrder = async (
   dishes: number,
   uuid: string,
   tableNumber: number,
-  dishesDescription: Array<any>
+  dishesDescription: Array<any>,
 ) => {
   try {
     let preId = 0;
