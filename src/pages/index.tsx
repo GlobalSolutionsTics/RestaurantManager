@@ -2,17 +2,18 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import Head from "next/head";
 import SectionComp from "@/components/section/Section";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SaucerComp from "@/components/saucer/Saucer";
 import SaucerTable from "@/components/saucerTable/SaucerTable";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home(id: string) {
+  
   const [displayStyle, setDisplayStyle] = useState<string | null>(null);
 
   const displayVisibility = (divId: string) => {
-    if (displayStyle === null) {
+    if (displayStyle === null || displayStyle !== divId) {
       setDisplayStyle(divId);
     } else {
       setDisplayStyle(null);
@@ -26,11 +27,13 @@ export default function Home(id: string) {
       return "relative";
     }
   };
-  const [isVisisble, setIsVisible] = useState(false);
-  const visible = () => {
-    setIsVisible(!isVisisble);
-  };
-  const changeDisplay = !(isVisisble ? "grid" : "none");
+
+  //const [isVisisble, setIsVisible] = useState(false);
+  //const visible = () => {
+  //  setIsVisible(!isVisisble);
+  //};
+  //const changeDisplay = !(isVisisble ? "grid" : "none");
+  
   return (
     <>
       <Head>
@@ -98,7 +101,6 @@ export default function Home(id: string) {
           Marisquerida La Delicia del Mar | Desde 1978
         </h1>
         <h2 className='text-center text-white menu'>Menú</h2>
-        <button onClick={() => displayVisibility("")}>show</button>
         <div className='flex  md:flex-row flex-wrap'>
           <div
             className='text-white basis-full md:basis-1/2 lg:basis-1/2 p-2'
@@ -112,7 +114,7 @@ export default function Home(id: string) {
             />
             <div
               id='1'
-              className={`text-white basis-full md:basis-1/2 lg:basis-1/2 ${positionType} transition-all`}
+              className={`text-white basis-full md:basis-1/2 lg:basis-1/2 transition-all`}
               style={{ display: displayStyle === "1" ? "grid" : "none" }}
             >
               <SaucerComp
@@ -154,7 +156,7 @@ export default function Home(id: string) {
             </div>
           </div>
           <div
-            onClick={(() => displayVisibility("2")) || changeDisplay}
+            onClick={(() => displayVisibility("2"))}
             className='text-white basis-full md:basis-1/2 lg:basis-1/2 p-2'
           >
             <SectionComp
@@ -252,28 +254,28 @@ export default function Home(id: string) {
                 className='saucer'
               />
               <SaucerComp
-                title=''
+                title='Chica 500gr'
                 description=''
-                content='Chica 500gr'
+                content=''
                 className='saucer text-red-400 p-0 font-light note'
               />
               <SaucerComp
-                title=''
+                title='Mediana 601 gr - 800 gr'
                 description=''
-                content='Mediana 601 gr - 800 gr'
+                content=''
                 className='saucer text-red-400 p-0'
               />
               <SaucerComp
-                title=''
+                title='Grande 801 gr - 1Kg'
                 description=''
-                content='Grande 801 gr - 1Kg'
+                content=''
                 className='saucer text-red-400 p-0'
               />
               <SaucerComp
-                title=''
+                title='Extra Grande 1.1 kg - más'
                 description=''
-                content='Extra Grande 1.1 kg - más'
-                className='saucer text-red-400 p-0 text-end'
+                content=''
+                className='saucer text-red-400 p-0 '
               />
             </div>
           </div>

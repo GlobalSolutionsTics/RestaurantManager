@@ -36,10 +36,11 @@
 }
 
 .bg {
-  background-attachment: fixed;
+  background-attachment: scroll;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  transition: all 0.5s ease-in-out;
 }
 
 .jaiba-bg {
@@ -103,7 +104,7 @@
 }
 
 .bg:hover {
-  background-size: 110%;
+  background-size: 250%;
 }
 
 .container {
