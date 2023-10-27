@@ -3,31 +3,148 @@
 @tailwind utilities;
 
 .navbar {
+  display: flex;
+  justify-content: center;
   background: #fff;
   width: 100%;
   height: auto;
 }
 
 .title {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
   color: #fff;
+  align-items: center;
   font-weight: bold;
   text-align: center;
+  font-size: 1.5rem;
+}
+
+.menu {
+  font-size: 2rem;
 }
 
 .wood-font {
   background-image: url("/fondo_madera_encabezado.avif");
-  background-attachment: fixed;
   background-position: center;
+  background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
   width: 100%;
   height: auto;
 }
 
-.jaiba-bg {
-  background-image: url("/platillos/jaiba-rellena.jpeg");
+.bg {
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.jaiba-bg {
+  background-image: url("/platillos/jaiba.webp");
+}
+
+.empanada-bg {
+  background-image: url("/platillos/empanada.webp");
+}
+
+.mojarra-bg {
+  background-image: url("/platillos/mojarra.webp");
+}
+
+.pulpo-bg {
+  background-image: url("/platillos/pulpo.webp");
+}
+
+.calamar-bg {
+  background-image: url("/platillos/calamar.webp");
+}
+
+.tostadas-bg {
+  background-image: url("/platillos/tostadas.webp");
+}
+
+.coctel-bg {
+  background-image: url("/platillos/coctel.webp");
+}
+
+.camarones-bg {
+  background-image: url("/platillos/camarones.webp");
+}
+
+.ceviches-bg {
+  background-image: url("/platillos/ceviche.webp");
+}
+
+.caldos-bg {
+  background-image: url("/platillos/caldo.webp");
+}
+
+.filetes-bg {
+  background-image: url("/platillos/filete.webp");
+}
+
+.tacos-bg {
+  background-image: url("/platillos/tacos.webp");
+}
+
+.otros-bg {
+  background-image: url("/platillos/otros.webp");
+}
+
+.postres-bg {
+  background-image: url("/platillos/postres.webp");
+}
+
+.bebida-bg {
+  background-image: url("/platillos/bebidas.webp");
+}
+
+.bg:hover {
+  background-size: 110%;
+}
+
+.container {
+  position: relative;
+  height: 6rem;
+  flex-direction: row;
+  justify-content: space-between;
+  text-shadow: #000 1px 0 10px;
+  transition: all 0.5s ease-in-out;
+}
+
+.container:hover {
+  font-size: larger;
+}
+
+/*     saucer style     */
+.saucer {
+  justify-content: space-around;
+}
+.saucer__header {
+  text-shadow: #000 1px 0 5px;
+}
+.note {
+  width: 100%;
+  min-width: 200px;
+}
+.show__btn {
+  position: absolute;
+  width: 100%;
+}
+
+.map__continer {
+  display: grid;
+  place-items: center;
+}
+
+.map {
+  width: 352px;
+  margin: auto;
+}
+
+.address__container {
+  text-align: center;
 }
