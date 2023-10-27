@@ -19,11 +19,18 @@ export default function Home(id: string) {
     }
   };
 
+  const positionType = () => {
+    if (displayStyle === null) {
+      return "fixed";
+    } else {
+      return "relative";
+    }
+  };
   const [isVisisble, setIsVisible] = useState(false);
   const visible = () => {
     setIsVisible(!isVisisble);
   };
-  const changeDisplay = isVisisble ? "grid" : "none";
+  const changeDisplay = !(isVisisble ? "grid" : "none");
   return (
     <>
       <Head>
@@ -94,8 +101,8 @@ export default function Home(id: string) {
         <button onClick={() => displayVisibility("")}>show</button>
         <div className="flex  md:flex-row flex-wrap">
           <div
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2 "
-            onClick={(() => displayVisibility("1")) || changeDisplay}
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+            onClick={() => displayVisibility("1")}
           >
             <SectionComp
               title="Especialidades"
@@ -105,7 +112,7 @@ export default function Home(id: string) {
             />
             <div
               id="1"
-              className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+              className={`text-white basis-full md:basis-1/2 lg:basis-1/2 ${positionType} transition-all`}
               style={{ display: displayStyle === "1" ? "grid" : "none" }}
             >
               <SaucerComp
@@ -147,7 +154,7 @@ export default function Home(id: string) {
             </div>
           </div>
           <div
-            onClick={() => displayVisibility("2")}
+            onClick={(() => displayVisibility("2")) || changeDisplay}
             className="text-white basis-full md:basis-1/2 lg:basis-1/2 "
           >
             <SectionComp
