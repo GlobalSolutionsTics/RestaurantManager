@@ -6,12 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "npx lint-staged",
+    "prettier-run": "npx prettier -c **/src/**",
+    "prettier-run:fix": "npx prettier -w **/src/**"
   },
   "dependencies": {
     "@types/uuid": "^9.0.6",
     "firebase": "^10.5.0",
     "next": "13.5.6",
+    "prettier": "^3.0.3",
     "react": "^18",
     "react-dom": "^18",
     "uuid": "^9.0.1"
