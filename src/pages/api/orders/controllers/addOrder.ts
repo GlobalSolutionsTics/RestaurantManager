@@ -7,44 +7,38 @@ const addOrder = async (
   dishes: number,
   uuid: string,
   tableNumber: number,
-  dishesDescription: Array<any>
+  dishesDescription: Array<any>,
 ) => {
   try {
     let preId = 0;
-    let error = false;
+    let isError = false;
     const dbRef = ref(getDatabase());
-    get(child(dbRef, RT_ORDER_TABLE_NAME))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const array = Object.keys(data).map((el) => el);
-          preId = array.length;
-          console.log(array, preId);
-          set(ref(realtimeDB, RT_ORDER_TABLE_NAME + "/" + uuid), {
-            name: name,
-            dishes: dishes,
-            dishesDescription: dishesDescription,
-            orderId: preId + 1,
-            uuid: uuid,
-            tableNumber: tableNumber,
-          });
-        } else {
-          set(ref(realtimeDB, RT_ORDER_TABLE_NAME + "/" + uuid), {
-            name: name,
-            dishes: dishes,
-            dishesDescription: dishesDescription,
-            orderId: preId + 1,
-            uuid: uuid,
-            tableNumber: tableNumber,
-          });
-          console.log("No data available");
-        }
-      })
-      .catch((error) => {
-        error = true;
+    const snapshot = await get(child(dbRef, RT_ORDER_TABLE_NAME));
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      const array = Object.keys(data).map((el) => el);
+      preId = array.length;
+      set(ref(realtimeDB, RT_ORDER_TABLE_NAME + "/" + uuid), {
+        name: name,
+        dishes: dishes,
+        dishesDescription: dishesDescription,
+        orderId: preId + 1,
+        uuid: uuid,
+        tableNumber: tableNumber,
       });
+    } else {
+      set(ref(realtimeDB, RT_ORDER_TABLE_NAME + "/" + uuid), {
+        name: name,
+        dishes: dishes,
+        dishesDescription: dishesDescription,
+        orderId: preId + 1,
+        uuid: uuid,
+        tableNumber: tableNumber,
+      });
+      console.log("No data available");
+    }
 
-    if (error) {
+    if (isError) {
       return false;
     }
     return true;

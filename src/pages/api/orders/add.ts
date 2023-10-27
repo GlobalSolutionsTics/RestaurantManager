@@ -14,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
       body.dishes,
       uuid,
       body.tableNumber,
-      body.dishesDescription
+      body.dishesDescription,
     );
     if (add) {
       res.status(201).send({
