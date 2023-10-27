@@ -103,7 +103,6 @@
 }
 
 .bg:hover {
-  background-attachment: scroll;
   background-size: 110%;
 }
 

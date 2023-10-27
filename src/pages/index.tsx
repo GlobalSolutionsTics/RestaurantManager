@@ -101,7 +101,7 @@ export default function Home(id: string) {
         <button onClick={() => displayVisibility("")}>show</button>
         <div className="flex  md:flex-row flex-wrap">
           <div
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 p-2"
             onClick={() => displayVisibility("1")}
           >
             <SectionComp
@@ -155,7 +155,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={(() => displayVisibility("2")) || changeDisplay}
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2 "
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 p-2"
           >
             <SectionComp
               title="Empanadas"
@@ -196,7 +196,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("3")}
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 p-2"
           >
             <SectionComp
               title="Mojarras"
@@ -279,7 +279,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("4")}
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 p-2"
           >
             <SectionComp
               title="Pulpo"
@@ -338,7 +338,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("5")}
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 p-2"
           >
             <SectionComp
               title="Calamar"
@@ -391,7 +391,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("6")}
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 p-2"
           >
             <SectionComp
               title="Tostadas"
@@ -456,7 +456,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("7")}
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 p-2"
           >
             <SectionComp
               title="Cocteles"
@@ -554,7 +554,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("8")}
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 p-2"
           >
             <SectionComp
               title="Camarones"
@@ -631,7 +631,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("9")}
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 p-2"
           >
             <SectionComp
               title="Ceviches"
@@ -713,7 +713,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("10")}
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 p-2"
           >
             <SectionComp
               title="Caldos"
@@ -779,7 +779,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("11")}
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 p-2"
           >
             <SectionComp
               title="Filetes de pescado"
@@ -850,7 +850,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("12")}
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 p-2"
           >
             <SectionComp
               title="Tacos"
@@ -879,7 +879,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("13")}
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 p-2"
           >
             <SectionComp
               title="Otros"
@@ -937,7 +937,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("14")}
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 p-2"
           >
             <SectionComp
               title="Bebidas"
@@ -1014,7 +1014,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("15")}
-            className="text-white basis-full md:basis-1/2 lg:basis-1/2"
+            className="text-white basis-full md:basis-1/2 lg:basis-1/2 p-2"
           >
             <SectionComp
               title="Postres"
