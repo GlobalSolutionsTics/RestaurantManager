@@ -107,6 +107,10 @@
   background-size: 250%;
 }
 
+.bg:hover {
+  background-size: 100%;
+}
+
 .container {
   position: relative;
   height: 6rem;
@@ -117,9 +121,12 @@
 }
 
 .container:hover {
-  background-attachment: scroll;
-  background-size: 100%;
   font-size: larger;
+}
+
+.show__btn {
+  position: absolute;
+  width: 100%;
 }
 
 .map__continer {
