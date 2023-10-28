@@ -117,23 +117,9 @@
 }
 
 .container:hover {
+  background-attachment: scroll;
+  background-size: 100%;
   font-size: larger;
-}
-
-/*     saucer style     */
-.saucer {
-  justify-content: space-around;
-}
-.saucer__header {
-  text-shadow: #000 1px 0 5px;
-}
-.note {
-  width: 100%;
-  min-width: 200px;
-}
-.show__btn {
-  position: absolute;
-  width: 100%;
 }
 
 .map__continer {
