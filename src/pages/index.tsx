@@ -13,7 +13,7 @@ export default function Home(id: string) {
   const [displayStyle, setDisplayStyle] = useState<string | null>(null);
 
   const displayVisibility = (divId: string) => {
-    if (displayStyle === null || displayStyle !== divId) {
+    if (displayStyle === null || displayStyle !== divId ) {
       setDisplayStyle(divId);
     } else {
       setDisplayStyle(null);
@@ -257,7 +257,7 @@ export default function Home(id: string) {
                 title='Chica 500gr'
                 description=''
                 content=''
-                className='saucer text-red-400 p-0 font-light note'
+                className='saucer text-red-400 p-0'
               />
               <SaucerComp
                 title='Mediana 601 gr - 800 gr'

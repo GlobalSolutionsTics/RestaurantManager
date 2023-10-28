@@ -28,8 +28,8 @@ const SaucerComp: FC<SectionProps> = ({
     };
   }, [jsonLdData]);
   return (
-    <section className="p-2">
-      <div className={`flex p-2 ${className}`}>
+    <section className={`${className}`}>
+      <div className={`flex justify-center p-2 ${className}`}>
         <div className={` basis-full md:basis-1/2 lg:basis-1/2 saucer__header ${className}`}>
           <h3 className="saucer__title text">{title}</h3>
           <p className="text-sm p-0">{description}</p>
