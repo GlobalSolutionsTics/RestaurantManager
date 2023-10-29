@@ -28,7 +28,9 @@ const SectionComp: FC<SectionProps> = ({
     };
   }, [jsonLdData]);
   return (
-    <section className={`flex p-2 ${className}`}>
+    <section className={`flex justify-center p-2 ${className}`}
+    style={{cursor: 'pointer'}}
+    >
       <h2>{title}</h2>
       <p>{description}</p>
     </section>
