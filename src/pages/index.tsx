@@ -88,9 +88,9 @@ export default function Home(id: string) {
           Marisquerida La Delicia del Mar | Desde 1978
         </h1>
         <h2 className='text-center text-white menu'>Menú</h2>
-        <div className='flex justify-center md:flex-row flex-wrap'>
+        <div className='flex justify-around md:flex-row flex-wrap'>
           <div
-            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 lol'
+            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
             onClick={() => displayVisibility("1")}
           >
             <SectionComp
@@ -144,7 +144,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={(() => displayVisibility("2"))}
-            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 lol'
+            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
             <SectionComp
               title='Empanadas'
@@ -185,7 +185,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("3")}
-            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 lol'
+            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
             <SectionComp
               title='Mojarras'
@@ -268,7 +268,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("4")}
-            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 lol'
+            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
             <SectionComp
               title='Pulpo'
@@ -327,7 +327,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("5")}
-            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 lol'
+            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
             <SectionComp
               title='Calamar'
@@ -380,7 +380,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("6")}
-            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 lol'
+            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
             <SectionComp
               title='Tostadas'
@@ -445,7 +445,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("7")}
-            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 lol'
+            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
             <SectionComp
               title='Cocteles'
@@ -543,7 +543,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("8")}
-            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 lol'
+            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
             <SectionComp
               title='Camarones'
@@ -620,7 +620,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("9")}
-            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 lol'
+            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
             <SectionComp
               title='Ceviches'
@@ -702,7 +702,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("10")}
-            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 lol'
+            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
             <SectionComp
               title='Caldos'
@@ -768,7 +768,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("11")}
-            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 lol'
+            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
             <SectionComp
               title='Filetes de pescado'
@@ -839,7 +839,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("12")}
-            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 lol'
+            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
             <SectionComp
               title='Tacos'
@@ -868,7 +868,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("13")}
-            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 lol'
+            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
             <SectionComp
               title='Otros'
@@ -926,7 +926,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("14")}
-            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 lol'
+            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
             <SectionComp
               title='Bebidas'
@@ -1003,7 +1003,7 @@ export default function Home(id: string) {
           </div>
           <div
             onClick={() => displayVisibility("15")}
-            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 lol'
+            className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
             <SectionComp
               title='Postres'
