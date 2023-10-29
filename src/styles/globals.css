@@ -31,6 +31,7 @@
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
+  height: auto;
 }
 
 .bg {
@@ -45,15 +46,15 @@
 }
 
 .empanada-bg {
-  background-image: url("/platillos/empanada.webp");
+  background-image: url("/platillos/empanada.jpg");
 }
 
 .mojarra-bg {
-  background-image: url("/platillos/mojarra.webp");
+  background-image: url("/platillos/mojarra.jpg");
 }
 
 .pulpo-bg {
-  background-image: url("/platillos/pulpo.webp");
+  background-image: url("/platillos/pulpo.jpg");
 }
 
 .calamar-bg {
@@ -61,7 +62,7 @@
 }
 
 .tostadas-bg {
-  background-image: url("/platillos/tostadas.webp");
+  background-image: url("/platillos/tostadas.jpg");
 }
 
 .coctel-bg {
@@ -69,7 +70,7 @@
 }
 
 .camarones-bg {
-  background-image: url("/platillos/camarones.webp");
+  background-image: url("/platillos/camarones.jpg");
 }
 
 .ceviches-bg {
@@ -81,7 +82,7 @@
 }
 
 .filetes-bg {
-  background-image: url("/platillos/filete.webp");
+  background-image: url("/platillos/filete.jpg");
 }
 
 .tacos-bg {
@@ -89,11 +90,11 @@
 }
 
 .otros-bg {
-  background-image: url("/platillos/otros.webp");
+  background-image: url("/platillos/otros.jpg");
 }
 
 .postres-bg {
-  background-image: url("/platillos/postres.webp");
+  background-image: url("/platillos/postres.jpg");
 }
 
 .bebida-bg {
@@ -111,7 +112,7 @@
 
 .saucer__style{
   max-width: 500px;
-  min-width: 350px;
+  min-width: 330px;
 }
 
 .container:hover {
