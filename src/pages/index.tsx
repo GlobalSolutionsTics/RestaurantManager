@@ -11,8 +11,6 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home(id: string) {
   
   const [displayStyle, setDisplayStyle] = useState<string | null>(null);
-
-  
   const displayVisibility = (divId: string) => {
     if (displayStyle === null || displayStyle !== divId ) {
       setDisplayStyle(divId);
@@ -27,7 +25,7 @@ export default function Home(id: string) {
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
         <meta
           name='description'
-          content='Mariquería en Valle del Vístula Esq, Valle de Oaxaca Int 92, Valle de Aragón 2da Secc, 57100 Municipio Nezahualcóyotl, Méx. ¡Disfruta de auténticos mariscos!'
+          content='Marisquería en Valle del Vístula Esq, Valle de Oaxaca Int 92, Valle de Aragón 2da Secc, 57100 Municipio Nezahualcóyotl, Méx. ¡Disfruta de auténticos mariscos!'
         />
         <meta
           name='keywords'
@@ -45,7 +43,7 @@ export default function Home(id: string) {
         <meta name='ICBM' content='19.489105132153252, -99.04517983068608' />
         <meta
           property='og:title'
-          content='Mariquería en Valle de Aragón, Nezahualcóyotl'
+          content='Marisquería en Valle de Aragón, Nezahualcóyotl'
         />
         <meta
           property='og:description'
@@ -59,7 +57,7 @@ export default function Home(id: string) {
         <meta name='twitter:site' content='@tucuenta' />
         <meta
           name='twitter:title'
-          content='Mariquería en Valle de Aragón, Nezahualcóyotl'
+          content='Marisquería en Valle de Aragón, Nezahualcóyotl'
         />
         <meta
           name='twitter:description'
@@ -1060,10 +1058,40 @@ export default function Home(id: string) {
       <footer className='p-4 bg-black'>
         <section className='flex flex-col md:flex-row'>
           <section className='basis-full md:basis-1/2'>
-            <p className='text-white text-center'>Sábados y domingos</p>
-            <p className='text-white text-center text-small'>
-              No dude en pedir nuestrA rica paella
+            <p className="text-white text-center text-xl">Visítanos!</p>
+            <div className="py-2">
+              <p className='text-white text-center'>Lunes a Domingo</p>
+              <p className='text-white text-small text-center'>
+              Horario de 09:30 a 18:00 hrs
             </p>
+            </div>
+            <div className="py-2">
+              <p className='text-white text-center'>Sábados y Domingos</p>
+              <p className='text-white text-center text-small'>
+              No dude en pedir nuestra rica paella
+            </p>
+            </div>
+          </section>
+          <section className='basis-full md:basis-1/2'>
+              <div className="flex justify-center">
+                <img src="./logo_con_fondo.png" alt="" className="footer__logo"/>
+              </div>
+            <div className="py-4">
+              <p className='text-white text-center text-xl py-2'>No olvides seguirnos!!</p>
+              <p className='text-white text-center'>Nuestras redes Sociales:</p>
+              <ul className="flex justify-center p-2 md:flex-row flex-wrap">
+                <li className="px-4">
+                  <a href="https://www.facebook.com/MarisQuerida/" className="social__media fb" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z"></path></svg>
+                  </a>
+                </li>
+                <li className="px-4">
+                  <a href="https://www.instagram.com/marisquerida/" className="social__media ig" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M20.947 8.305a6.53 6.53 0 0 0-.419-2.216 4.61 4.61 0 0 0-2.633-2.633 6.606 6.606 0 0 0-2.186-.42c-.962-.043-1.267-.055-3.709-.055s-2.755 0-3.71.055a6.606 6.606 0 0 0-2.185.42 4.607 4.607 0 0 0-2.633 2.633 6.554 6.554 0 0 0-.419 2.185c-.043.963-.056 1.268-.056 3.71s0 2.754.056 3.71c.015.748.156 1.486.419 2.187a4.61 4.61 0 0 0 2.634 2.632 6.584 6.584 0 0 0 2.185.45c.963.043 1.268.056 3.71.056s2.755 0 3.71-.056a6.59 6.59 0 0 0 2.186-.419 4.615 4.615 0 0 0 2.633-2.633c.263-.7.404-1.438.419-2.187.043-.962.056-1.267.056-3.71-.002-2.442-.002-2.752-.058-3.709zm-8.953 8.297c-2.554 0-4.623-2.069-4.623-4.623s2.069-4.623 4.623-4.623a4.623 4.623 0 0 1 0 9.246zm4.807-8.339a1.077 1.077 0 0 1-1.078-1.078 1.077 1.077 0 1 1 2.155 0c0 .596-.482 1.078-1.077 1.078z"></path><circle cx="11.994" cy="11.979" r="3.003"></circle></svg>
+                  </a>
+                </li>
+              </ul>
+            </div>
           </section>
           <address className='basis-full md:basis-1/2'>
             <div className='map__continer'>
@@ -1078,10 +1106,6 @@ export default function Home(id: string) {
               <p className='text-white text-small'>Valle de Aragón</p>
               <p className='text-white text-small'>
                 2da Sección Nezahualcóyotl
-              </p>
-              <p className='text-white text-small'>Lunes a Domingo</p>
-              <p className='text-white text-small'>
-                Horario de 09:30 a 18:00 hrs
               </p>
             </div>
           </address>

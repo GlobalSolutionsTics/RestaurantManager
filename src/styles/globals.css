@@ -34,6 +34,7 @@
   height: auto;
 }
 
+/****** Background saucer's section *****/
 .bg {
   background-attachment: scroll;
   background-position: center;
@@ -124,14 +125,66 @@
   width: 100%;
 }
 
-.map__continer {
-  display: grid;
-  place-items: center;
-}
+/****** Footer ******/
 
 .map {
   width: 352px;
   margin: auto;
+}
+
+.footer__social{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.footer__logo{
+  width: 12rem;
+}
+
+.social__media{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  transition: background-color .3s ease-in-out;
+}
+
+.fb{
+  fill: #3b5998;
+  background-color: #fff;
+}
+
+.fb:hover{
+  fill: white;
+  background-color: #3b5998;
+}
+
+.ig{
+  fill: #f09433; 
+  fill: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
+  fill: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+  fill: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
+  background: white;
+}
+
+.ig:hover{
+  background: #f09433; 
+  background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
+  background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
+  fill: white;
+}
+
+.map__continer {
+  display: grid;
+  place-items: center;
 }
 
 .address__container {
