@@ -26,12 +26,20 @@
 }
 
 .wood-font {
+  display: grid;
   background-image: url("/fondo_madera_encabezado.avif");
   background-position: center;
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
   height: auto;
+  justify-content: center;
+}
+
+.size__container{
+  max-width: 1920px;
+    align-items: center;
+
 }
 
 /****** Background saucer's section *****/
@@ -180,6 +188,16 @@
   background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
   fill: white;
+}
+
+.wa{
+  fill: #25d366;
+  background: white;
+}
+
+.wa:hover{
+  fill: white;
+  background: #25d366;
 }
 
 .map__continer {
