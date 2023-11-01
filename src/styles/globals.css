@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+html,body{
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .navbar {
   display: flex;
   justify-content: center;
@@ -206,3 +214,51 @@
 .address__container {
   text-align: center;
 }
+
+
+/**************** Auth ****************/
+.saucer__font{
+  background-image: url("/platillos/camarones.jpg");
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+}
+
+.container__auth{
+  margin: auto;
+}
+.name__label{
+  color: white;
+}
+.name__input{
+  height: 2rem;
+  padding-left: 1rem;
+  border: 0;
+  color: #ddd;
+  background-color: rgba(0, 0, 0, .5);
+  transition: all .3s ease-in-out;
+}
+.password__label{
+  color: white;
+}
+.password__input{
+  padding-left: 1rem;
+  height: 2rem;
+  border: 0;
+  color: #ddd;
+  background-color: rgba(0, 0, 0, .5);
+}
+.submit__btn{
+  width: 100%;
+  height: 2rem;
+  background-color: #d83135;
+  color: white;
+  transition: background-color .3s ease-in-out;
+}
+.submit__btn:hover{
+  background-color: #2b5d90;
+}
+
