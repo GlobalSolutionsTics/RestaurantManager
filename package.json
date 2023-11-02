@@ -11,6 +11,9 @@
     "prettier-run:fix": "npx prettier -w **/src/**"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.16",
     "@types/uuid": "^9.0.6",
     "firebase": "^10.5.0",
     "husky": "^8.0.3",
