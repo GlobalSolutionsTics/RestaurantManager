@@ -448,15 +448,16 @@ export default function Home(id: string) {
             </div>
           </div>
           <div
-            onClick={() => displayVisibility("7")}
             className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
-            <SectionComp
-              title='Cocteles'
-              description='Desde $60.00'
-              content=''
-              className='container coctel-bg bg'
-            />
+            <div onClick={() => displayVisibility("7")}>
+              <SectionComp
+                title='Cocteles'
+                description='Desde $60.00'
+                content=''
+                className='container coctel-bg bg'
+              />
+            </div>
             <div
               id='7'
               className='saucer__container'
@@ -546,15 +547,16 @@ export default function Home(id: string) {
             </div>
           </div>
           <div
-            onClick={() => displayVisibility("8")}
             className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
-            <SectionComp
-              title='Camarones'
-              description='Desde $160.00'
-              content=''
-              className='container camarones-bg bg'
-            />
+            <div onClick={() => displayVisibility("8")}>
+              <SectionComp
+                title='Camarones'
+                description='Desde $160.00'
+                content=''
+                className='container camarones-bg bg'
+              />
+            </div>
             <div
               id='8'
               className='saucer__container'
@@ -623,15 +625,16 @@ export default function Home(id: string) {
             </div>
           </div>
           <div
-            onClick={() => displayVisibility("9")}
             className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
-            <SectionComp
-              title='Ceviches'
-              description='Desde $65.00'
-              content=''
-              className='container ceviches-bg bg'
-            />
+            <div onClick={() => displayVisibility("9")}>
+              <SectionComp
+                title='Ceviches'
+                description='Desde $65.00'
+                content=''
+                className='container ceviches-bg bg'
+              />
+            </div>
             <div
               id='9'
               className='saucer__container'
