@@ -89,18 +89,19 @@ export default function Home(id: string) {
         <div className='flex justify-center md:flex-row flex-wrap size__container'>
           <div
             className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
-            onClick={() => displayVisibility("1")}
           >
-            <SectionComp
-              title='Especialidades'
-              description='Desde $100.00'
-              content=''
-              className='container jaiba-bg bg'
-            />
+            <div onClick={() => displayVisibility("1")}>
+              <SectionComp
+                title='Especialidades'
+                description='Desde $100.00'
+                content=''
+                className='container jaiba-bg bg'
+              />
+            </div>
             <div
               id='1'
               className={`text-white basis-full md:basis-1/2 lg:basis-1/2`}
-              style={{ display: displayStyle === "1" ? "block" : "none" }}
+              style={{ display: displayStyle === "1" ? "grid" : "none" }}
             >
               <SaucerComp
                 title='Ensalada griega'
@@ -141,15 +142,16 @@ export default function Home(id: string) {
             </div>
           </div>
           <div
-            onClick={(() => displayVisibility("2"))}
             className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
-            <SectionComp
-              title='Empanadas'
-              description='Desde $40.00'
-              content=''
-              className='container empanada-bg bg'
-            />
+            <div onClick={(() => displayVisibility("2"))}>
+              <SectionComp
+                title='Empanadas'
+                description='Desde $40.00'
+                content=''
+                className='container empanada-bg bg'
+              />
+            </div>
             <div
               id='2'
               className='saucer__container'
@@ -182,15 +184,16 @@ export default function Home(id: string) {
             </div>
           </div>
           <div
-            onClick={() => displayVisibility("3")}
             className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
-            <SectionComp
-              title='Mojarras'
-              description='Pregunta por nuestros precios'
-              content=''
-              className='container mojarra-bg bg'
-            />
+            <div onClick={() => displayVisibility("3")}>
+              <SectionComp
+                title='Mojarras'
+                description='Pregunta por nuestros precios'
+                content=''
+                className='container mojarra-bg bg'
+              />
+            </div>
             <div
               id='3'
               className='saucer__container'
@@ -265,15 +268,16 @@ export default function Home(id: string) {
             </div>
           </div>
           <div
-            onClick={() => displayVisibility("4")}
             className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
-            <SectionComp
-              title='Pulpo'
-              description='Desde $180.00'
-              content=''
-              className='container pulpo-bg bg'
-            />
+            <div onClick={() => displayVisibility("4")}>
+              <SectionComp
+                title='Pulpo'
+                description='Desde $180.00'
+                content=''
+                className='container pulpo-bg bg'
+              />
+            </div>
             <div
               id='4'
               className='saucer__container'
@@ -324,15 +328,16 @@ export default function Home(id: string) {
             </div>
           </div>
           <div
-            onClick={() => displayVisibility("5")}
             className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
-            <SectionComp
-              title='Calamar'
-              description='Desde $135.00'
-              content=''
-              className='container calamar-bg bg'
-            />
+            <div onClick={() => displayVisibility("5")}>
+              <SectionComp
+                title='Calamar'
+                description='Desde $135.00'
+                content=''
+                className='container calamar-bg bg'
+              />
+            </div>
             <div
               id='5'
               className='saucer__container'
@@ -377,15 +382,16 @@ export default function Home(id: string) {
             </div>
           </div>
           <div
-            onClick={() => displayVisibility("6")}
             className='text-white basis-full md:basis-1/3 lg:basis-1/3 m-2 saucer__style'
           >
-            <SectionComp
-              title='Tostadas'
-              description='Desde $60.00'
-              content=''
-              className='container tostadas-bg bg'
-            />
+            <div onClick={() => displayVisibility("6")}>
+              <SectionComp
+                title='Tostadas'
+                description='Desde $60.00'
+                content=''
+                className='container tostadas-bg bg'
+              />
+            </div>
             <div
               id='6'
               className='saucer__container'

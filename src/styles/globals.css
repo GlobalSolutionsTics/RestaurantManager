@@ -218,7 +218,7 @@ html,body{
 
 /**************** Auth ****************/
 .saucer__font{
-  background-image: url("/platillos/camarones.jpg");
+  background-image: url("/camarones-fondo.jpg");
   background-position: center;
   background-attachment: fixed;
   background-repeat: no-repeat;
@@ -229,6 +229,9 @@ html,body{
 
 .container__auth{
   margin: auto;
+  padding: 4rem;
+  background-color: rgba(255, 255, 255, .3);
+  border-radius: 30px;
 }
 .name__label{
   color: white;
