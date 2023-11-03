@@ -1,0 +1,12 @@
+.typography-primary {
+  @apply !font-primary !text-[2rem] !font-bold !not-italic;
+}
+.typography-primary-light {
+  @apply !font-primary !text-[2rem] !font-normal !not-italic;
+}
+.typography-secondary-light {
+  @apply !font-secondary !font-normal !not-italic;
+}
+.typography-secondary-bold {
+  @apply !font-secondary !font-bold !not-italic;
+}

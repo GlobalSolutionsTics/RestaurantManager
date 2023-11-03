@@ -1,8 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-html,body{
+@import url("https://fonts.googleapis.com/css2?family=Alkatra&family=Great+Vibes&family=Josefin+Sans:wght@100;700&family=Jost:wght@100;700&family=Shadows+Into+Light&display=swap");
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -44,7 +42,7 @@ html,body{
   justify-content: center;
 }
 
-.size__container{
+.size__container {
   max-width: 1920px;
 }
 
@@ -125,7 +123,7 @@ html,body{
   transition: all 0.5s ease-in-out;
 }
 
-.saucer__style{
+.saucer__style {
   max-width: 500px;
   min-width: 330px;
 }
@@ -146,18 +144,18 @@ html,body{
   margin: auto;
 }
 
-.footer__social{
+.footer__social {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 1.5rem;
 }
 
-.footer__logo{
+.footer__logo {
   width: 12rem;
 }
 
-.social__media{
+.social__media {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -165,43 +163,85 @@ html,body{
   height: 2.5rem;
   border-radius: 50%;
   font-size: 1.5rem;
-  transition: background-color .3s ease-in-out;
+  transition: background-color 0.3s ease-in-out;
 }
 
-.fb{
+.fb {
   fill: #3b5998;
   background-color: #fff;
 }
 
-.fb:hover{
+.fb:hover {
   fill: white;
   background-color: #3b5998;
 }
 
-.ig{
-  fill: #f09433; 
-  fill: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
-  fill: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
-  fill: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+.ig {
+  fill: #f09433;
+  fill: -moz-linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
+  fill: -webkit-linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
+  fill: linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
   background: white;
 }
 
-.ig:hover{
-  background: #f09433; 
-  background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
-  background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
-  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+.ig:hover {
+  background: #f09433;
+  background: -moz-linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
+  background: -webkit-linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
+  background: linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
   fill: white;
 }
 
-.wa{
+.wa {
   fill: #25d366;
   background: white;
 }
 
-.wa:hover{
+.wa:hover {
   fill: white;
   background: #25d366;
 }
@@ -215,9 +255,8 @@ html,body{
   text-align: center;
 }
 
-
 /**************** Auth ****************/
-.saucer__font{
+.saucer__font {
   background-image: url("/camarones-fondo.jpg");
   background-position: center;
   background-attachment: fixed;
@@ -227,41 +266,40 @@ html,body{
   display: flex;
 }
 
-.container__auth{
+.container__auth {
   margin: auto;
   padding: 4rem;
-  background-color: rgba(255, 255, 255, .3);
+  background-color: rgba(255, 255, 255, 0.3);
   border-radius: 30px;
 }
-.name__label{
+.name__label {
   color: white;
 }
-.name__input{
+.name__input {
   height: 2rem;
   padding-left: 1rem;
   border: 0;
   color: #ddd;
-  background-color: rgba(0, 0, 0, .5);
-  transition: all .3s ease-in-out;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease-in-out;
 }
-.password__label{
+.password__label {
   color: white;
 }
-.password__input{
+.password__input {
   padding-left: 1rem;
   height: 2rem;
   border: 0;
   color: #ddd;
-  background-color: rgba(0, 0, 0, .5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
-.submit__btn{
+.submit__btn {
   width: 100%;
   height: 2rem;
   background-color: #d83135;
   color: white;
-  transition: background-color .3s ease-in-out;
+  transition: background-color 0.3s ease-in-out;
 }
-.submit__btn:hover{
+.submit__btn:hover {
   background-color: #2b5d90;
 }
-

@@ -3,6 +3,7 @@ export type TMenuResponse = {
   price: number;
   isUniquePrice: boolean;
   type: string;
+  uuid?: string;
 };
 
 export type TResponseCollection = {

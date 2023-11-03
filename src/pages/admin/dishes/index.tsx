@@ -1,0 +1,298 @@
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import {
+  createCategoryService,
+  createDishService,
+  getCategories,
+  getDishService,
+} from "@/services/dishes";
+import { TCatalog } from "@/types/catalog.types";
+import { TMenuResponse } from "@/types/menu.types";
+import Button from "@mui/material/Button";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import InputAdornment from "@mui/material/InputAdornment";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import ListOptionComponent from "@/components/List/ListOption";
+
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 600,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
+const MessageComponent = withReactContent(Swal);
+
+const DishesAdminPage = () => {
+  //List controlls
+  const [titleCategory, setTitleCategory] = useState("");
+
+  const [idCategory, setIdCategory] = useState("");
+  const [isUniquePrice, setIsUniquePrice] = useState("1");
+  const [nameDish, setNameDish] = useState("");
+  const [priceDish, setPriceDish] = useState("");
+
+  const [categories, setCategories] = useState<Array<TCatalog>>([]);
+  const [dishes, setDishes] = useState<Array<TMenuResponse>>([]);
+
+  const [isOpenModalDish, setOpenModalDish] = useState(false);
+
+  const toggleModalDish = () => setOpenModalDish(!isOpenModalDish);
+
+  const getAllCategories = useCallback(async () => {
+    const obtainCategories = await getCategories();
+    if (obtainCategories) {
+      setCategories(obtainCategories);
+    }
+  }, []);
+
+  const showMessage = (title: string, description: string, okText?: string) => {
+    MessageComponent.fire({
+      icon: "success",
+      title: title,
+      text: description,
+      timer: 1500,
+      confirmButtonText: okText,
+      showConfirmButton: false,
+      showLoaderOnConfirm: false,
+      showLoaderOnDeny: false,
+    });
+  };
+
+  const _hanldeChangeCategorieId = async (id: string, title: string) => {
+    const dishesObtained = await getDishService(id);
+    if (dishesObtained) {
+      setDishes(dishesObtained);
+      setIdCategory(id);
+      setTitleCategory(title);
+    }
+  };
+
+  const handleChangeCategory = (event: SelectChangeEvent) => {
+    const value: string = event.target.value;
+    setIdCategory(value);
+  };
+
+  const handleChangeUniquePrice = (event: SelectChangeEvent) => {
+    const value: string = event.target.value;
+    setIsUniquePrice(value);
+  };
+
+  const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
+    const value: string = event.target.value;
+    setNameDish(value);
+  };
+
+  const handleChangePrice = (event: ChangeEvent<HTMLInputElement>) => {
+    const value: string = event.target.value;
+    setPriceDish(value);
+  };
+
+  const resetNewDishForm = () => {
+    setIsUniquePrice("1");
+    setNameDish("");
+    setPriceDish("");
+  };
+
+  const createDish = async () => {
+    const dishPayload: TMenuResponse = {
+      isUniquePrice: isUniquePrice === "0" ? false : true,
+      name: nameDish,
+      price: Number(priceDish),
+      type: idCategory,
+    };
+    const payload = {
+      collection: idCategory,
+      dish: dishPayload,
+    };
+    const isCreated = await createDishService(payload);
+    if (isCreated) {
+      setOpenModalDish(false);
+      resetNewDishForm();
+      showMessage("Platillo creado", "Se creo exitosamente el platillo");
+      const dishesObtained = await getDishService(idCategory);
+      if (dishesObtained) {
+        setDishes(dishesObtained);
+      }
+    } else {
+      alert("Error al crear el platillo");
+    }
+  };
+
+  const handleCreateCategory = async (title: string) => {
+    const id = title.toLowerCase().replace(" ", "_");
+    const payload: TCatalog = {
+      id: id,
+      value: title,
+    };
+    const isCreated = await createCategoryService(payload);
+    if (isCreated) {
+      showMessage("Categoría creada", "Se creo exitosamente la categoría");
+      getAllCategories();
+    }
+  };
+
+  useEffect(() => {
+    getAllCategories();
+  }, []);
+
+  return (
+    <>
+      <div className='flex flex-row w-full h-[100vh] py-8'>
+        <div></div>
+        <div className='flex flex-row w-full h-full'>
+          <div className='flex flex-col basis-2/5 bg-enabled mr-8 ml-8'>
+            <div className='p-2 bg-blue h-[64px]'>
+              <h2 className='typography-primary text-white'>Categorías</h2>
+            </div>
+            <div className='flex flex-col overflow-x-hidden'>
+              {categories.length > 0 &&
+                categories.map((itm, index) => (
+                  <ListOptionComponent
+                    isSelected={idCategory === itm.id}
+                    key={"ind-" + index + "-" + itm}
+                    onClick={() => _hanldeChangeCategorieId(itm.id, itm.value)}
+                  >
+                    {itm.value}
+                  </ListOptionComponent>
+                ))}
+              <ListOptionComponent isDot onCreate={handleCreateCategory}>
+                Agregar
+              </ListOptionComponent>
+            </div>
+          </div>
+          <div className='flex flex-col overflow-x-hidden basis-3/5 bg-enabled mr-8'>
+            {titleCategory !== "" && (
+              <div className='h-norma w-full px-8 py-2 bg-aqua font-secondary font-bold text-white text-[2rem] uppercase'>
+                {titleCategory}
+              </div>
+            )}
+            {dishes.length > 0 ? (
+              <div className='grid grid-cols-3 gap-4 w-[408px] mt-8 ml-8'>
+                {dishes.map((itm, key) => (
+                  <button
+                    key={key}
+                    className='w-[120px] h-[120px] bg-blue text-white font-secondary font-bold p-4'
+                  >
+                    {itm.name}
+                  </button>
+                ))}
+                <button
+                  onClick={toggleModalDish}
+                  className='w-[120px] h-[120px] bg-white border-dashed border-2 border-blue text-blue p-4'
+                >
+                  Agregar
+                </button>
+              </div>
+            ) : (
+              <div className='mt-8 ml-8 flex flex-col items-center w-[408px]'>
+                <p className='typography-primary !text-[1rem]'>
+                  Aun no tienes platillos en esta categoría
+                </p>
+                <button
+                  onClick={toggleModalDish}
+                  className='w-[120px] h-[120px] bg-white border-dashed border-2 border-blue text-blue mt-8 p-4'
+                >
+                  Agregar
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      <Modal open={isOpenModalDish} onClose={() => toggleModalDish()}>
+        <Box sx={style}>
+          <div className='flex flex-col'>
+            <h2>Añadir platillo</h2>
+            <div className='flex flex-row !mt-4'>
+              <FormControl fullWidth className='basis-1/2 !mr-4'>
+                <InputLabel htmlFor='outlined-adornment-name'>
+                  Nombre
+                </InputLabel>
+                <OutlinedInput
+                  id='outlined-adornment-name'
+                  label='Precio'
+                  inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+                  value={nameDish}
+                  onChange={handleChangeName}
+                />
+              </FormControl>
+              <FormControl fullWidth className='basis-1/2'>
+                <InputLabel htmlFor='outlined-adornment-amount'>
+                  Precio
+                </InputLabel>
+                <OutlinedInput
+                  id='outlined-adornment-amount'
+                  startAdornment={
+                    <InputAdornment position='start'>$</InputAdornment>
+                  }
+                  label='Precio'
+                  type='number'
+                  inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+                  value={priceDish}
+                  onChange={handleChangePrice}
+                />
+              </FormControl>
+            </div>
+            <div className='flex flex-row !mt-4'>
+              <FormControl fullWidth className='basis-1/2 !mr-4'>
+                <InputLabel htmlFor='select-category'>Categoría</InputLabel>
+                <Select
+                  labelId='select-category-label'
+                  id='select-category'
+                  value={idCategory}
+                  label='Categoría'
+                  disabled
+                  onChange={handleChangeCategory}
+                >
+                  {categories.length > 0 &&
+                    categories.map((itm, index) => (
+                      <MenuItem
+                        key={"itm-" + itm.id + "-" + index}
+                        value={itm.id}
+                      >
+                        {itm.value}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth className='basis-1/2'>
+                <InputLabel htmlFor='is-unique-price'>
+                  ¿El precio es fijo?
+                </InputLabel>
+                <Select
+                  labelId='is-unique-price-label'
+                  id='is-unique-price'
+                  value={isUniquePrice}
+                  label='¿El precio es fijo?'
+                  onChange={handleChangeUniquePrice}
+                >
+                  <MenuItem value={"0"}>No</MenuItem>
+                  <MenuItem value={"1"}>Si</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+            <div className='flex flex-col flex-end mt-4'>
+              <Button variant='outlined' onClick={createDish}>
+                Añadir
+              </Button>
+            </div>
+          </div>
+        </Box>
+      </Modal>
+    </>
+  );
+};
+
+export default DishesAdminPage;

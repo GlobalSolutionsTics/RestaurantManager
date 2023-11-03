@@ -8,6 +8,12 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      width: {
+        sm: "1rem",
+      },
+      height: {
+        normal: "4rem",
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
@@ -15,6 +21,23 @@ const config: Config = {
       },
       fontSize: {
         small: "0.75rem",
+      },
+      colors: {
+        enabled: "#E9E9E9",
+        "enabled-light": "#F4F4F4",
+        gray: "#A8A8A8",
+        "success-light": "#1BC200",
+        "blue-dark": "#204278",
+        blue: "#0B9CDA",
+        aqua: "#4084A2",
+        danger: "#A4181C",
+      },
+      fontFamily: {
+        primary: ["'Jost'", "Arial", "sans-serif"],
+        secondary: ["'Josefin Sans'", "Arial", "italic"],
+      },
+      content: {
+        space: "' '",
       },
     },
   },
