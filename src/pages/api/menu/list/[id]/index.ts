@@ -1,9 +1,9 @@
 import { HttpMethodsEnum } from "@/enums/http.enum";
 import { TMenu } from "@/types/menu.types";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getDish } from "../controller/getDish";
+import { getDish } from "../../controller/getDish";
 import { TErrorResponse } from "@/types/response.types";
-import { DishesEnum } from "../controller/enum/dishes.enum";
+import { DishesEnum } from "../../controller/enum/dishes.enum";
 
 const handler = async (
   req: NextApiRequest,
