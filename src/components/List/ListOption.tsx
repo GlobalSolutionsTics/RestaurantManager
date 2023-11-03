@@ -19,7 +19,7 @@ const ListOptionComponent = ({
   onClick,
   onCreate,
 }: Porps) => {
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [isCreated, setIsCreated] = useState(false);
   const [title, setTitle] = useState("");
   const handleOnCreate = () => {
