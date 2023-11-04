@@ -9,7 +9,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 const HomeOrderPage = () => {
   const [orders, setOrders] = useState<Array<any>>([]);
   const [orderDetail, setOrderDetail] = useState<Array<any> | null>(null);
-  const [orderSelected, setOrderSelected] = useState({});
+  const [orderSelected, setOrderSelected] = useState<any>({});
   const [uuidSelected, setUUIDSelected] = useState("");
   const [numberTable, setNumberTable] = useState("");
 
