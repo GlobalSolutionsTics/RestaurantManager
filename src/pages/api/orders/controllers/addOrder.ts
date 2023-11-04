@@ -1,6 +1,7 @@
 import { realtimeDB } from "@firebase/config";
 import { child, get, getDatabase, ref, set } from "firebase/database";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 const addOrder = async (
   name: string,
@@ -12,6 +13,8 @@ const addOrder = async (
   try {
     let preId = 0;
     let isError = false;
+    const auth = getAuth();
+    await signInAnonymously(auth);
     const dbRef = ref(getDatabase());
     const snapshot = await get(child(dbRef, RT_ORDER_TABLE_NAME));
     if (snapshot.exists()) {
@@ -35,7 +38,6 @@ const addOrder = async (
         uuid: uuid,
         tableNumber: tableNumber,
       });
-      console.log("No data available");
     }
 
     if (isError) {

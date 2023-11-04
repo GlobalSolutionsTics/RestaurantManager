@@ -23,7 +23,7 @@ export default function typeSelector() {
 
   return (
     <>
-      <div className='flex flex-col'>
+      <div className='flex '>
         <p className='h-10 text-2xl font-medium p-10 w-screen'>
           Seleccione un tipo de platillo
         </p>
