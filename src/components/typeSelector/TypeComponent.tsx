@@ -8,7 +8,7 @@ const TypeComp: FC<SectionProps> = ({
   content,
 }) => {
   return (
-    <section className={`flex ${className}`}>
+    <section className={`grid ${className} m-2`}>
       <div className='m-auto'>
         <h1>{title}</h1>
       </div>

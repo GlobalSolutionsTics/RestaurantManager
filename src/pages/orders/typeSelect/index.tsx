@@ -23,19 +23,19 @@ export default function typeSelector() {
 
   return (
     <>
-      <div className='flex '>
+      <div className=''>
         <p className='h-10 text-2xl font-medium p-10 w-screen'>
           Seleccione un tipo de platillo
         </p>
-        <div className='flex flex-wrap h-[200px] w-[200px]'>
+        <div className='flex content-center items-center flex-wrap justify-center'>
           {typeDishes?.map((dishes) => (
-            <div className=''>
+            <div className=' max-w-max'>
               <TypeComp
                 key={dishes.id}
                 title={`${dishes.value}`}
                 description=''
                 content={`${dishes.image}`}
-                className={`h-[200px] w-[200px] `}
+                className={`h-[200px] w-[200px] bg-neutral-400`}
               />
             </div>
           ))}
