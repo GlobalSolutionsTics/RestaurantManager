@@ -24,6 +24,7 @@ const config: Config = {
       },
       colors: {
         enabled: "#E9E9E9",
+        "enabled-dark": "#D9D9D9",
         "enabled-light": "#F4F4F4",
         gray: "#A8A8A8",
         "success-light": "#1BC200",
