@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { SectionProps } from "../types/section.type";
+import { useRouter } from "next/router";
 
 const TypeComp: FC<SectionProps> = ({
   className,
@@ -7,8 +8,12 @@ const TypeComp: FC<SectionProps> = ({
   description,
   content,
 }) => {
+  const router = useRouter();
+  const handleNavigation = () => {
+    router.push(`/orders/dishes/${description}`);
+  };
   return (
-    <section className={`grid ${className} m-2`}>
+    <section onClick={handleNavigation} className={`grid ${className} m-4`}>
       <div className='m-auto'>
         <h1>{title}</h1>
       </div>
