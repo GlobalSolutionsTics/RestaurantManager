@@ -1,13 +1,11 @@
 import React, { FC, useEffect, useState } from "react";
-import { SectionProps } from "../types/section.type";
-import { useRouter } from "next/router";
 
 interface OrderListProps {
   order: string;
 }
 
 const OrderList: FC<OrderListProps> = ({ order }) => {
-  const [orderContent, setOrderContent] = useState();
+  const [orderContent, setOrderContent] = useState<string>("");
 
   useEffect(() => {
     setOrderContent(order);
