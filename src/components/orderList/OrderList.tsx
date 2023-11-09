@@ -29,7 +29,7 @@ const OrderList: FC<OrderListProps> = ({ order }) => {
             <p className='text-2xl my-3'>Notas sobre la orden</p>
             <div className='my-3'>
               <input
-                className='w-[672px] h-[472px] bg-neutral-300'
+                className=' w-[672px] h-[472px] bg-neutral-300'
                 type='text'
               />
             </div>

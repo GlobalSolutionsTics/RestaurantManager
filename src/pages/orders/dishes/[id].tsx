@@ -23,12 +23,13 @@ export default function typeSelector() {
     obtainDishes();
   }, []);
 
+  const idRep = id === undefined ? " " : id;
   let title = "";
-  for (let i = 0; i < id.length; i++) {
-    if (id[i] === "_") {
+  for (let i = 0; i < idRep.length; i++) {
+    if (idRep[i] === "_") {
       title += " ";
     } else {
-      title += id[i];
+      title += idRep[i];
     }
   }
 
