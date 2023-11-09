@@ -1,4 +1,5 @@
 import Dishes from "@/components/dishes/Dishes";
+import OrderList from "@/components/orderList/OrderList";
 import { getDishService } from "@/services/dishes";
 import { TMenuResponse } from "@/types/menu.types";
 import { useRouter } from "next/router";
@@ -9,6 +10,7 @@ export default function typeSelector() {
   const [dishes, setDishes] = useState<Array<TMenuResponse>>([]);
   const { id } = router.query;
   const [orderNext, setOrderNext] = useState(true);
+  const [order, setOrder] = useState<string>("");
 
   const obtainDishes = useCallback(async () => {
     const obtainDishes = await getDishService(`${id}`);
@@ -55,22 +57,27 @@ export default function typeSelector() {
                 title={`${dish.name}`}
                 description={`${dish.price}`}
                 content=''
-                className='h-[200px] w-[200px] bg-neutral-400 text-2xl'
+                className='h-[200px] w-[200px] bg-neutral-300 text-2xl'
+                order=''
+                setOrder={setOrder}
               />
             </div>
           ))}
+        </div>
+        <div>
+          <OrderList order={order} />
         </div>
         <div className='grid'>
           <div className='m-auto'>
             <button
               onClick={handleOrder}
-              className='m-2 w-[668px] h-[64px] bg-neutral-400 '
+              className='m-2 w-[668px] h-[64px] bg-neutral-300 text-3xl'
             >
               Siguiente
             </button>
           </div>
           <div className='m-auto'>
-            <button className='m-2 w-[668px] h-[64px] bg-neutral-400'>
+            <button className='m-2 w-[668px] h-[64px] bg-neutral-300 text-3xl'>
               Regresar
             </button>
           </div>

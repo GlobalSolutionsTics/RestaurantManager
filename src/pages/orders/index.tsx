@@ -1,4 +1,4 @@
-import ListOptionComponent from "@/components/List/ListOption";
+import ListOptionComponent from "@/components/list/ListOption";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { getAuth, signInAnonymously } from "firebase/auth";

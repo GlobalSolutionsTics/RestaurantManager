@@ -36,7 +36,7 @@ const Dishes: FC<SectionProps & ComponentsDishes> = ({
   }, [jsonLdData]);
 
   const handleOrder = () => {
-    console.log(title);
+    setOrder(title);
   };
 
   return (
