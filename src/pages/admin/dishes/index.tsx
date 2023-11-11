@@ -18,7 +18,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import ListOptionComponent from "@/components/list/ListOption";
+import ListOptionComponent from "@/components/listOption/ListOption";
 
 const style = {
   position: "absolute" as "absolute",
