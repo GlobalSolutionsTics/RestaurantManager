@@ -5,12 +5,15 @@ interface OrderListProps {
 }
 
 const OrderList: FC<OrderListProps> = ({ order }) => {
-  const [orderContent, setOrderContent] = useState<string>("");
+  const [orderContent, setOrderContent] = useState<string[]>([""]);
 
   useEffect(() => {
-    setOrderContent(order);
+    //setOrderContent(order);
+    setOrderContent((x) => [...x, order]);
   }, [order]);
-
+  {
+    orderContent.map((x, index) => console.log(index));
+  }
   //console.log(orderContent);
   return (
     <section className='grid'>
@@ -19,10 +22,14 @@ const OrderList: FC<OrderListProps> = ({ order }) => {
         <div>
           <div className='flex'>
             <p className='flex justify-center items-center basis-1/2 text-4xl h-14 my-3'>
-              {orderContent}
+              {orderContent.map((x, index) => (
+                <span key={index}>{x}</span>
+              ))}
             </p>
             <p className='flex justify-center items-center basis-1/2 text-4xl h-14 bg-neutral-300 my-3'>
-              2
+              {orderContent.map((x, index) => (
+                <span key={index}>{x.length}</span>
+              ))}
             </p>
           </div>
           <div>

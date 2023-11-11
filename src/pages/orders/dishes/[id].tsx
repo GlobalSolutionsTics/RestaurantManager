@@ -43,6 +43,8 @@ export default function typeSelector() {
     orderStat = "Termine la orden para este platillo";
   }
 
+  //console.log(order);
+
   return (
     <>
       <div>
