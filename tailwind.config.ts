@@ -28,6 +28,7 @@ const config: Config = {
         "enabled-light": "#F4F4F4",
         gray: "#A8A8A8",
         "success-light": "#1BC200",
+        success: "#1EB706",
         "blue-dark": "#204278",
         blue: "#0B9CDA",
         aqua: "#4084A2",
