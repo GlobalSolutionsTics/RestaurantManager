@@ -6,8 +6,7 @@ import addOrder from "./controllers/addOrder";
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   const method = req.method;
   if (method === "POST") {
-    const body: TOrder = req.body;
-    console.log(body);
+    const body: TOrder = JSON.parse(req.body);
     const uuid = uuidv4();
     const add = await addOrder(
       body.name,

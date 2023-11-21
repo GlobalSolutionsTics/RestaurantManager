@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { setTable as setTableNumber } from "../reducers/orders.reducers";
+import {
+  setTable as setTableNumber,
+  setDishesDescription as setDishesDescAction,
+  setDishesNumber as setDishesNumberAction,
+} from "../reducers/orders.reducers";
 
 export interface IOrderSlice {
   name: string;
@@ -21,8 +25,15 @@ const ordersSlice = createSlice({
   reducers: {
     reset: () => INITAL_STATE,
     setTableOrder: setTableNumber,
+    setDishesDescriptionRedux: setDishesDescAction,
+    setDishesNumberRedux: setDishesNumberAction,
   },
 });
 
-export const { reset, setTableOrder } = ordersSlice.actions;
+export const {
+  reset,
+  setTableOrder,
+  setDishesDescriptionRedux,
+  setDishesNumberRedux,
+} = ordersSlice.actions;
 export default ordersSlice.reducer;
