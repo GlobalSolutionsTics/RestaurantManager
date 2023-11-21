@@ -1,4 +1,6 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { increment, decrement } from "@/store/slices/counterSlice";
 
 interface OrderListProps {
   order: string;
@@ -7,14 +9,9 @@ interface OrderListProps {
 const OrderList: FC<OrderListProps> = ({ order }) => {
   const [orderContent, setOrderContent] = useState<string[]>([""]);
 
-  useEffect(() => {
-    //setOrderContent(order);
-    setOrderContent((x) => [...x, order]);
-  }, [order]);
-  {
-    orderContent.map((x, index) => console.log(index));
-  }
-  //console.log(orderContent);
+  const dispatch = useDispatch();
+  const counter = useSelector((state: any) => state.counter.value);
+
   return (
     <section className='grid'>
       <div className='m-auto my-5'>
@@ -26,11 +23,11 @@ const OrderList: FC<OrderListProps> = ({ order }) => {
                 <span key={index}>{x}</span>
               ))}
             </p>
-            <p className='flex justify-center items-center basis-1/2 text-4xl h-14 bg-neutral-300 my-3'>
-              {orderContent.map((x, index) => (
-                <span key={index}>{x.length}</span>
-              ))}
-            </p>
+            <div>
+              <button onClick={() => dispatch(increment())}>+</button>
+              <p>{counter}</p>
+              <button onClick={() => dispatch(decrement())}>-</button>
+            </div>
           </div>
           <div>
             <p className='text-2xl my-3'>Notas sobre la orden</p>

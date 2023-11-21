@@ -1,13 +1,83 @@
 import Dishes from "@/components/dishes/Dishes";
 import TypeComp from "@/components/typeSelector/TypeComponent";
-import { getCategories } from "@/services/dishes";
+import { getCategories, getDishService } from "@/services/dishes";
+import {
+  setDishesDescriptionRedux,
+  setDishesNumberRedux,
+} from "@/store/slices/orders.slice";
 import { TCatalog } from "@/types/catalog.types";
+import { TMenuResponse } from "@/types/menu.types";
+import { Backspace, CheckOutlined } from "@mui/icons-material";
+import { Modal } from "@mui/material";
+import Box from "@mui/material/Box";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 600,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 export default function typeSelector() {
   const router = useRouter();
   const [typeDishes, setTypeDishes] = useState<Array<TCatalog>>([]);
+  const [dishesList, setDishesList] = useState<Array<TMenuResponse>>([]);
+  const [showItems, setShowItems] = useState(false);
+  const [titleItems, setTitleItems] = useState("");
+  const [imageItem, setImageItem] = useState("");
+  const [openCalculator, setOpenCalculator] = useState(false);
+  const [dishesDescription, setDishesDescription] = useState<
+    Array<TMenuResponse & { number?: number; image?: string }>
+  >([]);
+  const [dishSelectDescription, setDishSelectDescription] = useState<
+    TMenuResponse & { number?: number; image?: string }
+  >();
+  const [dishesNumber, setDishesNumber] = useState(0);
+
+  const dispatch = useDispatch();
+
+  const finishOrder = () => {
+    const numberOfDishes = dishesDescription.reduce((prev, itm) => {
+      if (itm?.number) {
+        return prev + itm?.number;
+      }
+      return prev;
+    }, 0);
+    dispatch(setDishesNumberRedux(numberOfDishes));
+    dispatch(setDishesDescriptionRedux(dishesDescription));
+    router.push("/orders/finishOrder");
+  };
+
+  console.log("Dishes description:", dishesDescription);
+
+  const toggleMenu = () => setShowItems(!showItems);
+  /**
+   * Calculator actions
+   */
+  const acceptDishesNumber = () => {
+    const newList = [...dishesDescription];
+    if (dishSelectDescription && dishesNumber !== 0) {
+      const newDish = {
+        ...dishSelectDescription,
+        number: dishesNumber,
+        image: imageItem,
+      };
+      newList.push(newDish);
+      setDishesDescription(newList);
+    }
+    setDishesNumber(0);
+    setOpenCalculator(false);
+  };
+  const toggleCalculator = () => setOpenCalculator(!openCalculator);
 
   const obtainCategories = useCallback(async () => {
     const obtainCategories = await getCategories();
@@ -16,30 +86,173 @@ export default function typeSelector() {
     }
   }, []);
 
+  const getDishesInfo = async (dish: TCatalog) => {
+    toggleMenu();
+    setDishesList([]);
+    setTitleItems(dish.value.toUpperCase());
+    if (dish.image) {
+      setImageItem(dish.image);
+    }
+    const dishes = await getDishService(dish.id);
+    if (dishes) {
+      setDishesList(dishes);
+    }
+  };
+
+  const handleDishSelect = (dishSelected: TMenuResponse) => {
+    const find = dishesDescription.findIndex(
+      (itm) => itm.uuid === dishSelected.uuid,
+    );
+    if (find === -1) {
+      setDishSelectDescription(dishSelected);
+      toggleCalculator();
+    } else {
+      const newList = [...dishesDescription];
+      newList.splice(find, 1);
+      setDishesDescription(newList);
+    }
+  };
+
+  const handleChangeDishesNumber = (number: number) => {
+    if (dishesNumber === 0 && number === 0) {
+      setDishesNumber(0);
+    } else if (dishesNumber === 0) {
+      setDishesNumber(number);
+    } else {
+      const preNumber = dishesNumber.toString();
+      const nextNumber = preNumber + number.toString();
+      const newNumber = Number(nextNumber);
+      setDishesNumber(newNumber);
+    }
+  };
+
+  const handleDeleteDishesNumber = () => {
+    const strDishes = dishesNumber.toString();
+    if (strDishes.length === 1) {
+      setDishesNumber(0);
+    } else {
+      const arrDishesNumber = strDishes.split("");
+      arrDishesNumber.pop();
+      const nextDishes = Number(arrDishesNumber.join(""));
+      setDishesNumber(nextDishes);
+    }
+  };
+
   useEffect(() => {
     obtainCategories();
   }, []);
 
   return (
     <>
-      <div className=''>
-        <p className='text-5xl font-normal h-[120px] grid content-center px-10 w-screen'>
+      <div className='relative'>
+        <p className='text-5xl font-primary h-[120px] grid content-center px-10 w-screen'>
           Seleccione un tipo de platillo
         </p>
+        <button
+          className='w-full bg-success text-white text-[2rem] font-secondary'
+          onClick={finishOrder}
+        >
+          Cerrar Orden
+        </button>
         <div className='flex content-center items-center flex-wrap justify-center'>
           {typeDishes?.map((dishes) => (
             <div className=' max-w-max justify-center'>
               <TypeComp
-                key={dishes.image}
+                key={"t-" + dishes.id}
+                image={dishes.image}
                 title={`${dishes.value}`}
                 description={`${dishes.id}`}
                 content={`${dishes.image}`}
+                onClick={() => getDishesInfo(dishes)}
                 className={`h-[200px] w-[200px] bg-neutral-400 text-2xl p-2 text-center`}
               />
             </div>
           ))}
         </div>
+        {showItems && (
+          <>
+            <div
+              className='absolute w-full h-full bg-black content-space top-0 right-0 opacity-40'
+              onClick={toggleMenu}
+            ></div>
+            <div className='fixed w-[90%] h-full bg-white top-0 right-0'>
+              <div className='w-full h-full bg-white top-0'>
+                <div className='relative font-normal h-[120px] grid content-center w-screen px-10 bg-neutral-300'>
+                  <Image src={"/" + imageItem} fill alt='' />
+                  <div className='absolute opacity-60 bg-black top-0 bottom-0 w-full'></div>
+                  <div className='absolute w-full top-0 bottom-0 flex flex-col py-4 px-6'>
+                    <p className='text-5xl text-white font-secondary'>
+                      {titleItems}
+                    </p>
+                    <p className='text-3xl text-white font-primary'>
+                      Seleccione sus platillos
+                    </p>
+                  </div>
+                </div>
+                <div className='w-full flex content-center items-center flex-wrap justify-center'>
+                  {dishesList.length > 0 ? (
+                    dishesList.map((dish) => (
+                      <Dishes
+                        key={dish.uuid}
+                        title={`${dish!.name}`}
+                        onClick={() => handleDishSelect(dish)}
+                        isSelected={
+                          dishesDescription.findIndex(
+                            (itm) => itm.uuid === dish.uuid,
+                          ) !== -1
+                        }
+                      />
+                    ))
+                  ) : (
+                    <div>Sin platillo </div>
+                  )}
+                </div>
+                <div className='flex flex-row items-center justify-center m-4'>
+                  <button
+                    className=' bg-blue text-white font-primary text-[2rem] font-primary font-bold w-[250px]'
+                    onClick={toggleMenu}
+                  >
+                    Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
+
+      <Modal open={openCalculator} onClose={toggleCalculator}>
+        <Box sx={style}>
+          <span className='flex text-[2rem] font-primary'>
+            Seleccione la cantidad de platillos
+          </span>
+          <div className='flex text-[2rem] font-secondary'>{dishesNumber}</div>
+          <div className='flex content-center items-center flex-wrap justify-center '>
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((itm) => {
+              return (
+                <button
+                  onClick={() => handleChangeDishesNumber(itm)}
+                  className='basis-1/4 w-[150px] h-[150px] text-center bg-enabled my-2 mx-2 text-[2rem]'
+                >
+                  {itm}
+                </button>
+              );
+            })}
+            <button
+              onClick={handleDeleteDishesNumber}
+              className='basis-1/4 w-[150px] h-[150px] text-center my-2 mx-2 bg-danger'
+            >
+              <Backspace className='fill-white' sx={{ fill: "#fff" }} />
+            </button>
+            <button
+              className='basis-1/4 w-[150px] h-[150px] text-center bg-enabled my-2 mx-2 bg-success-light'
+              onClick={acceptDishesNumber}
+            >
+              <CheckOutlined className='fill-success-dark' />
+            </button>
+          </div>
+        </Box>
+      </Modal>
     </>
   );
 }

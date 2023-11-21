@@ -2,47 +2,20 @@ import React, { FC, useEffect } from "react";
 import { SectionProps } from "../types/section.type";
 
 interface ComponentsDishes {
-  order: string;
-  setOrder: React.Dispatch<React.SetStateAction<string>>;
+  title: string;
+  isSelected: boolean;
+  onClick: () => void;
 }
-const Dishes: FC<SectionProps & ComponentsDishes> = ({
-  className,
-  title,
-  description,
-  content,
-  order,
-  setOrder,
-}) => {
-  const jsonLdData = {
-    "@context": "https://schema.org",
-    "@type": "Section",
-    name: title,
-    description: description,
-    content: content,
-    order: order,
-  };
-
-  useEffect(() => {
-    // Agregar el script JSON-LD al <head> de la página
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.innerHTML = JSON.stringify(jsonLdData);
-    document.head.appendChild(script);
-
-    // Limpiar el script al desmontar el componente
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, [jsonLdData]);
-
-  const handleOrder = () => {
-    setOrder(title);
-  };
-
+const Dishes: FC<ComponentsDishes> = ({ title, isSelected, onClick }) => {
   return (
-    <section onClick={handleOrder} className={`grid ${className} m-4`}>
+    <section
+      onClick={onClick}
+      className={`grid h-[200px] w-[200px] ${
+        isSelected ? "bg-success" : "bg-neutral-300"
+      } text-2xl m-4`}
+    >
       <div className='flex m-auto'>
-        <p className='p-4 text-center'>{title}</p>
+        <p className='p-4 text-center font-secundary'>{title}</p>
       </div>
     </section>
   );

@@ -28,10 +28,13 @@ const config: Config = {
         "enabled-light": "#F4F4F4",
         gray: "#A8A8A8",
         "success-light": "#1BC200",
+        success: "#1EB706",
+        "success-dark": "#106D01",
         "blue-dark": "#204278",
         blue: "#0B9CDA",
         aqua: "#4084A2",
         danger: "#A4181C",
+        "danger-dark": "#701114",
       },
       fontFamily: {
         primary: ["'Jost'", "Arial", "sans-serif"],

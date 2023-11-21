@@ -1,19 +1,25 @@
 import { FC } from "react";
 import { SectionProps } from "../types/section.type";
 import { useRouter } from "next/router";
+import Image from "next/image";
+import { URL_BASE } from "@/utils/urls";
 
-const TypeComp: FC<SectionProps> = ({
+type TComp = {
+  onClick: () => void;
+};
+
+const TypeComp: FC<SectionProps & TComp> = ({
   className,
   title,
   description,
-  content,
+  image,
+  onClick,
 }) => {
-  const router = useRouter();
-  const handleNavigation = () => {
-    router.push(`/orders/dishes/${description}`);
-  };
   return (
-    <section onClick={handleNavigation} className={`grid ${className} m-4`}>
+    <section onClick={onClick} className={`grid ${className} m-4`}>
+      {image && (
+        <Image src={"/" + image} width={200} height={200} alt={image} />
+      )}
       <div className='m-auto'>
         <h1>{title}</h1>
       </div>
