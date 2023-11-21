@@ -37,15 +37,6 @@ const IndexComp = () => {
     }
   };
 
-  useEffect(() => {
-    const init = () => {
-      if (token) {
-        localStorage.removeItem("rest-token");
-      }
-    };
-    init();
-  }, [token]);
-
   return (
     <>
       <Head>
