@@ -1,10 +1,44 @@
+import { UsersTypesEnum } from "@/enums/users.types";
+import { loginService } from "@/services/auth";
 import Head from "next/head";
+import { useRouter } from "next/navigation";
+import { ChangeEvent, useEffect, useState } from "react";
 
 const IndexComp = () => {
-  const handleUser = (e: any) => {
+  const { push } = useRouter();
+  const [user, setUser] = useState("");
+  const [pass, setPass] = useState("");
+
+  const handleUser = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    console.log(e.data);
+    const usuario = e.target.value;
+    setUser(usuario);
   };
+
+  const handlePass = (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const password = e.target.value;
+    setPass(password);
+  };
+
+  const handleSend = async () => {
+    const login = await loginService(user, pass);
+    if (login) {
+      const token = login.token;
+      const tipo = login.type;
+      localStorage.setItem("rest-token", token);
+      if (tipo === UsersTypesEnum.MESERO) {
+        push("/orders/create");
+      } else if (tipo === UsersTypesEnum.ADMINISTRATOR) {
+        push("/admin/dishes");
+      }
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("rest-token");
+    console.log(token);
+  }, []);
 
   return (
     <>
@@ -17,7 +51,7 @@ const IndexComp = () => {
             <div className='flex justify-center'>
               <img src='./logo_con_fondo.png' alt='' className='w-44' />
             </div>
-            <form className='auth__form' onSubmit={handleUser}>
+            <div className='auth__form'>
               <ul>
                 <li className='grid my-2'>
                   <label className='name__label' htmlFor='name'>
@@ -29,6 +63,8 @@ const IndexComp = () => {
                     type='text'
                     name='name'
                     id='user_name'
+                    value={user}
+                    onChange={handleUser}
                   />
                 </li>
                 <li className='grid my-2'>
@@ -41,15 +77,21 @@ const IndexComp = () => {
                     type='password'
                     name='password'
                     id='user_password'
+                    value={pass}
+                    onChange={handlePass}
                   />
                 </li>
                 <li>
-                  <button className='rounded-full submit__btn' type='submit'>
+                  <button
+                    onClick={handleSend}
+                    className='rounded-full submit__btn'
+                    type='submit'
+                  >
                     Ingresar
                   </button>
                 </li>
               </ul>
-            </form>
+            </div>
           </div>
         </div>
       </section>
