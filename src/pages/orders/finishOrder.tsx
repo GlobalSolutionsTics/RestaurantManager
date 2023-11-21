@@ -1,12 +1,16 @@
 import { createOrder } from "@/services/order";
-import { IOrderSlice } from "@/store/slices/orders.slice";
+import { IOrderSlice, setOrderIdRedux } from "@/store/slices/orders.slice";
 import Image from "next/image";
-import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
 
 const FinishOrderPage = () => {
+  const { push } = useRouter();
   const orderStore: IOrderSlice = useSelector(
     (store: any) => store.ordersDishes,
   );
+  const dispatch = useDispatch();
+
   const handleSendOrder = async () => {
     const payload = {
       name: orderStore.name,
@@ -16,7 +20,8 @@ const FinishOrderPage = () => {
     };
     const create = await createOrder(payload);
     if (create) {
-      console.log("Creado!");
+      dispatch(setOrderIdRedux(create));
+      push("/orders/qrcodePage");
     } else {
       console.log("Con fallas");
     }

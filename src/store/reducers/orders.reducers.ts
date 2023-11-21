@@ -18,3 +18,10 @@ export const setDishesNumber = (
 ) => {
   state.dishes = action.payload;
 };
+
+export const setIdOrder = (
+  state: IOrderSlice,
+  action: PayloadAction<string>,
+) => {
+  state.id = action.payload;
+};

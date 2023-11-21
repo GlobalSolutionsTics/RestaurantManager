@@ -3,6 +3,7 @@ import {
   setTable as setTableNumber,
   setDishesDescription as setDishesDescAction,
   setDishesNumber as setDishesNumberAction,
+  setIdOrder as setIdOrderAction,
 } from "../reducers/orders.reducers";
 
 export interface IOrderSlice {
@@ -10,6 +11,7 @@ export interface IOrderSlice {
   tableNumber: number;
   dishes: number;
   dishesDescription: Array<any>;
+  id?: string;
 }
 
 const INITAL_STATE: IOrderSlice = {
@@ -17,6 +19,7 @@ const INITAL_STATE: IOrderSlice = {
   tableNumber: 0,
   dishes: 0,
   dishesDescription: [],
+  id: "",
 };
 
 const ordersSlice = createSlice({
@@ -27,6 +30,7 @@ const ordersSlice = createSlice({
     setTableOrder: setTableNumber,
     setDishesDescriptionRedux: setDishesDescAction,
     setDishesNumberRedux: setDishesNumberAction,
+    setOrderIdRedux: setIdOrderAction,
   },
 });
 
@@ -35,5 +39,6 @@ export const {
   setTableOrder,
   setDishesDescriptionRedux,
   setDishesNumberRedux,
+  setOrderIdRedux,
 } = ordersSlice.actions;
 export default ordersSlice.reducer;
