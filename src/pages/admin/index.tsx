@@ -9,8 +9,6 @@ const IndexComp = () => {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
 
-  const token = localStorage.getItem("rest-token");
-
   const handleUser = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const usuario = e.target.value;
@@ -36,6 +34,11 @@ const IndexComp = () => {
       }
     }
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("rest-token");
+    console.log(token);
+  }, []);
 
   return (
     <>
