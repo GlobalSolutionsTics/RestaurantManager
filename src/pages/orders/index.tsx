@@ -3,6 +3,7 @@ import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { onValue, ref } from "firebase/database";
+import { or } from "firebase/firestore";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -12,7 +13,15 @@ const HomeOrderPage = () => {
   const [orderSelected, setOrderSelected] = useState<any>({});
   const [uuidSelected, setUUIDSelected] = useState("");
   const [numberTable, setNumberTable] = useState("");
+  const [price, setPrice] = useState();
 
+  const sendPrices = async (uuid: string) => {
+    const find = orderDetail?.find((itm) => itm.uuid === uuid);
+    if (find) {
+      setPrice(find.price);
+      console.log(find.price);
+    }
+  };
   const findByUUID = (uuid: string) => {
     const find = orders.find((itm) => itm.uuid == uuid);
     if (find) {
@@ -94,6 +103,7 @@ const HomeOrderPage = () => {
                       Cantidad: {itm.number}
                     </div>
                   </div>
+                  <button onClick={() => sendPrices(itm.uuid)}>presiona</button>
                 </div>
               ))}
           </div>
