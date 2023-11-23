@@ -13,15 +13,24 @@ const HomeOrderPage = () => {
   const [orderSelected, setOrderSelected] = useState<any>({});
   const [uuidSelected, setUUIDSelected] = useState("");
   const [numberTable, setNumberTable] = useState("");
-  const [price, setPrice] = useState();
+  const [price, setPrice] = useState<any>({});
 
   const sendPrices = async (uuid: string) => {
     const find = orderDetail?.find((itm) => itm.uuid === uuid);
     if (find) {
+      setPrice({ price: find.name });
       setPrice(find.price);
-      console.log(find.price);
+      setPrice(find.number);
+      setPrice({
+        nameDish: find.name,
+        priceDish: find.price,
+        numberDishes: find.number,
+        priceDishes: find.price * find.number,
+      });
     }
   };
+  console.log(price);
+
   const findByUUID = (uuid: string) => {
     const find = orders.find((itm) => itm.uuid == uuid);
     if (find) {
