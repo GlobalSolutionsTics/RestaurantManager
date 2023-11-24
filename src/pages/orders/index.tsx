@@ -1,9 +1,10 @@
 import ListOptionComponent from "@/components/listOption/ListOption";
+import { createOrder } from "@/services/order";
+import { TOrderResponse } from "@/types/menu.types";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { onValue, ref } from "firebase/database";
-import { or } from "firebase/firestore";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -13,23 +14,27 @@ const HomeOrderPage = () => {
   const [orderSelected, setOrderSelected] = useState<any>({});
   const [uuidSelected, setUUIDSelected] = useState("");
   const [numberTable, setNumberTable] = useState("");
-  const [price, setPrice] = useState<any>({});
+  const [order, setOrder] = useState<any>({});
+  const [id, setId] = useState("");
 
-  const sendPrices = async (uuid: string) => {
+  const sendOrders = async (uuid: string) => {
     const find = orderDetail?.find((itm) => itm.uuid === uuid);
-    if (find) {
-      setPrice({ price: find.name });
-      setPrice(find.price);
-      setPrice(find.number);
-      setPrice({
-        nameDish: find.name,
-        priceDish: find.price,
-        numberDishes: find.number,
-        priceDishes: find.price * find.number,
-      });
+    const orderPayload: TOrderResponse = {
+      name: find.name,
+      price: find.price,
+      numberDishes: find.number,
+    };
+    setId(find.uuid);
+
+    const payload = {
+      collection: id,
+      order: orderPayload,
+    };
+    const orderObtained = await createOrder(payload);
+    if (orderObtained) {
+      setOrder(orderObtained);
     }
   };
-  console.log(price);
 
   const findByUUID = (uuid: string) => {
     const find = orders.find((itm) => itm.uuid == uuid);
@@ -112,7 +117,7 @@ const HomeOrderPage = () => {
                       Cantidad: {itm.number}
                     </div>
                   </div>
-                  <button onClick={() => sendPrices(itm.uuid)}>presiona</button>
+                  <button onClick={() => sendOrders(itm.uuid)}>presiona</button>
                 </div>
               ))}
           </div>

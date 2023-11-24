@@ -14,3 +14,9 @@ export type TMenu = {
   name: string;
   price: number;
 };
+
+export type TOrderResponse = {
+  name: string;
+  price: number;
+  numberDishes: number;
+};
