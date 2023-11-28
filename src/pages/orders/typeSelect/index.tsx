@@ -144,8 +144,8 @@ export default function typeSelector() {
 
   return (
     <>
-      <div className='relative'>
-        <p className='text-5xl font-primary h-[120px] grid content-center px-10 w-screen'>
+      <div className='relative overflow-auto'>
+        <p className='text-5xl font-primary h-[120px] grid content-center px-10 w-screen bg-neutral-300'>
           Seleccione un tipo de platillo
         </p>
         <button
@@ -164,56 +164,66 @@ export default function typeSelector() {
                 description={`${dishes.id}`}
                 content={`${dishes.image}`}
                 onClick={() => getDishesInfo(dishes)}
-                className={`h-[200px] w-[200px] bg-neutral-400 text-2xl p-2 text-center`}
+                className={`h-[200px] w-[200px] bg-neutral-300 text-2xl p-2 text-center`}
               />
             </div>
           ))}
         </div>
         {showItems && (
           <>
-            <div
-              className='absolute w-full h-full bg-black content-space top-0 right-0 opacity-40'
-              onClick={toggleMenu}
-            ></div>
-            <div className='fixed w-[90%] h-full bg-white top-0 right-0'>
-              <div className='w-full h-full bg-white top-0'>
-                <div className='relative font-normal h-[120px] grid content-center w-screen px-10 bg-neutral-300'>
-                  <Image src={"/" + imageItem} fill alt='' />
-                  <div className='absolute opacity-60 bg-black top-0 bottom-0 w-full'></div>
-                  <div className='absolute w-full top-0 bottom-0 flex flex-col py-4 px-6'>
-                    <p className='text-5xl text-white font-secondary'>
-                      {titleItems}
-                    </p>
-                    <p className='text-3xl text-white font-primary'>
-                      Seleccione sus platillos
-                    </p>
-                  </div>
-                </div>
-                <div className='w-full flex content-center items-center flex-wrap justify-center'>
-                  {dishesList.length > 0 ? (
-                    dishesList.map((dish) => (
-                      <Dishes
-                        key={dish.uuid}
-                        title={`${dish!.name}`}
-                        onClick={() => handleDishSelect(dish)}
-                        isSelected={
-                          dishesDescription.findIndex(
-                            (itm) => itm.uuid === dish.uuid,
-                          ) !== -1
-                        }
+            <div className='overflow-y-scroll'>
+              <div
+                className='absolute w-full h-full bg-black content-space top-0 right-0 opacity-40 '
+                onClick={toggleMenu}
+              ></div>
+              <div className='fixed w-[90%] h-full bg-white top-0 right-0'>
+                <div className='w-full h-full bg-white top-0'>
+                  <div className='relative font-normal h-[120px] grid content-center w-screen px-10 bg-neutral-300 overflow-hidden'>
+                    <div className='absolute grid place-content-center'>
+                      <Image
+                        src={"/" + imageItem}
+                        width={800}
+                        height={200}
+                        alt=''
+                        className=' flex items-center'
                       />
-                    ))
-                  ) : (
-                    <div>Sin platillo </div>
-                  )}
-                </div>
-                <div className='flex flex-row items-center justify-center m-4'>
-                  <button
-                    className=' bg-blue text-white font-primary text-[2rem] font-primary font-bold w-[250px]'
-                    onClick={toggleMenu}
-                  >
-                    Cerrar
-                  </button>
+                    </div>
+                    <div className='absolute opacity-60 bg-black top-0 bottom-0 w-full'></div>
+                    <div className='absolute w-full top-0 bottom-0 flex flex-col py-4 px-6'>
+                      <p className='text-5xl text-white font-secondary'>
+                        {titleItems}
+                      </p>
+                      <p className='text-3xl text-white font-primary'>
+                        Seleccione sus platillos
+                      </p>
+                    </div>
+                  </div>
+                  <div className='w-full flex content-center items-center flex-wrap justify-center'>
+                    {dishesList.length > 0 ? (
+                      dishesList.map((dish) => (
+                        <Dishes
+                          key={dish.uuid}
+                          title={`${dish!.name}`}
+                          onClick={() => handleDishSelect(dish)}
+                          isSelected={
+                            dishesDescription.findIndex(
+                              (itm) => itm.uuid === dish.uuid,
+                            ) !== -1
+                          }
+                        />
+                      ))
+                    ) : (
+                      <div>Sin platillo </div>
+                    )}
+                  </div>
+                  <div className='flex flex-row items-center justify-center m-4'>
+                    <button
+                      className=' bg-blue text-white font-primary text-[2rem] font-primary font-bold w-[250px]'
+                      onClick={toggleMenu}
+                    >
+                      Cerrar
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
