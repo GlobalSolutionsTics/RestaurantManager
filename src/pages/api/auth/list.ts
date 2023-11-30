@@ -18,7 +18,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
           });
         } else {
           const { data } = await listUsers();
-          res.status(201).send({ data });
+          res.status(200).send({ data });
         }
       });
     } else {
