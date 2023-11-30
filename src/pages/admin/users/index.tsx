@@ -28,6 +28,7 @@ import {
 import { Formik } from "formik";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import ProtectPage from "../components/protectPage";
 
 const MessageComponent = withReactContent(Swal);
 
@@ -255,7 +256,7 @@ const UsersAdministratorPage = () => {
   };
 
   return (
-    <>
+    <ProtectPage push={router.push}>
       <Head>
         <title>Administrador | Usuarios</title>
       </Head>
@@ -383,8 +384,8 @@ const UsersAdministratorPage = () => {
                     >
                       <MenuItem value='admin'>Administrador</MenuItem>
                       <MenuItem value='mesero'>Mesero</MenuItem>
-                      <MenuItem value='cocina_1'>Cocina 1</MenuItem>
-                      <MenuItem value='cocina_2'>Cocina 2</MenuItem>
+                      <MenuItem value='cocina'>Cocina</MenuItem>
+                      <MenuItem value='caja'>Caja</MenuItem>
                     </Select>
                   </FormControl>
                 </div>
@@ -534,7 +535,7 @@ const UsersAdministratorPage = () => {
           </div>
         </Box>
       </Modal>
-    </>
+    </ProtectPage>
   );
 };
 
