@@ -1,6 +1,8 @@
 export enum HttpMethodsEnum {
   GET = "GET",
   POST = "POST",
+  DELETE = "DELETE",
+  PUT = "PUT",
 }
 
 export enum HttpStatusEnum {
