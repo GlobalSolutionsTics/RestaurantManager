@@ -19,6 +19,9 @@ import MenuItem from "@mui/material/MenuItem";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import ListOptionComponent from "@/components/listOption/ListOption";
+import MenuAdmin from "../components/menu";
+import { useRouter } from "next/router";
+import Head from "next/head";
 
 const style = {
   position: "absolute" as "absolute",
@@ -47,6 +50,8 @@ const DishesAdminPage = () => {
   const [dishes, setDishes] = useState<Array<TMenuResponse>>([]);
 
   const [isOpenModalDish, setOpenModalDish] = useState(false);
+
+  const router = useRouter();
 
   const toggleModalDish = () => setOpenModalDish(!isOpenModalDish);
 
@@ -149,65 +154,73 @@ const DishesAdminPage = () => {
 
   return (
     <>
-      <div className='flex flex-row w-full h-[100vh] py-8'>
-        <div></div>
-        <div className='flex flex-row w-full h-full'>
-          <div className='flex flex-col basis-2/5 bg-enabled mr-8 ml-8'>
-            <div className='p-2 bg-blue h-[64px]'>
-              <h2 className='typography-primary text-white'>Categorías</h2>
-            </div>
-            <div className='flex flex-col overflow-x-hidden'>
-              {categories.length > 0 &&
-                categories.map((itm, index) => (
-                  <ListOptionComponent
-                    isSelected={idCategory === itm.id}
-                    key={"ind-" + index + "-" + itm}
-                    onClick={() => _hanldeChangeCategorieId(itm.id, itm.value)}
-                  >
-                    {itm.value}
-                  </ListOptionComponent>
-                ))}
-              <ListOptionComponent isDot onCreate={handleCreateCategory}>
-                Agregar
-              </ListOptionComponent>
-            </div>
-          </div>
-          <div className='flex flex-col overflow-x-hidden basis-3/5 bg-enabled mr-8'>
-            {titleCategory !== "" && (
-              <div className='h-norma w-full px-8 py-2 bg-aqua font-secondary font-bold text-white text-[2rem] uppercase'>
-                {titleCategory}
+      <Head>
+        <title>Administrador | Listado de platillos</title>
+      </Head>
+      <div className='flex flex-row'>
+        <MenuAdmin router={router} basePath={router.pathname} />
+        <div className='flex flex-row w-full h-[100vh] py-8'>
+          <div></div>
+          <div className='flex flex-row w-full h-full'>
+            <div className='flex flex-col basis-2/5 bg-enabled mr-8 ml-8'>
+              <div className='p-2 bg-blue h-[64px]'>
+                <h2 className='typography-primary text-white'>Categorías</h2>
               </div>
-            )}
-            {dishes.length > 0 ? (
-              <div className='grid grid-cols-3 gap-4 w-[408px] mt-8 ml-8'>
-                {dishes.map((itm, key) => (
+              <div className='flex flex-col overflow-x-hidden'>
+                {categories.length > 0 &&
+                  categories.map((itm, index) => (
+                    <ListOptionComponent
+                      isSelected={idCategory === itm.id}
+                      key={"ind-" + index + "-" + itm}
+                      onClick={() =>
+                        _hanldeChangeCategorieId(itm.id, itm.value)
+                      }
+                    >
+                      {itm.value}
+                    </ListOptionComponent>
+                  ))}
+                <ListOptionComponent isDot onCreate={handleCreateCategory}>
+                  Agregar
+                </ListOptionComponent>
+              </div>
+            </div>
+            <div className='flex flex-col overflow-x-hidden basis-3/5 bg-enabled mr-8'>
+              {titleCategory !== "" && (
+                <div className='h-norma w-full px-8 py-2 bg-aqua font-secondary font-bold text-white text-[2rem] uppercase'>
+                  {titleCategory}
+                </div>
+              )}
+              {dishes.length > 0 ? (
+                <div className='grid grid-cols-3 gap-4 w-[408px] mt-8 ml-8'>
+                  {dishes.map((itm, key) => (
+                    <button
+                      key={key}
+                      className='w-[120px] h-[120px] bg-blue text-white font-secondary font-bold p-4'
+                    >
+                      {itm.name}
+                    </button>
+                  ))}
                   <button
-                    key={key}
-                    className='w-[120px] h-[120px] bg-blue text-white font-secondary font-bold p-4'
+                    onClick={toggleModalDish}
+                    className='w-[120px] h-[120px] bg-white border-dashed border-2 border-blue text-blue p-4'
                   >
-                    {itm.name}
+                    Agregar
                   </button>
-                ))}
-                <button
-                  onClick={toggleModalDish}
-                  className='w-[120px] h-[120px] bg-white border-dashed border-2 border-blue text-blue p-4'
-                >
-                  Agregar
-                </button>
-              </div>
-            ) : (
-              <div className='mt-8 ml-8 flex flex-col items-center w-[408px]'>
-                <p className='typography-primary !text-[1rem]'>
-                  Aun no tienes platillos en esta categoría
-                </p>
-                <button
-                  onClick={toggleModalDish}
-                  className='w-[120px] h-[120px] bg-white border-dashed border-2 border-blue text-blue mt-8 p-4'
-                >
-                  Agregar
-                </button>
-              </div>
-            )}
+                </div>
+              ) : (
+                <div className='mt-8 ml-8 flex flex-col items-center w-[408px]'>
+                  <p className='typography-primary !text-[1rem]'>
+                    Aun no tienes platillos en esta categoría
+                  </p>
+                  <button
+                    onClick={toggleModalDish}
+                    className='w-[120px] h-[120px] bg-white border-dashed border-2 border-blue text-blue mt-8 p-4'
+                  >
+                    Agregar
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

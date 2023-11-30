@@ -5,6 +5,7 @@ import SectionComp from "@/components/section/Section";
 import { useState } from "react";
 import SaucerComp from "@/components/saucer/Saucer";
 import SaucerTable from "@/components/saucerTable/SaucerTable";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -1066,6 +1067,14 @@ export default function Home(id: string) {
               <p className='text-white text-center text-small'>
                 55-46-25-39-56
               </p>
+            </div>
+            <div className='py-2 flex justify-center'>
+              <Link
+                className='text-white text-center w-[150px]'
+                href={"/admin"}
+              >
+                Entrar al administrador
+              </Link>
             </div>
           </section>
           <section className='basis-full md:basis-1/2'>

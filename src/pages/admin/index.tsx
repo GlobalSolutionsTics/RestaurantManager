@@ -26,7 +26,7 @@ const IndexComp = () => {
     if (login) {
       const token = login.token;
       const tipo = login.type;
-      localStorage.setItem("rest-token", token);
+      sessionStorage.setItem("rest-token", token);
       if (tipo === UsersTypesEnum.MESERO) {
         push("/orders/create");
       } else if (tipo === UsersTypesEnum.ADMINISTRATOR) {
@@ -36,8 +36,13 @@ const IndexComp = () => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("rest-token");
-    console.log(token);
+    const init = () => {
+      const token = sessionStorage.getItem("rest-token");
+      if (token) {
+        push("/admin/dishes");
+      }
+    };
+    init();
   }, []);
 
   return (
