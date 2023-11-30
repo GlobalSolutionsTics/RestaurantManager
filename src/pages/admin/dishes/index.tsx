@@ -22,6 +22,7 @@ import ListOptionComponent from "@/components/listOption/ListOption";
 import MenuAdmin from "../components/menu";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import ProtectPage from "../components/protectPage";
 
 const style = {
   position: "absolute" as "absolute",
@@ -153,7 +154,7 @@ const DishesAdminPage = () => {
   }, []);
 
   return (
-    <>
+    <ProtectPage push={router.push}>
       <Head>
         <title>Administrador | Listado de platillos</title>
       </Head>
@@ -304,7 +305,7 @@ const DishesAdminPage = () => {
           </div>
         </Box>
       </Modal>
-    </>
+    </ProtectPage>
   );
 };
 
