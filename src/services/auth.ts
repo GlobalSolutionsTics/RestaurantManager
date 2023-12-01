@@ -18,6 +18,7 @@ export const loginService = async (user: string, pass: string) => {
       const { token, type } = await petition.json();
       return { token: token, type: type };
     }
+    return false;
   } catch (e: any) {
     return false;
   }

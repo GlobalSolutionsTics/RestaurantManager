@@ -1,3 +1,4 @@
+import { AddOutlined, ListAltOutlined } from "@mui/icons-material";
 import { useRouter } from "next/router";
 
 export default function createIndex() {
@@ -10,16 +11,16 @@ export default function createIndex() {
       <div className='grid h-screen'>
         <div className='m-auto grid p-10'>
           <div className='py-6'>
-            <button className='bg-neutral-400 w-[720px] h-[80px]'>
-              Mis ordenes
+            <button className='bg-neutral-400 w-[720px] h-[80px] font-primary text-[2rem] bg-blue text-white'>
+              <ListAltOutlined /> Mis ordenes
             </button>
           </div>
           <div className='py-6'>
             <button
               onClick={handleNavigation}
-              className='bg-neutral-400 w-[720px] h-[80px]'
+              className='bg-neutral-400 w-[720px] h-[80px] font-primary text-[2rem] bg-success-dark hover:bg-success text-white'
             >
-              Nueva Orden
+              <AddOutlined /> Nueva Orden
             </button>
           </div>
         </div>

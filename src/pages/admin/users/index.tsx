@@ -298,7 +298,7 @@ const UsersAdministratorPage = () => {
                 Acciones
               </div>
             </div>
-            {userList.length > 0 ? (
+            {userList?.length > 0 ? (
               userList.map((itm, ind) => (
                 <ColComponents
                   index={ind}
