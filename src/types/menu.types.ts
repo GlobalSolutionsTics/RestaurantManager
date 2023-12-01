@@ -14,3 +14,11 @@ export type TMenu = {
   name: string;
   price: number;
 };
+
+export type TResponseOrders = {
+  name: string;
+  dishes: number;
+  uuid: string;
+  tableNumber: number;
+  dishesDescription: Array<TMenuResponse & { number: number }>;
+};

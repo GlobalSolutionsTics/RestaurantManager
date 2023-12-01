@@ -144,7 +144,7 @@ export default function typeSelector() {
 
   return (
     <>
-      <div className='relative'>
+      <div className='relative overflow-x-hidden'>
         <p className='text-5xl font-primary h-[120px] grid content-center px-10 w-screen'>
           Seleccione un tipo de platillo
         </p>
@@ -172,16 +172,16 @@ export default function typeSelector() {
         {showItems && (
           <>
             <div
-              className='absolute w-full h-full bg-black content-space top-0 right-0 opacity-40'
+              className='fixed w-full h-full bg-black content-space top-0 right-0 opacity-40'
               onClick={toggleMenu}
             ></div>
-            <div className='fixed w-[90%] h-full bg-white top-0 right-0'>
+            <div className='fixed w-[90%] h-full bg-white top-0 right-0 overflow-y-auto overflow-x-hidden'>
               <div className='w-full h-full bg-white top-0'>
                 <div className='relative font-normal h-[120px] grid content-center w-screen px-10 bg-neutral-300'>
                   <Image src={"/" + imageItem} fill alt='' />
                   <div className='absolute opacity-60 bg-black top-0 bottom-0 w-full'></div>
                   <div className='absolute w-full top-0 bottom-0 flex flex-col py-4 px-6'>
-                    <p className='text-5xl text-white font-secondary'>
+                    <p className='text-2xl md:text-3xl lg:text-5xl text-white font-secondary'>
                       {titleItems}
                     </p>
                     <p className='text-3xl text-white font-primary'>
@@ -189,7 +189,7 @@ export default function typeSelector() {
                     </p>
                   </div>
                 </div>
-                <div className='w-full flex content-center items-center flex-wrap justify-center'>
+                <div className='w-full grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4'>
                   {dishesList.length > 0 ? (
                     dishesList.map((dish) => (
                       <Dishes

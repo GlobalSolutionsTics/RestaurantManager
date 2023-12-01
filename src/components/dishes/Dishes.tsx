@@ -10,7 +10,7 @@ const Dishes: FC<ComponentsDishes> = ({ title, isSelected, onClick }) => {
   return (
     <section
       onClick={onClick}
-      className={`grid h-[200px] w-[200px] ${
+      className={`grid h-[180px] w-[180px] md:h-[200px] md:w-[200px] ${
         isSelected ? "bg-success" : "bg-neutral-300"
       } text-2xl m-4`}
     >
