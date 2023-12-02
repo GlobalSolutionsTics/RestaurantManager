@@ -15,6 +15,7 @@ const HomeOrderPage = () => {
 
   const findByUUID = (uuid: string) => {
     const find = orders.find((itm) => itm.uuid == uuid);
+    console.log(find.waiter);
     if (find) {
       setOrderDetail(find.dishesDescription);
       setUUIDSelected(uuid);

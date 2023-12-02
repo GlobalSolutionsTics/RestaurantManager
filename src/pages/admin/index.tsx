@@ -1,10 +1,13 @@
 import { UsersTypesEnum } from "@/enums/users.types";
 import { loginService } from "@/services/auth";
+import { setIdWaiterRedux } from "@/store/slices/orders.slice";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const IndexComp = () => {
+  const dispatch = useDispatch();
   const { push } = useRouter();
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
@@ -28,6 +31,7 @@ const IndexComp = () => {
       const tipo = login.type;
       sessionStorage.setItem("rest-token", token);
       if (tipo === UsersTypesEnum.MESERO) {
+        dispatch(setIdWaiterRedux(user));
         push("/orders/create");
       } else if (tipo === UsersTypesEnum.ADMINISTRATOR) {
         push("/admin/dishes");

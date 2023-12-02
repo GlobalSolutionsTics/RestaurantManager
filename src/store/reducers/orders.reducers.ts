@@ -25,3 +25,10 @@ export const setIdOrder = (
 ) => {
   state.id = action.payload;
 };
+
+export const setIdWaiter = (
+  state: IOrderSlice,
+  action: PayloadAction<string>,
+) => {
+  state.waiter = action.payload;
+};
