@@ -53,7 +53,7 @@ export default function tableSelector() {
               <div key={index}>
                 <button
                   onClick={() => handleNavigation(Number(index + 1))}
-                  className='bg-neutral-400 text-2xl font-secondary w-[200px] h-[200px]'
+                  className='bg-neutral-400 text-2xl font-secondary w-[150px] h-[150px]'
                 >
                   Mesa {index + 1}
                 </button>

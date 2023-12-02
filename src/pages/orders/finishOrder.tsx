@@ -2,9 +2,12 @@ import { createOrder } from "@/services/order";
 import { IOrderSlice, setOrderIdRedux } from "@/store/slices/orders.slice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const FinishOrderPage = () => {
+  const [loading, setLoading] = useState(false);
+
   const { push } = useRouter();
   const orderStore: IOrderSlice = useSelector(
     (store: any) => store.ordersDishes,
@@ -13,6 +16,7 @@ const FinishOrderPage = () => {
   const userStore = useSelector((store: any) => store.user);
 
   const handleSendOrder = async () => {
+    setLoading(true);
     const payload = {
       name: orderStore.name,
       dishes: orderStore.dishes,
@@ -27,6 +31,7 @@ const FinishOrderPage = () => {
     } else {
       console.log("Con fallas");
     }
+    setLoading(false);
   };
   return (
     <>
@@ -36,10 +41,10 @@ const FinishOrderPage = () => {
             <Image src={"/platillos/otros.jpg"} fill alt='' />
             <div className='absolute opacity-60 bg-black top-0 bottom-0 w-full'></div>
             <div className='absolute w-full top-0 bottom-0 flex flex-col py-4 px-6'>
-              <p className='text-5xl text-white font-secondary'>
+              <p className='text-[2rem] text-white font-secondary'>
                 Finalizar orden
               </p>
-              <p className='text-3xl text-white font-primary'>
+              <p className='text-[1.5rem] text-white font-primary'>
                 Numero de platillos en la orden: {orderStore.dishes}
               </p>
             </div>
@@ -47,22 +52,29 @@ const FinishOrderPage = () => {
         </div>
         <div className='w-full'>
           <div className='flex flex-col flex-start mx-8 my-4'>
-            <span className='text-primary text-[2rem] mb-2'>
+            <span className='font-primary text-[2rem] mb-2'>
               ¿Cuantos platillos van en la orden?
             </span>
             {orderStore.dishesDescription.map((itm) => (
-              <div className='w-full my-4 bg-enabled py-4 px-2'>
-                <span className='text-secondary text-[1.5rem]'>{itm.name}</span>
+              <div className='w-full flex justify-between my-4 bg-enabled py-4 px-2'>
+                <div className='text-secondary text-[1.5rem]'>{itm.name}</div>
+                <div>{itm.number}</div>
               </div>
             ))}
           </div>
         </div>
-        <button
-          className='text-[2rem] p-4 text-center w-full bg-success fixed bottom-0 text-white font-primary font-bold'
-          onClick={handleSendOrder}
-        >
-          Enviar orden
-        </button>
+        {loading ? (
+          <div className='flex items-center fixed bottom-0 p-4 text-[1.5rem]'>
+            <span className='loader mr-4'></span> Enviando orden
+          </div>
+        ) : (
+          <button
+            className='text-[2rem] p-4 text-center w-full bg-success fixed bottom-0 text-white font-primary font-bold'
+            onClick={handleSendOrder}
+          >
+            Enviar orden
+          </button>
+        )}
       </div>
     </>
   );
