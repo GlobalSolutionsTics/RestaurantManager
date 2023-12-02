@@ -38,6 +38,7 @@ const OrdersPage = () => {
     dishes: 0,
     tableNumber: 0,
     dishesDescription: [],
+    status: "",
   });
   //Modal controller
   const [showModalPrint, setShowModalPrint] = useState(false);
@@ -62,6 +63,7 @@ const OrdersPage = () => {
         dishes: 0,
         tableNumber: 0,
         dishesDescription: [],
+        status: "",
       });
       setShowModalPrint(false);
     } else {
