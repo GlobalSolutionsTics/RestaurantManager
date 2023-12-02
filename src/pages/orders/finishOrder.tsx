@@ -10,6 +10,7 @@ const FinishOrderPage = () => {
     (store: any) => store.ordersDishes,
   );
   const dispatch = useDispatch();
+  const userStore = useSelector((store: any) => store.user);
 
   const handleSendOrder = async () => {
     const payload = {
@@ -17,6 +18,7 @@ const FinishOrderPage = () => {
       dishes: orderStore.dishes,
       tableNumber: orderStore.tableNumber,
       dishesDescription: orderStore.dishesDescription,
+      waiter: userStore.uuid,
     };
     const create = await createOrder(payload);
     if (create) {

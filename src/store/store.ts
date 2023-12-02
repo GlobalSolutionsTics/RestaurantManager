@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import counterReducer from "./slices/counterSlice";
-import ordersSlice from "./slices/orders.slice";
+import ordersReducer from "./slices/orders.slice";
+import userReducer from "./slices/user.slice";
 interface RootState {
   counter: number;
 }
@@ -8,7 +9,8 @@ interface RootState {
 const store = configureStore({
   reducer: {
     counter: counterReducer,
-    ordersDishes: ordersSlice,
+    ordersDishes: ordersReducer,
+    user: userReducer,
   },
 });
 

@@ -21,4 +21,5 @@ export type TResponseOrders = {
   uuid: string;
   tableNumber: number;
   dishesDescription: Array<TMenuResponse & { number: number }>;
+  status: string;
 };

@@ -33,8 +33,12 @@ const config: Config = {
         "blue-dark": "#204278",
         blue: "#0B9CDA",
         aqua: "#4084A2",
+        "danger-light": "#FD3F45",
         danger: "#A4181C",
         "danger-dark": "#701114",
+        "waiting-light": "#FFFD70",
+        waiting: "#EFEC00",
+        "waiting-dark": "#C1BF15",
       },
       fontFamily: {
         primary: ["'Jost'", "Arial", "sans-serif"],

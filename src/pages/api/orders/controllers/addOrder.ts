@@ -2,6 +2,7 @@ import { realtimeDB } from "@firebase/config";
 import { child, get, getDatabase, ref, set } from "firebase/database";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { getAuth, signInAnonymously } from "firebase/auth";
+import { StatusEnum } from "@/enums/states.enum";
 
 const addOrder = async (
   name: string,
@@ -9,6 +10,7 @@ const addOrder = async (
   uuid: string,
   tableNumber: number,
   dishesDescription: Array<any>,
+  waiter: string,
 ) => {
   try {
     let preId = 0;
@@ -28,6 +30,8 @@ const addOrder = async (
         orderId: preId + 1,
         uuid: uuid,
         tableNumber: tableNumber,
+        status: StatusEnum.SEND,
+        waiter,
       });
     } else {
       set(ref(realtimeDB, RT_ORDER_TABLE_NAME + "/" + uuid), {
@@ -37,6 +41,8 @@ const addOrder = async (
         orderId: preId + 1,
         uuid: uuid,
         tableNumber: tableNumber,
+        status: StatusEnum.SEND,
+        waiter,
       });
     }
 

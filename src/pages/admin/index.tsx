@@ -7,6 +7,8 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { OpenInFull } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
+import { IUserRedux, saveUserInRedux } from "@/store/slices/user.slice";
 
 const MessageComponent = withReactContent(Swal);
 
@@ -17,6 +19,8 @@ const IndexComp = () => {
   const [loading, setLoading] = useState(false);
 
   const handleFullscreen = useFullScreenHandle();
+  //Redux controller
+  const dispatch = useDispatch();
 
   //Funcion para mostrar mensajes
   const showMessage = (
@@ -56,11 +60,24 @@ const IndexComp = () => {
     if (login) {
       const token = login.token;
       const tipo = login.type;
+      //Token validation
+      const separate = token.split(".");
+      const information = separate[1];
+      const decodeInfo: IUserRedux = JSON.parse(atob(information));
+      const payloadUser: IUserRedux = {
+        name: decodeInfo.name,
+        type: decodeInfo.type,
+        uuid: decodeInfo.uuid,
+      };
+      dispatch(saveUserInRedux(payloadUser));
       sessionStorage.setItem("rest-token", token);
+
       if (tipo === UsersTypesEnum.MESERO) {
         push("/orders/create");
       } else if (tipo === UsersTypesEnum.ADMINISTRATOR) {
         push("/admin/dishes");
+      } else if (tipo === UsersTypesEnum.COCINERO) {
+        push("/orders");
       }
     } else {
       showMessage(

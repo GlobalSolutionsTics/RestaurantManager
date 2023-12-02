@@ -1,3 +1,4 @@
+import ProtectPage from "@/pages/admin/components/protectPage";
 import { listConfigurationService } from "@/services/config";
 import { setTableOrder } from "@/store/slices/orders.slice";
 import { TConifg } from "@/types/configuration.types";
@@ -36,7 +37,7 @@ export default function tableSelector() {
   }, []);
 
   return (
-    <>
+    <ProtectPage push={router.push}>
       <div className='w-full p-8'>
         <p className='h-10 font-medium font-primary font-bold text-[1.5rem]'>
           ¿Que mesa atenderá?
@@ -61,6 +62,6 @@ export default function tableSelector() {
           </div>
         )}
       </div>
-    </>
+    </ProtectPage>
   );
 }
