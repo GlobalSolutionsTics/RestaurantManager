@@ -10,10 +10,16 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
 const CheckPages = () => {
-  const [orderDetail, setOrderDetail] = useState<TResponseOrders>();
+  const [orderDetail, setOrderDetail] = useState<TResponseOrders>({
+    name: "",
+    status: "",
+    dishes: 0,
+    dishesDescription: [],
+    uuid: "",
+    tableNumber: 0,
+  });
 
   const router = useRouter();
-  const paramId = router.query.id;
 
   //Handlers
   const getTitle = () => {
@@ -32,6 +38,7 @@ const CheckPages = () => {
   //Carga inicial
 
   const getOrders = useCallback(async () => {
+    const paramId = router.query.id;
     const auth = getAuth();
     await signInAnonymously(auth);
     const connection = ref(realtimeDB, RT_ORDER_TABLE_NAME + "/" + paramId);
@@ -41,11 +48,11 @@ const CheckPages = () => {
         setOrderDetail(data);
       }
     });
-  }, []);
+  }, [router.query.id]);
 
   useEffect(() => {
     getOrders();
-  }, []);
+  }, [router.query.id]);
 
   return (
     <>
@@ -65,9 +72,12 @@ const CheckPages = () => {
         itemScope
         className='wood-font p-4 mid flex justify-center items-center min-h-[calc(100vh_-_96px)] w-full'
       >
-        <div className='bg-white rounded-lg w-[70%]'>
-          <p className='text-center font-primary text-[3rem] text-bold'>
+        <div className='bg-white rounded-lg w-[90%] md:w-[80%] lg:w-[70%] p-4'>
+          <p className='text-center font-primary text-[1.5rem] md:text-[2rem] lg:text-[2.5rem] text-bold'>
             {getTitle()}
+          </p>
+          <p className='font-secondary mt-4'>
+            Estatus del pedido: {orderDetail?.status}
           </p>
         </div>
       </div>
