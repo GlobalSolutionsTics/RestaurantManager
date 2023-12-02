@@ -16,12 +16,11 @@ const TypeComp: FC<SectionProps & TComp> = ({
   onClick,
 }) => {
   return (
-    <section onClick={onClick} className={`grid ${className} m-4`}>
-      {image && (
-        <Image src={"/" + image} width={200} height={200} alt={image} />
-      )}
-      <div className='m-auto'>
-        <h1>{title}</h1>
+    <section onClick={onClick} className={`relative grid ${className} m-4`}>
+      {image && <Image src={"/" + image} alt={image} layout='fill' />}
+      <div className='absolute top-0 bottom-o bg-black z-10 content-space w-full h-full opacity-60'></div>
+      <div className='m-auto absoulte w-full h-full z-20 font-primary text-white'>
+        {title}
       </div>
     </section>
   );

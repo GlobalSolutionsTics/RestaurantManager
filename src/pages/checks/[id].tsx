@@ -24,9 +24,9 @@ const CheckPages = () => {
   //Handlers
   const getTitle = () => {
     switch (orderDetail?.status) {
-      case StatusEnum.IN_PROGRESS:
-        return "Tu pedido se ha enviado";
       case StatusEnum.SEND:
+        return "Tu pedido se ha enviado";
+      case StatusEnum.IN_PROGRESS:
         return "El chef está preparando tu pedido";
       case StatusEnum.ORDER_READY:
         return "Preparate, tu orden está lista";
