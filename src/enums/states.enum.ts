@@ -1,0 +1,6 @@
+export enum StatusEnum {
+  CREATED = "ORDEN CREADA",
+  SEND = "ORDEN ENVIADA",
+  IN_PROGRESS = "ORDEN EN PROGRESO",
+  ORDER_READY = "ORDEN LISTA",
+}

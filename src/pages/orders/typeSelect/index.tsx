@@ -1,5 +1,6 @@
 import Dishes from "@/components/dishes/Dishes";
 import TypeComp from "@/components/typeSelector/TypeComponent";
+import ProtectPage from "@/pages/admin/components/protectPage";
 import { getCategories, getDishService } from "@/services/dishes";
 import {
   setDishesDescriptionRedux,
@@ -143,7 +144,7 @@ export default function typeSelector() {
   }, []);
 
   return (
-    <>
+    <ProtectPage push={router.push}>
       <div className='relative overflow-x-hidden'>
         <p className='text-5xl font-primary h-[120px] grid content-center px-10 w-screen'>
           Seleccione un tipo de platillo
@@ -253,6 +254,6 @@ export default function typeSelector() {
           </div>
         </Box>
       </Modal>
-    </>
+    </ProtectPage>
   );
 }
