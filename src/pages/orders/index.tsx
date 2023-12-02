@@ -20,14 +20,14 @@ import { TResponseOrders } from "@/types/menu.types";
 import { useRouter } from "next/router";
 import ProtectPage from "../admin/components/protectPage";
 import { StatusEnum } from "@/enums/states.enum";
+import Head from "next/head";
+import { updateOrderService } from "@/services/order";
 
 const HomeOrderPage = () => {
   const [orders, setOrders] = useState<Array<TResponseOrders>>([]);
-  const [uuidSelect, setUUIDSelect] = useState("");
 
   const [orderDetail, setOrderDetail] = useState<Array<any> | null>(null);
   const [orderSelected, setOrderSelected] = useState<any>({});
-  const [uuidSelected, setUUIDSelected] = useState("");
   const [numberTable, setNumberTable] = useState("");
 
   //router controller
@@ -64,38 +64,60 @@ const HomeOrderPage = () => {
     router.push("/admin");
   }, []);
 
-  const hanndleStartPetition = async (uuid: string) => {
-    setUUIDSelect(uuid);
+  const hanndleStartPetition = async (order: TResponseOrders) => {
+    let nextStatus = null;
+    if (order.status === StatusEnum.SEND) {
+      nextStatus = StatusEnum.IN_PROGRESS;
+    } else if (order.status === StatusEnum.IN_PROGRESS) {
+      nextStatus = StatusEnum.ORDER_READY;
+    }
+
+    //Send a next status
+    if (nextStatus !== null) {
+      const token = sessionStorage.getItem("rest-token");
+      if (token) {
+        const update = await updateOrderService(token, order.uuid, nextStatus);
+        if (!update) {
+          console.error("Error al hacer el update");
+        }
+      }
+    }
   };
 
   //Color controller
-  const getColorForHeader = (uuid: string, status: string) => {
-    if (uuid === uuidSelect && status === StatusEnum.SEND) {
+  const getColorForHeader = (status: string) => {
+    if (status === StatusEnum.IN_PROGRESS) {
       return "bg-waiting-dark text-dark";
+    } else if (status === StatusEnum.ORDER_READY) {
+      return "bg-success-dark text-white";
     }
 
     return "bg-danger-dark text-white";
   };
 
-  const getColorButton = (uuid: string, status: string) => {
-    if (uuid === uuidSelect && status === StatusEnum.SEND) {
+  const getColorButton = (status: string) => {
+    if (status === StatusEnum.IN_PROGRESS) {
       return "bg-waiting-dark hover:bg-waiting-dark hover:text-dark";
+    } else if (status === StatusEnum.ORDER_READY) {
+      return "bg-success-dark text-white hidden";
     }
 
-    return "bg-success hover:bg-success-dark hover:text-white";
+    return "bg-danger hover:bg-danger-dark text-white";
   };
 
   //Icon and text controller
-  const getIconHeader = (uuid: string, status: string) => {
-    if (uuid === uuidSelect && status === StatusEnum.SEND) {
+  const getIconHeader = (status: string) => {
+    if (status === StatusEnum.IN_PROGRESS) {
       return <HourglassFull className='animate-spin' />;
+    } else if (status === StatusEnum.ORDER_READY) {
+      return <CheckCircle />;
     }
 
     return <Timer className='animate-pulse' />;
   };
 
-  const getIconButton = (uuid: string, status: string) => {
-    if (uuid === uuidSelect && status === StatusEnum.SEND) {
+  const getIconButton = (status: string) => {
+    if (status === StatusEnum.IN_PROGRESS) {
       return (
         <>
           <Notifications /> Terminar Orden
@@ -117,6 +139,9 @@ const HomeOrderPage = () => {
   return (
     <FullScreen handle={handleFullscreen}>
       <ProtectPage push={router.push}>
+        <Head>
+          <title>Comandas activas</title>
+        </Head>
         <div className='flex flex-col flex-start w-full h-[100vh]'>
           <div className='flex flex-row justify-between w-full bg-blue-dark h-[3.5rem]'>
             <div className='text-white p-4 text-[1rem] font-primary'>
@@ -131,18 +156,17 @@ const HomeOrderPage = () => {
               </button>
             </div>
           </div>
-          <div className='bg-black h-autp min-h-[calc(100vh_-_3.5rem)] p-6 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-5 lg:gap-5 overflow-y-auto overflow-x-hidden'>
+          <div className='bg-black h-autp min-h-[calc(100vh_-_3.5rem)] p-6 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4 overflow-y-auto overflow-x-hidden'>
             {orders.length > 0 &&
               orders.map((itm) => (
                 <div key={itm.uuid} className='min-h-[400px] rounded-lg mb-4'>
                   <div
                     className={`transition ease-in-out delay-150 ${getColorForHeader(
-                      itm.uuid,
                       itm.status,
-                    )} text-[1.5rem] font-primary w-full rounded-t-lg p-4`}
+                    )} text-[1.5rem] font-secondary w-full rounded-t-lg p-4`}
                   >
-                    {getIconHeader(itm.uuid, itm.status)} Mesa {itm.tableNumber}
-                    <p className='font-primary text-[1rem]'>
+                    {getIconHeader(itm.status)} Mesa {itm.tableNumber}
+                    <p className='font-secondary text-[1rem]'>
                       Estatus:{" "}
                       {itm.status === StatusEnum.SEND
                         ? "PENDIENTE"
@@ -175,14 +199,12 @@ const HomeOrderPage = () => {
                     </div>
                     <div className='p-4 w-full'>
                       <button
-                        onClick={() => hanndleStartPetition(itm.uuid)}
+                        onClick={() => hanndleStartPetition(itm)}
                         className={`p-2 w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
-                          itm.uuid,
                           itm.status,
                         )} disabled:bg-gray`}
-                        disabled={itm.uuid !== uuidSelect && uuidSelect !== ""}
                       >
-                        {getIconButton(itm.uuid, itm.status)}
+                        {getIconButton(itm.status)}
                       </button>
                     </div>
                   </div>
