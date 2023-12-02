@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import { OpenInFull } from "@mui/icons-material";
 
 const MessageComponent = withReactContent(Swal);
 
@@ -13,6 +15,8 @@ const IndexComp = () => {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleFullscreen = useFullScreenHandle();
 
   //Funcion para mostrar mensajes
   const showMessage = (
@@ -69,12 +73,24 @@ const IndexComp = () => {
     setLoading(false);
   };
 
+  //Cargas iniciales
+
+  const sentFullscreen = async () => {
+    await handleFullscreen.enter();
+  };
+
   return (
-    <>
+    <FullScreen handle={handleFullscreen}>
       <Head>
         <title>Inicio</title>
       </Head>
       <section>
+        <button
+          onClick={sentFullscreen}
+          className='absolute w-[200px] p-4 text-white'
+        >
+          <OpenInFull /> Pantalla completa
+        </button>
         <div className='saucer__font'>
           <div className='container__auth'>
             <div className='flex justify-center'>
@@ -130,7 +146,7 @@ const IndexComp = () => {
           </div>
         </div>
       </section>
-    </>
+    </FullScreen>
   );
 };
 
