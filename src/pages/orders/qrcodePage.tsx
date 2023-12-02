@@ -13,7 +13,7 @@ const QrCodePage = () => {
   );
   const dispatch = useDispatch();
 
-  const url = `${process.env.NEXT_PUBLIC_URL_SERVICES}/orders/checks/${orderStore.id}`;
+  const url = `${process.env.NEXT_PUBLIC_URL_SERVICES}/checks/${orderStore.id}`;
 
   const handleFinishOrder = () => {
     dispatch(resetOrderRedux());

@@ -5,12 +5,10 @@ import { RT_ORDER_TABLE_NAME } from "@models/names";
 import {
   CheckCircle,
   Checklist,
-  CloseOutlined,
   HourglassFull,
   KeyboardArrowRight,
   Notifications,
   OpenInFull,
-  PowerOff,
   PowerSettingsNew,
   Timer,
 } from "@mui/icons-material";
@@ -25,6 +23,7 @@ import { updateOrderService } from "@/services/order";
 
 const HomeOrderPage = () => {
   const [orders, setOrders] = useState<Array<TResponseOrders>>([]);
+  const [loading, setLoading] = useState(false);
 
   const [orderDetail, setOrderDetail] = useState<Array<any> | null>(null);
   const [orderSelected, setOrderSelected] = useState<any>({});
@@ -46,7 +45,10 @@ const HomeOrderPage = () => {
         const elements = Object.values(data).sort(
           (a: any, b: any) => a.orderId - b.orderId,
         );
-        setOrders(elements);
+        const filterElements = elements.filter(
+          (itm) => itm.status !== StatusEnum.ORDER_READY,
+        );
+        setOrders(filterElements);
       }
     });
   }, []);
@@ -76,10 +78,12 @@ const HomeOrderPage = () => {
     if (nextStatus !== null) {
       const token = sessionStorage.getItem("rest-token");
       if (token) {
+        setLoading(true);
         const update = await updateOrderService(token, order.uuid, nextStatus);
         if (!update) {
           console.error("Error al hacer el update");
         }
+        setLoading(false);
       }
     }
   };
@@ -198,14 +202,21 @@ const HomeOrderPage = () => {
                       ))}
                     </div>
                     <div className='p-4 w-full'>
-                      <button
-                        onClick={() => hanndleStartPetition(itm)}
-                        className={`p-2 w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
-                          itm.status,
-                        )} disabled:bg-gray`}
-                      >
-                        {getIconButton(itm.status)}
-                      </button>
+                      {loading ? (
+                        <div className='flex items-center'>
+                          <span className='loader mr-4'></span> Guardando
+                          información
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => hanndleStartPetition(itm)}
+                          className={`p-2 w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
+                            itm.status,
+                          )} disabled:bg-gray`}
+                        >
+                          {getIconButton(itm.status)}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
