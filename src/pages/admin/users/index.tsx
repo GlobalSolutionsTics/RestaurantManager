@@ -29,6 +29,7 @@ import { Formik } from "formik";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import ProtectPage from "../components/protectPage";
+import { TOKEN_ID } from "@/utils/strings";
 
 const MessageComponent = withReactContent(Swal);
 
@@ -150,7 +151,7 @@ const UsersAdministratorPage = () => {
    */
   //List of users
   const getUsersList = async () => {
-    const token = sessionStorage.getItem("rest-token");
+    const token = sessionStorage.getItem(TOKEN_ID);
     if (token) {
       const users = await listUserSerive(token);
       setUserList(users);
@@ -160,7 +161,7 @@ const UsersAdministratorPage = () => {
   //Handle function to create user
   const handleSubmitAddModal = async (user: any) => {
     setIsLoading(true);
-    const token = sessionStorage.getItem("rest-token");
+    const token = sessionStorage.getItem(TOKEN_ID);
     if (token) {
       const create = await createUserService(user, token);
       if (create) {
@@ -181,7 +182,7 @@ const UsersAdministratorPage = () => {
   //Funtion to edit user
   const onEditSubmit = async (user: any) => {
     setIsLoading(true);
-    const token = sessionStorage.getItem("rest-token");
+    const token = sessionStorage.getItem(TOKEN_ID);
     if (token) {
       const update = await updateUserService(user, token);
       if (update) {
@@ -205,7 +206,7 @@ const UsersAdministratorPage = () => {
   //Function delete user
   const onDelete = async () => {
     setIsLoading(true);
-    const token = sessionStorage.getItem("rest-token");
+    const token = sessionStorage.getItem(TOKEN_ID);
     if (token) {
       const isDeleted = await deleteUserService(deleteUUID, token);
       if (isDeleted) {

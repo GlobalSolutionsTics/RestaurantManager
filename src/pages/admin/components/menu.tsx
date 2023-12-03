@@ -1,3 +1,4 @@
+import { TOKEN_ID } from "@/utils/strings";
 import {
   FilterFramesOutlined,
   KitchenOutlined,
@@ -39,7 +40,7 @@ const MenuAdmin = ({ basePath, router }: Props) => {
     if (!router.isReady) {
       return;
     }
-    sessionStorage.removeItem("rest-token");
+    sessionStorage.removeItem(TOKEN_ID);
     router.push("/admin");
   }, []);
   return (

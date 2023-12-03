@@ -22,4 +22,5 @@ export type TResponseOrders = {
   tableNumber: number;
   dishesDescription: Array<TMenuResponse & { number: number }>;
   status: string;
+  waiter?: string;
 };
