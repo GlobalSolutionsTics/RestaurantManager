@@ -13,7 +13,7 @@ const QrCodePage = () => {
   );
   const dispatch = useDispatch();
 
-  const url = `${process.env.NEXT_PUBLIC_URL_SERVICES}/orders/checks/${orderStore.id}`;
+  const url = `${process.env.NEXT_PUBLIC_URL_SERVICES}checks/${orderStore.id}`;
 
   const handleFinishOrder = () => {
     dispatch(resetOrderRedux());
@@ -26,7 +26,7 @@ const QrCodePage = () => {
         Escaneé el siguiente QR para verificar el estado de su orden
       </div>
       <div className='flex flex-col justify-center items-center p-8 h-[80vh]'>
-        <QRCode size={512} value={url} />
+        <QRCode size={350} value={url} />
       </div>
       <div className='p-4'>
         <p className='text-secondary font-bold text-[1.5rem]'>

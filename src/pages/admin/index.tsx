@@ -4,14 +4,45 @@ import { setIdWaiterRedux } from "@/store/slices/orders.slice";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import { OpenInFull } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
+import { IUserRedux, saveUserInRedux } from "@/store/slices/user.slice";
+
+const MessageComponent = withReactContent(Swal);
 
 const IndexComp = () => {
-  const dispatch = useDispatch();
   const { push } = useRouter();
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  const handleFullscreen = useFullScreenHandle();
+  //Redux controller
+  const dispatch = useDispatch();
+
+  //Funcion para mostrar mensajes
+  const showMessage = (
+    title: string,
+    description: string,
+    okText?: string,
+    icon?: "error" | "success",
+  ) => {
+    MessageComponent.fire({
+      icon: icon || "success",
+      title: title,
+      text: description,
+      timer: 1500,
+      confirmButtonText: okText,
+      showConfirmButton: false,
+      showLoaderOnConfirm: false,
+      showLoaderOnDeny: false,
+    });
+  };
+
+  //Handler functions
   const handleUser = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const usuario = e.target.value;
@@ -25,36 +56,60 @@ const IndexComp = () => {
   };
 
   const handleSend = async () => {
+    setLoading(true);
     const login = await loginService(user, pass);
     if (login) {
       const token = login.token;
       const tipo = login.type;
+      //Token validation
+      const separate = token.split(".");
+      const information = separate[1];
+      const decodeInfo: IUserRedux = JSON.parse(atob(information));
+      const payloadUser: IUserRedux = {
+        name: decodeInfo.name,
+        type: decodeInfo.type,
+        uuid: decodeInfo.uuid,
+      };
+      dispatch(saveUserInRedux(payloadUser));
       sessionStorage.setItem("rest-token", token);
+
       if (tipo === UsersTypesEnum.MESERO) {
         dispatch(setIdWaiterRedux(user));
         push("/orders/create");
       } else if (tipo === UsersTypesEnum.ADMINISTRATOR) {
         push("/admin/dishes");
+      } else if (tipo === UsersTypesEnum.COCINERO) {
+        push("/orders");
       }
+    } else {
+      showMessage(
+        "No se pudo loguear",
+        "Usuario y/o contraseña incorrectos",
+        "Aceptar",
+        "error",
+      );
     }
+    setLoading(false);
   };
 
-  useEffect(() => {
-    const init = () => {
-      const token = sessionStorage.getItem("rest-token");
-      if (token) {
-        push("/admin/dishes");
-      }
-    };
-    init();
-  }, []);
+  //Cargas iniciales
+
+  const sentFullscreen = async () => {
+    await handleFullscreen.enter();
+  };
 
   return (
-    <>
+    <FullScreen handle={handleFullscreen}>
       <Head>
         <title>Inicio</title>
       </Head>
       <section>
+        <button
+          onClick={sentFullscreen}
+          className='absolute w-[200px] p-4 text-white'
+        >
+          <OpenInFull /> Pantalla completa
+        </button>
         <div className='saucer__font'>
           <div className='container__auth'>
             <div className='flex justify-center'>
@@ -91,20 +146,26 @@ const IndexComp = () => {
                   />
                 </li>
                 <li>
-                  <button
-                    onClick={handleSend}
-                    className='rounded-full submit__btn'
-                    type='submit'
-                  >
-                    Ingresar
-                  </button>
+                  {loading ? (
+                    <div className='flex items-center'>
+                      <span className='loader mr-4'></span> Iniciando sesión
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleSend}
+                      className='rounded-full submit__btn bg-success'
+                      type='submit'
+                    >
+                      Ingresar
+                    </button>
+                  )}
                 </li>
               </ul>
             </div>
           </div>
         </div>
       </section>
-    </>
+    </FullScreen>
   );
 };
 

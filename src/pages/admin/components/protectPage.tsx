@@ -1,10 +1,14 @@
+import { IUserRedux, saveUserInRedux } from "@/store/slices/user.slice";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 type TProps = {
   children: any;
   push: any;
 };
 const ProtectPage = ({ children, push }: TProps) => {
+  const dispatch = useDispatch();
+
   const checkToken = () => {
     const token = sessionStorage.getItem("rest-token");
     if (!token) {
@@ -13,8 +17,25 @@ const ProtectPage = ({ children, push }: TProps) => {
     }
   };
 
+  const generateInfoToken = () => {
+    //Token validation
+    const token = sessionStorage.getItem("rest-token");
+    if (token) {
+      const separate = token.split(".");
+      const information = separate[1];
+      const decodeInfo: IUserRedux = JSON.parse(atob(information));
+      const payloadUser: IUserRedux = {
+        name: decodeInfo.name,
+        type: decodeInfo.type,
+        uuid: decodeInfo.uuid,
+      };
+      dispatch(saveUserInRedux(payloadUser));
+    }
+  };
+
   useEffect(() => {
     checkToken();
+    generateInfoToken();
   }, []);
 
   return <>{children}</>;
