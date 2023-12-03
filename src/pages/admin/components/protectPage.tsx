@@ -1,4 +1,5 @@
 import { IUserRedux, saveUserInRedux } from "@/store/slices/user.slice";
+import { TOKEN_ID } from "@/utils/strings";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
@@ -10,7 +11,7 @@ const ProtectPage = ({ children, push }: TProps) => {
   const dispatch = useDispatch();
 
   const checkToken = () => {
-    const token = sessionStorage.getItem("rest-token");
+    const token = sessionStorage.getItem(TOKEN_ID);
     if (!token) {
       push("/admin");
       return <div>Sin acceso</div>;
@@ -19,7 +20,7 @@ const ProtectPage = ({ children, push }: TProps) => {
 
   const generateInfoToken = () => {
     //Token validation
-    const token = sessionStorage.getItem("rest-token");
+    const token = sessionStorage.getItem(TOKEN_ID);
     if (token) {
       const separate = token.split(".");
       const information = separate[1];

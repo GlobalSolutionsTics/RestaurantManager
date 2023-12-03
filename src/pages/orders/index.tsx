@@ -20,6 +20,7 @@ import ProtectPage from "../admin/components/protectPage";
 import { StatusEnum } from "@/enums/states.enum";
 import Head from "next/head";
 import { updateOrderService } from "@/services/order";
+import { TOKEN_ID } from "@/utils/strings";
 
 const HomeOrderPage = () => {
   const [orders, setOrders] = useState<Array<TResponseOrders>>([]);
@@ -62,7 +63,7 @@ const HomeOrderPage = () => {
     if (!router.isReady) {
       return;
     }
-    sessionStorage.removeItem("rest-token");
+    sessionStorage.removeItem(TOKEN_ID);
     router.push("/admin");
   }, []);
 
@@ -76,7 +77,7 @@ const HomeOrderPage = () => {
 
     //Send a next status
     if (nextStatus !== null) {
-      const token = sessionStorage.getItem("rest-token");
+      const token = sessionStorage.getItem(TOKEN_ID);
       if (token) {
         setLoading(true);
         const update = await updateOrderService(token, order.uuid, nextStatus);

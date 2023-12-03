@@ -2,6 +2,7 @@ import ProtectPage from "@/pages/admin/components/protectPage";
 import { listConfigurationService } from "@/services/config";
 import { setTableOrder } from "@/store/slices/orders.slice";
 import { TConifg } from "@/types/configuration.types";
+import { TOKEN_ID } from "@/utils/strings";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -19,7 +20,7 @@ export default function tableSelector() {
 
   //Area para los servicios
   const getConfigurationInfo = async () => {
-    const token = sessionStorage.getItem("rest-token");
+    const token = sessionStorage.getItem(TOKEN_ID);
     setLoading(true);
     if (token) {
       const petition: TConifg = await listConfigurationService(token);

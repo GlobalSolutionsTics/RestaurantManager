@@ -9,6 +9,7 @@ import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { OpenInFull } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { IUserRedux, saveUserInRedux } from "@/store/slices/user.slice";
+import { TOKEN_ID } from "@/utils/strings";
 
 const MessageComponent = withReactContent(Swal);
 
@@ -70,7 +71,7 @@ const IndexComp = () => {
         uuid: decodeInfo.uuid,
       };
       dispatch(saveUserInRedux(payloadUser));
-      sessionStorage.setItem("rest-token", token);
+      sessionStorage.setItem(TOKEN_ID, token);
 
       if (tipo === UsersTypesEnum.MESERO) {
         push("/orders/create");

@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { TConifg } from "@/types/configuration.types";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import { TOKEN_ID } from "@/utils/strings";
 
 const MessageComponent = withReactContent(Swal);
 
@@ -50,7 +51,7 @@ const ConfigurationPage = () => {
 
   //Services of config
   const getConfigurations = async () => {
-    const token = sessionStorage.getItem("rest-token");
+    const token = sessionStorage.getItem(TOKEN_ID);
     setLoading(true);
     if (token) {
       const petition = await listConfigurationService(token);
@@ -62,7 +63,7 @@ const ConfigurationPage = () => {
   };
 
   const updateConfiguration = async (payload: TConifg) => {
-    const token = sessionStorage.getItem("rest-token");
+    const token = sessionStorage.getItem(TOKEN_ID);
     setLoadingPrincipal(true);
     if (token) {
       const petition = await updateConfigurationService(token, payload);

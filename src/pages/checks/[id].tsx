@@ -132,26 +132,26 @@ const CheckPages = () => {
         <div className='bg-white rounded-lg w-full md:w-[80%] lg:w-[70%] p-4 mt-[6rem]'>
           <div className='flex flex-row justify-between w-full mb-8'>
             <div
-              className={`flex flex-col basis-1/3 items-center ${colorsTheme.colorPreparing}`}
+              className={`flex flex-col basis-1/3 items-center transition ease-in-out delay-150 duration-300 ${colorsTheme.colorPreparing}`}
             >
               <Send fontSize='large' />
               <span className='text-[0.5rem] mt-2'>Orden enviada</span>
             </div>
             <div
-              className={`flex flex-col basis-1/3 items-center ${colorsTheme.colorWaiting}`}
+              className={`flex flex-col basis-1/3 items-center transition ease-in-out delay-150 duration-300 ${colorsTheme.colorWaiting}`}
             >
               <RamenDining fontSize='large' />
               <span className='text-[0.5rem] mt-2'>Cocinando orden</span>
             </div>
             <div
-              className={`flex flex-col basis-1/3 items-center ${colorsTheme.colorReady}`}
+              className={`flex flex-col basis-1/3 items-center transition ease-in-out delay-150 duration-300 ${colorsTheme.colorReady}`}
             >
               <RoomService fontSize='large' />
               <span className='text-[0.5rem] mt-2'>Orden lista</span>
             </div>
           </div>
           <p
-            className={`text-center font-primary text-[1.25rem] md:text-[2rem] lg:text-[2.5rem] text-bold ${colorsTheme.colorTitle}`}
+            className={`transition ease-in-out delay-150 duration-300 text-center font-primary text-[1.25rem] md:text-[2rem] lg:text-[2.5rem] text-bold ${colorsTheme.colorTitle}`}
           >
             {getIconStatus()} {getTitle()}
           </p>
@@ -165,7 +165,10 @@ const CheckPages = () => {
               <div className='font-primary basis-1/6 text-center'>Cost.</div>
             </div>
             {orderDetail.dishesDescription.map((itm) => (
-              <div key={itm.uuid} className='flex flex-row text-[1.25rem]'>
+              <div
+                key={itm.uuid}
+                className='flex flex-row font-bold text-[1rem]'
+              >
                 <div className='font-primary basis-4/6'>{itm.name}</div>
                 <div className='font-primary basis-1/6 text-center'>
                   {itm.number}
@@ -175,6 +178,17 @@ const CheckPages = () => {
                 </div>
               </div>
             ))}
+          </div>
+          <div className='flex flex-row text-primary font-bold text-[1.5rem] mt-8'>
+            <div className='basis-2/3 text-left'>Total:</div>
+            <div className='basis-1/3  text-right'>
+              {currencyFormat(
+                orderDetail.dishesDescription.reduce(
+                  (prev, dish) => prev + dish.number * dish.price,
+                  0,
+                ),
+              )}
+            </div>
           </div>
         </div>
       </div>
