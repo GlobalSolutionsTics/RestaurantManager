@@ -23,6 +23,9 @@ import MenuAdmin from "../components/menu";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import ProtectPage from "../components/protectPage";
+import { ArrowBack, Edit } from "@mui/icons-material";
+import EditionTableCol from "./components/editionTableCol";
+import { Tooltip } from "@mui/material";
 
 const style = {
   position: "absolute" as "absolute",
@@ -49,19 +52,37 @@ const DishesAdminPage = () => {
 
   const [categories, setCategories] = useState<Array<TCatalog>>([]);
   const [dishes, setDishes] = useState<Array<TMenuResponse>>([]);
+  const [loading, setLoading] = useState(false);
 
+  //Modals shower controll
   const [isOpenModalDish, setOpenModalDish] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+
+  //Controlls of editing section
+  const [categorySelect, setCategorySelect] = useState("");
 
   const router = useRouter();
 
   const toggleModalDish = () => setOpenModalDish(!isOpenModalDish);
-
+  //Services
   const getAllCategories = useCallback(async () => {
     const obtainCategories = await getCategories();
     if (obtainCategories) {
       setCategories(obtainCategories);
     }
   }, []);
+
+  const getDishForId = async (id: string) => {
+    setLoading(true);
+    setDishes([]);
+    const dishesObtained = await getDishService(id);
+    setLoading(false);
+    if (dishesObtained) {
+      setDishes(dishesObtained);
+      return true;
+    }
+    return false;
+  };
 
   const showMessage = (title: string, description: string, okText?: string) => {
     MessageComponent.fire({
@@ -75,11 +96,12 @@ const DishesAdminPage = () => {
       showLoaderOnDeny: false,
     });
   };
-
+  /**
+   * Handle functions
+   */
   const _hanldeChangeCategorieId = async (id: string, title: string) => {
-    const dishesObtained = await getDishService(id);
+    const dishesObtained = await getDishForId(id);
     if (dishesObtained) {
-      setDishes(dishesObtained);
       setIdCategory(id);
       setTitleCategory(title);
     }
@@ -103,6 +125,12 @@ const DishesAdminPage = () => {
   const handleChangePrice = (event: ChangeEvent<HTMLInputElement>) => {
     const value: string = event.target.value;
     setPriceDish(value);
+  };
+
+  const handleEditingCategory = (e: SelectChangeEvent) => {
+    const value = e.target.value;
+    setCategorySelect(value);
+    getDishForId(value);
   };
 
   const resetNewDishForm = () => {
@@ -160,70 +188,153 @@ const DishesAdminPage = () => {
       </Head>
       <div className='flex flex-row'>
         <MenuAdmin router={router} basePath={router.pathname} />
-        <div className='flex flex-row w-full h-[100vh] py-8'>
-          <div></div>
-          <div className='flex flex-row w-full h-full'>
-            <div className='flex flex-col basis-2/5 bg-enabled mr-8 ml-8'>
-              <div className='p-2 bg-blue h-[64px]'>
-                <h2 className='typography-primary text-white'>Categorías</h2>
+        {openEdit ? (
+          <div className='flex flex-col w-full'>
+            <div className='bg-blue font-secondary text-[1.25rem] w-full p-4 flex flex-row items-center'>
+              <div className='flexx items-center justify-center mr-4'>
+                <Tooltip title='Regresar' arrow>
+                  <button
+                    onClick={() => setOpenEdit(false)}
+                    className='text-white'
+                  >
+                    <ArrowBack />
+                  </button>
+                </Tooltip>
               </div>
-              <div className='flex flex-col overflow-x-hidden'>
+              <div className='text-white'>Editar precios</div>
+            </div>
+            <div className='flex flex-row p-4 bg-enabled'>
+              <Select
+                className='h-[2rem] outline-none w-full basis-1/6 rounded-none mr-4'
+                placeholder='Categoría'
+                onChange={handleEditingCategory}
+              >
                 {categories.length > 0 &&
                   categories.map((itm, index) => (
-                    <ListOptionComponent
-                      isSelected={idCategory === itm.id}
-                      key={"ind-" + index + "-" + itm}
-                      onClick={() =>
-                        _hanldeChangeCategorieId(itm.id, itm.value)
-                      }
+                    <MenuItem
+                      key={"itm-" + itm.id + "-" + index}
+                      value={itm.id}
                     >
                       {itm.value}
-                    </ListOptionComponent>
+                    </MenuItem>
                   ))}
-                <ListOptionComponent isDot onCreate={handleCreateCategory}>
-                  Agregar
-                </ListOptionComponent>
+              </Select>
+              <div className='w-full basis-5/6'>
+                <OutlinedInput className='h-[2rem] outline-none w-full rounded-none bg-white' />
               </div>
             </div>
-            <div className='flex flex-col overflow-x-hidden basis-3/5 bg-enabled mr-8'>
-              {titleCategory !== "" && (
-                <div className='h-norma w-full px-8 py-2 bg-aqua font-secondary font-bold text-white text-[2rem] uppercase'>
-                  {titleCategory}
-                </div>
-              )}
-              {dishes.length > 0 ? (
-                <div className='grid grid-cols-3 gap-4 w-[408px] mt-8 ml-8'>
-                  {dishes.map((itm, key) => (
-                    <button
-                      key={key}
-                      className='w-[120px] h-[120px] bg-blue text-white font-secondary font-bold p-4'
-                    >
-                      {itm.name}
-                    </button>
+            <div className='text-center'>
+              {categorySelect !== "" ? (
+                <div className='flex flex-col'>
+                  <div className='flex flex-row w-full bg-enabled-light'>
+                    <div className='w-[40px] bg-white'></div>
+                    <div className='basis-1/5 text-left px-4 py-2 border-[1px] border-enabled'>
+                      Nombre
+                    </div>
+                    <div className='basis-1/5 text-left px-4 py-2 border-[1px] border-enabled'>
+                      Precio
+                    </div>
+                    <div className='basis-1/5 text-left px-4 py-2 border-[1px] border-enabled'>
+                      Categoría
+                    </div>
+                    <div className='basis-1/5 text-left px-4 py-2 border-[1px] border-enabled'>
+                      ¿Es precio único?
+                    </div>
+                    <div className='basis-1/5 text-left px-4 py-2 border-[1px] border-enabled'>
+                      Acciones
+                    </div>
+                  </div>
+                  {dishes.map((itm, index) => (
+                    <EditionTableCol
+                      index={index}
+                      data={itm}
+                      categories={categories}
+                      handleChange={() => {}}
+                    />
                   ))}
-                  <button
-                    onClick={toggleModalDish}
-                    className='w-[120px] h-[120px] bg-white border-dashed border-2 border-blue text-blue p-4'
-                  >
-                    Agregar
-                  </button>
+                </div>
+              ) : loading ? (
+                <div className='flex items-center p-2 font-secondary'>
+                  <span className='loader mr-4'></span> Cargando catálogo
                 </div>
               ) : (
-                <div className='mt-8 ml-8 flex flex-col items-center w-[408px]'>
-                  <p className='typography-primary !text-[1rem]'>
-                    Aun no tienes platillos en esta categoría
-                  </p>
-                  <button
-                    onClick={toggleModalDish}
-                    className='w-[120px] h-[120px] bg-white border-dashed border-2 border-blue text-blue mt-8 p-4'
-                  >
-                    Agregar
-                  </button>
-                </div>
+                <span>Seleccione una categoría</span>
               )}
             </div>
           </div>
-        </div>
+        ) : (
+          <div className='flex flex-col w-full h-[100vh] py-8'>
+            <div className='flex justify-end'>
+              <button
+                onClick={() => setOpenEdit(true)}
+                className='mx-8 p-2 bg-success-dark text-white font-primary mb-4 hover:bg-success'
+              >
+                <Edit /> Editar precios
+              </button>
+            </div>
+            <div className='flex flex-row w-full h-full'>
+              <div className='flex flex-col basis-2/5 bg-enabled mr-8 ml-8'>
+                <div className='p-2 bg-blue h-[64px]'>
+                  <h2 className='typography-primary text-white'>Categorías</h2>
+                </div>
+                <div className='flex flex-col overflow-x-hidden'>
+                  {categories.length > 0 &&
+                    categories.map((itm, index) => (
+                      <ListOptionComponent
+                        isSelected={idCategory === itm.id}
+                        key={"ind-" + index + "-" + itm}
+                        onClick={() =>
+                          _hanldeChangeCategorieId(itm.id, itm.value)
+                        }
+                      >
+                        {itm.value}
+                      </ListOptionComponent>
+                    ))}
+                  <ListOptionComponent isDot onCreate={handleCreateCategory}>
+                    Agregar
+                  </ListOptionComponent>
+                </div>
+              </div>
+              <div className='flex flex-col overflow-x-hidden basis-3/5 bg-enabled mr-8'>
+                {titleCategory !== "" && (
+                  <div className='h-norma w-full px-8 py-2 bg-aqua font-secondary font-bold text-white text-[2rem] uppercase'>
+                    {titleCategory}
+                  </div>
+                )}
+                {dishes.length > 0 ? (
+                  <div className='grid grid-cols-3 gap-4 w-[408px] mt-8 ml-8'>
+                    {dishes.map((itm, key) => (
+                      <button
+                        key={key}
+                        className='w-[120px] h-[120px] bg-blue text-white font-secondary font-bold p-4'
+                      >
+                        {itm.name}
+                      </button>
+                    ))}
+                    <button
+                      onClick={toggleModalDish}
+                      className='w-[120px] h-[120px] bg-white border-dashed border-2 border-blue text-blue p-4'
+                    >
+                      Agregar
+                    </button>
+                  </div>
+                ) : (
+                  <div className='mt-8 ml-8 flex flex-col items-center w-[408px]'>
+                    <p className='typography-primary !text-[1rem]'>
+                      Aun no tienes platillos en esta categoría
+                    </p>
+                    <button
+                      onClick={toggleModalDish}
+                      className='w-[120px] h-[120px] bg-white border-dashed border-2 border-blue text-blue mt-8 p-4'
+                    >
+                      Agregar
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <Modal open={isOpenModalDish} onClose={() => toggleModalDish()}>
         <Box sx={style}>

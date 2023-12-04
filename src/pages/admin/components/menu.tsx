@@ -5,6 +5,7 @@ import {
   MiscellaneousServicesOutlined,
   PeopleOutline,
   PowerSettingsNewOutlined,
+  RequestQuote,
   SetMealOutlined,
 } from "@mui/icons-material";
 import Image from "next/image";
@@ -54,7 +55,7 @@ const MenuAdmin = ({ basePath, router }: Props) => {
             alt='Image logo'
           />
         </div>
-        <div className='text-white font-primary py-4 text-center text-[0.5rem]'>
+        <div className='text-white font-primary py-4 text-center text-[0.5rem] lg:text-[1.5rem]'>
           Administrador
         </div>
       </div>
@@ -70,6 +71,9 @@ const MenuAdmin = ({ basePath, router }: Props) => {
         </MenuOption>
         <MenuOption path={basePath} href={"/admin/orders"}>
           <FilterFramesOutlined className='mr-4' /> Ordenes
+        </MenuOption>
+        <MenuOption path={basePath} href={"/admin/contability"}>
+          <RequestQuote className='mr-4' /> Contabilidad
         </MenuOption>
         <MenuOption path={basePath} href={"/admin/configuration"}>
           <MiscellaneousServicesOutlined className='mr-4' /> Configurador
@@ -93,6 +97,9 @@ const MenuAdmin = ({ basePath, router }: Props) => {
         </MenuOption>
         <MenuOption path={basePath} href={"/admin/orders"}>
           <FilterFramesOutlined fontSize='large' />
+        </MenuOption>
+        <MenuOption path={basePath} href={"/admin/contability"}>
+          <RequestQuote className='mr-4' />
         </MenuOption>
         <MenuOption path={basePath} href={"/admin/configuration"}>
           <MiscellaneousServicesOutlined fontSize='large' />
