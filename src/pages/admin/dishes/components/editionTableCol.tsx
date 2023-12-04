@@ -93,4 +93,11 @@ const EditionTableCol = ({
   );
 };
 
+EditionTableCol.defaultProps = {
+  index: 0,
+  data: {},
+  categories: [],
+  handleChange: () => {},
+};
+
 export default EditionTableCol;

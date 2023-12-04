@@ -35,7 +35,7 @@ const TicketAdmin = ({ itm, handlePrintData }: TProps) => {
           Orden de la mesa {itm.tableNumber}
         </div>
         <div className='font-secondary w-full px-2'>Platillos {itm.dishes}</div>
-        {itm.dishesDescription.map((itm) => (
+        {itm.dishesDescription?.map((itm) => (
           <div
             key={itm.uuid}
             className='flex flex-row w-full font-primary px-2'
@@ -47,7 +47,7 @@ const TicketAdmin = ({ itm, handlePrintData }: TProps) => {
         <div className='flex flex-row w-full font-secondary px-2 pt-4 text-[1.5rem]'>
           Total:{" "}
           {currencyFormat(
-            itm.dishesDescription.reduce(
+            itm.dishesDescription?.reduce(
               (prev, next) => prev + next.price * next.number,
               0,
             ),
@@ -82,6 +82,11 @@ const TicketAdmin = ({ itm, handlePrintData }: TProps) => {
       )}
     </div>
   );
+};
+
+TicketAdmin.defaultProps = {
+  itm: {},
+  handlePrintData: () => {},
 };
 
 export default TicketAdmin;
