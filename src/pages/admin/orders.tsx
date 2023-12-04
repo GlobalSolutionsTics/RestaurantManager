@@ -9,16 +9,10 @@ import { onValue, ref } from "firebase/database";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { TResponseOrders } from "@/types/menu.types";
-import {
-  AssignmentTurnedIn,
-  DeleteForeverOutlined,
-  EditOutlined,
-  PrintOutlined,
-} from "@mui/icons-material";
 import { Box, Modal } from "@mui/material";
 import Image from "next/image";
 import { currencyFormat, textToString } from "@/utils/formats";
-import TicketAdmin from "./components/ticketAdmin";
+import TicketAdmin from "../../components/ticketAdmin";
 import { StatusEnum } from "@/enums/states.enum";
 
 const style = {

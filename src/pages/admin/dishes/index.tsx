@@ -24,7 +24,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import ProtectPage from "../components/protectPage";
 import { ArrowBack, Edit } from "@mui/icons-material";
-import EditionTableCol from "./components/editionTableCol";
+import EditionTableCol from "../../../components/editionTableCol";
 import { Tooltip } from "@mui/material";
 
 const style = {
