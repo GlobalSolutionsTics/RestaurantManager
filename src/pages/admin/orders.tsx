@@ -9,13 +9,11 @@ import { onValue, ref } from "firebase/database";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { TResponseOrders } from "@/types/menu.types";
-import {
-  DeleteForeverOutlined,
-  EditOutlined,
-  PrintOutlined,
-} from "@mui/icons-material";
 import { Box, Modal } from "@mui/material";
 import Image from "next/image";
+import { currencyFormat, textToString } from "@/utils/formats";
+import TicketAdmin from "../../components/ticketAdmin";
+import { StatusEnum } from "@/enums/states.enum";
 
 const style = {
   position: "absolute" as "absolute",
@@ -82,11 +80,13 @@ const OrdersPage = () => {
     return onValue(connection, (snapshot) => {
       if (snapshot.exists()) {
         const data: Array<TResponseOrders> = snapshot.val();
-        console.log("Data value:", data);
         const elements: Array<TResponseOrders> = Object.values(data).sort(
           (a: any, b: any) => a.orderId - b.orderId,
         );
-        setOrderList(elements);
+        const filters = elements.filter(
+          (itm) => itm.status !== StatusEnum.CLOSED,
+        );
+        setOrderList(filters);
       }
     });
   }, []);
@@ -105,47 +105,11 @@ const OrdersPage = () => {
           <div className='grid lg:grid-cols-4 lg:gap-4 md:grid-cols-3 md:gap-3 sm:grid-cols-1 sm:gap-1 overflow-y-auto '>
             {orderList.length > 0 &&
               orderList.map((itm) => (
-                <div
-                  className='flex flex-col w-full bg-enabled mb-1 lg:mb-2 border-2 border-blue-dark pt-1 relative'
+                <TicketAdmin
                   key={itm.uuid}
-                >
-                  <div className='font-secondary w-full text-[1.5rem] px-2'>
-                    Orden de la mesa {itm.tableNumber}
-                  </div>
-                  <div className='font-secondary w-full px-2'>
-                    Platillos {itm.dishes}
-                  </div>
-                  {itm.dishesDescription.map((itm) => (
-                    <div
-                      key={itm.uuid}
-                      className='flex flex-row w-full font-primary px-2'
-                    >
-                      <div className='basis-5/6'>{itm.name}</div>
-                      <div className='basis-1/6 text-center'>{itm.number}</div>
-                    </div>
-                  ))}
-                  <div className='flex flex-row w-full font-primary px-2 mb-[9rem]'>
-                    Total $
-                    {itm.dishesDescription.reduce(
-                      (prev, next) => prev + next.price * next.number,
-                      0,
-                    )}
-                  </div>
-                  <div className='bottom-0 absolute w-full'>
-                    <button
-                      className='w-full bg-success text-white font-primary p-2'
-                      onClick={() => handlePrintData(itm)}
-                    >
-                      <PrintOutlined /> Imprimir
-                    </button>
-                    <button className='w-full bg-blue text-white font-primary p-2'>
-                      <EditOutlined /> Editar
-                    </button>
-                    <button className='w-full bg-danger text-white font-primary p-2'>
-                      <DeleteForeverOutlined /> Eliminar
-                    </button>
-                  </div>
-                </div>
+                  itm={itm}
+                  handlePrintData={handlePrintData}
+                />
               ))}
           </div>
         </div>
@@ -190,16 +154,27 @@ const OrdersPage = () => {
               <div className='grid grid-cols-4 font-secondary gap-4'>
                 <div>{itm.number}</div>
                 <div>{itm.name}</div>
-                <div>$ {itm.price}</div>
-                <div>$ {itm.price * itm.number}</div>
+                <div>{currencyFormat(itm.price)}</div>
+                <div>{currencyFormat(itm.price * itm.number)}</div>
               </div>
             ))}
             <div className='font-primary font-bold w-full mt-4'>
-              TOTAL: ${" "}
-              {dataOrderSelected.dishesDescription.reduce(
-                (prev, next) => prev + next.number * next.price,
-                0,
+              TOTAL:{" "}
+              {currencyFormat(
+                dataOrderSelected.dishesDescription.reduce(
+                  (prev, next) => prev + next.number * next.price,
+                  0,
+                ),
               )}
+            </div>
+            <div className='font-secondary text-[1.25rem] w-full mt-4'>
+              {textToString(
+                dataOrderSelected.dishesDescription.reduce(
+                  (prev, next) => prev + next.number * next.price,
+                  0,
+                ),
+              )}{" "}
+              pesos
             </div>
           </div>
         </Box>

@@ -32,6 +32,8 @@ const addOrder = async (
         tableNumber: tableNumber,
         status: StatusEnum.SEND,
         waiter,
+        creatAt: new Date().toString(),
+        updateAt: new Date().toString(),
       });
     } else {
       set(ref(realtimeDB, RT_ORDER_TABLE_NAME + "/" + uuid), {
@@ -43,6 +45,8 @@ const addOrder = async (
         tableNumber: tableNumber,
         status: StatusEnum.SEND,
         waiter,
+        creatAt: new Date().toString(),
+        updateAt: new Date().toString(),
       });
     }
 
