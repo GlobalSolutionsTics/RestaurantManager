@@ -26,10 +26,6 @@ const HomeOrderPage = () => {
   const [orders, setOrders] = useState<Array<TResponseOrders>>([]);
   const [loading, setLoading] = useState(false);
 
-  const [orderDetail, setOrderDetail] = useState<Array<any> | null>(null);
-  const [orderSelected, setOrderSelected] = useState<any>({});
-  const [numberTable, setNumberTable] = useState("");
-
   //router controller
   const router = useRouter();
 
@@ -47,7 +43,9 @@ const HomeOrderPage = () => {
           (a: any, b: any) => a.orderId - b.orderId,
         );
         const filterElements = elements.filter(
-          (itm) => itm.status !== StatusEnum.ORDER_READY,
+          (itm) =>
+            itm.status !== StatusEnum.ORDER_READY &&
+            itm.status !== StatusEnum.CLOSED,
         );
         setOrders(filterElements);
       }

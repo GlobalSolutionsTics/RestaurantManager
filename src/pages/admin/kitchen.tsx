@@ -14,7 +14,7 @@ const KitchenPage = () => {
         <MenuAdmin router={router} basePath={router.pathname} />
         <div className='flex flex-col w-full h-min-[100vh] p-8'>
           <p className='font-primary text-[2rem] mb-4 text-black'>
-            Lista de cocinas
+            Habilitar cocinas
           </p>
         </div>
       </div>
