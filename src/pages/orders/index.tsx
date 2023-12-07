@@ -177,7 +177,7 @@ const HomeOrderPage = () => {
                     </p>
                   </div>
                   <div className='h-[calc(400px_-_3rem)] bg-enabled rounded-b-lg flex flex-col flex-start justify-between'>
-                    <div>
+                    <div className='overflow-y-auto'>
                       <div className='w-full py-2 px-4 flex flex-row'>
                         <div className='basis-5/6 font-bold font-secondary'>
                           Descripción
@@ -200,7 +200,7 @@ const HomeOrderPage = () => {
                         </div>
                       ))}
                     </div>
-                    <div className='p-4 w-full'>
+                    <div className='p-1 bottom-1 w-full'>
                       {loading ? (
                         <div className='flex items-center'>
                           <span className='loader mr-4'></span> Guardando
@@ -209,7 +209,7 @@ const HomeOrderPage = () => {
                       ) : (
                         <button
                           onClick={() => hanndleStartPetition(itm)}
-                          className={`p-2 w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
+                          className={`p-2 w-full bottom-0 rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
                             itm.status,
                           )} disabled:bg-gray`}
                         >
