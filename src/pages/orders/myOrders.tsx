@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import ProtectPage from "../admin/components/protectPage";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import Joyride from "react-joyride";
 
 enum OptionEnum {
   ACTIVE = "ACTIVES",
@@ -50,6 +51,7 @@ const ToggleColumn = ({ element }: Props) => {
 
     return "bg-danger hover:bg-danger-dark text-white";
   };
+
   return (
     <div className='w-full rounded-lg shadow-lg bg-white flex flex-col justify-between'>
       <div className='flex flex-col'>
@@ -135,15 +137,75 @@ const MyOrdersPage = () => {
     getMyOrders();
   }, [personStore]);
 
+  const [{ run, steps }, setState] = useState<{ run: boolean; steps: any }>({
+    run: true,
+    steps: [
+      {
+        content: (
+          <h2 className='text-2xl'>
+            En esta ventana se mostraran las ordenes en proceso y cuando esten
+            terminadas.
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "center",
+        target: "body",
+      },
+      {
+        content: (
+          <h2 className='text-2xl'>
+            Se muestran las ordenes que se han hecho.
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "bottom",
+        target: "#first-step",
+        title: "Ordenes Activas",
+      },
+      {
+        content: (
+          <h2 className='text-2xl'>
+            En esta ventana se mostraran las ordenes que ya estan listas.
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "bottom",
+        target: "#second-step",
+        title: "Ordenes listas",
+      },
+      {
+        content: (
+          <h2 className='text-2xl'>
+            Te regresará a la pantalla principal para meseros.
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "bottom",
+        target: "#thirth-step",
+        title: "Mis ordenes",
+      },
+    ],
+  });
+
   return (
     <ProtectPage push={router.push}>
+      <Joyride
+        continuous
+        callback={() => {}}
+        run={run}
+        steps={steps}
+        scrollToFirstStep
+        hideCloseButton
+        showSkipButton
+        showProgress
+      />
       <Head>
         <title>Listado Ordenes</title>
       </Head>
       <div className='w-full min-h-[100vh]'>
         <div className='font-primary font-bold text-[1.5rem] p-4 flex flex-row'>
           <div className='basis-1/5'>
-            <button onClick={router.back}>
+            <button className='bg-white' onClick={router.back} id='thirth-step'>
               <ArrowBack fontSize='large' />
             </button>
           </div>
@@ -164,6 +226,7 @@ const MyOrdersPage = () => {
               selectOption === OptionEnum.ACTIVE && "bg-blue text-white"
             }`}
             onClick={() => setSelectOption(OptionEnum.ACTIVE)}
+            id='first-step'
           >
             <Checklist fontSize='large' /> Activas ({ordersActive.length})
           </button>
@@ -172,6 +235,7 @@ const MyOrdersPage = () => {
               selectOption === OptionEnum.READY && "bg-blue text-white"
             }`}
             onClick={() => setSelectOption(OptionEnum.READY)}
+            id='second-step'
           >
             <CheckCircle fontSize='large' />
             Listas ({ordersReady.length})
