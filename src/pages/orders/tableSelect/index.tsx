@@ -39,29 +39,31 @@ export default function tableSelector() {
 
   return (
     <ProtectPage push={router.push}>
-      <div className='w-full p-8'>
-        <p className='h-10 font-medium font-primary font-bold text-[1.5rem]'>
+      <div className='relative'>
+        <p className='text-[2rem] bg-neutral-300 font-primary h-[120px] grid content-center px-10 w-screen'>
           ¿Que mesa atenderá?
         </p>
-        {loading ? (
-          <div className='flex items-center'>
-            <span className='loader mr-4'></span> Cargando información del
-            configurador
-          </div>
-        ) : (
-          <div className='grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4 overflow-y-auto'>
-            {kitchen.map((itm, index) => (
-              <div key={index}>
-                <button
-                  onClick={() => handleNavigation(Number(index + 1))}
-                  className='bg-neutral-400 text-2xl font-secondary w-[150px] h-[150px]'
-                >
-                  Mesa {index + 1}
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+        <div className='p-8 grid'>
+          {loading ? (
+            <div className='flex items-center'>
+              <span className='loader mr-4'></span> Cargando información del
+              configurador
+            </div>
+          ) : (
+            <div className='grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4 overflow-y-auto'>
+              {kitchen.map((itm, index) => (
+                <div key={index} className='grid justify-items-center'>
+                  <button
+                    onClick={() => handleNavigation(Number(index + 1))}
+                    className='bg-neutral-400 text-2xl font-secondary w-[150px] h-[150px]'
+                  >
+                    Mesa {index + 1}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </ProtectPage>
   );
