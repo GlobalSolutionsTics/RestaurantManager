@@ -2,11 +2,15 @@ import { createOrder } from "@/services/order";
 import { IOrderSlice, setOrderIdRedux } from "@/store/slices/orders.slice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Joyride from "react-joyride";
 
 const FinishOrderPage = () => {
   const [loading, setLoading] = useState(false);
+  const [tour, setTour] = useState(false);
+  const [run, setRun] = useState(false);
+  const [steps, setSteps] = useState<any>([]);
 
   const { push } = useRouter();
   const orderStore: IOrderSlice = useSelector(
@@ -33,8 +37,61 @@ const FinishOrderPage = () => {
     }
     setLoading(false);
   };
+
+  const handleTour = useCallback(() => {
+    setTour(true);
+  }, []);
+
+  useEffect(() => {
+    const joyrideSteps = [
+      {
+        content: (
+          <h2 className='text-2xl'>
+            En esta ventana podremos encontrar los platillos que se van a
+            ordenar para poder confirmarla.
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "center",
+        target: "body",
+      },
+      {
+        content: <h2 className='text-2xl'>Aquí encontramos los platillos.</h2>,
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "bottom",
+        target: "#first-step",
+        title: "Tipos de platillos",
+      },
+      {
+        content: (
+          <h2 className='text-2xl'>
+            Al terminar de confirmar la orden, presionamos el boton "Enviar
+            orden".
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "bottom",
+        target: "#second-step",
+        title: "Mis ordenes",
+      },
+    ];
+
+    setRun(tour);
+    setSteps(joyrideSteps);
+  }, [tour]);
+
   return (
     <>
+      <Joyride
+        continuous
+        callback={() => {}}
+        run={run}
+        steps={steps}
+        scrollToFirstStep
+        hideCloseButton
+        showSkipButton
+        showProgress
+      />
       <div className='w-full h-[100vh]'>
         <div className='bg-white top-0'>
           <div className='relative font-normal h-[120px] grid content-center w-screen px-10 bg-neutral-300'>
@@ -55,12 +112,20 @@ const FinishOrderPage = () => {
             <span className='font-primary text-[2rem] mb-2'>
               ¿Cuantos platillos van en la orden?
             </span>
-            {orderStore.dishesDescription.map((itm) => (
-              <div className='w-full flex justify-between my-4 bg-enabled py-4 px-2'>
-                <div className='text-secondary text-[1.5rem]'>{itm.name}</div>
-                <div>{itm.number}</div>
-              </div>
-            ))}
+            <button
+              className='bg-red-800 text-white w-20 h-8 rounded mx-2 my-2'
+              onClick={handleTour}
+            >
+              Tutorial
+            </button>
+            <div id='first-step'>
+              {orderStore.dishesDescription.map((itm) => (
+                <div className='w-full flex justify-between my-4 bg-enabled py-4 px-2'>
+                  <div className='text-secondary text-[1.5rem]'>{itm.name}</div>
+                  <div>{itm.number}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
         {loading ? (
@@ -71,6 +136,7 @@ const FinishOrderPage = () => {
           <button
             className='text-[2rem] p-4 text-center w-full bg-success fixed bottom-0 text-white font-primary font-bold'
             onClick={handleSendOrder}
+            id='second-step'
           >
             Enviar orden
           </button>

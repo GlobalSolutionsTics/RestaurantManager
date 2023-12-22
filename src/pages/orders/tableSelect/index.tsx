@@ -4,12 +4,16 @@ import { setTableOrder } from "@/store/slices/orders.slice";
 import { TConifg } from "@/types/configuration.types";
 import { TOKEN_ID } from "@/utils/strings";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import Joyride from "react-joyride";
 
 export default function tableSelector() {
   const [loading, setLoading] = useState(false);
   const [kitchen, setKitchen] = useState([]);
+  const [tour, setTour] = useState(false);
+  const [run, setRun] = useState(false);
+  const [steps, setSteps] = useState<any>([]);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -37,12 +41,49 @@ export default function tableSelector() {
     getConfigurationInfo();
   }, []);
 
+  const handleTour = useCallback(() => {
+    setTour(true);
+  }, []);
+
+  useEffect(() => {
+    const joyrideSteps = [
+      {
+        content: (
+          <h2 className='text-2xl'>
+            En esta ventana tendremos el numero de mesas.
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "center",
+        target: "body",
+      },
+    ];
+
+    setRun(tour);
+    setSteps(joyrideSteps);
+  }, [tour]);
   return (
     <ProtectPage push={router.push}>
+      <Joyride
+        continuous
+        callback={() => {}}
+        run={run}
+        steps={steps}
+        scrollToFirstStep
+        hideCloseButton
+        showSkipButton
+        showProgress
+      />
       <div className='w-full p-8'>
         <p className='h-10 font-medium font-primary font-bold text-[1.5rem]'>
           ¿Que mesa atenderá?
         </p>
+        <button
+          className='bg-red-800 text-white w-20 h-8 rounded mx-2 my-2'
+          onClick={handleTour}
+        >
+          Tutorial
+        </button>
         {loading ? (
           <div className='flex items-center'>
             <span className='loader mr-4'></span> Cargando información del

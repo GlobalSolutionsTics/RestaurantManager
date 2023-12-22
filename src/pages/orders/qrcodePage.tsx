@@ -6,6 +6,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import QRCode from "react-qr-code";
 import { useDispatch, useSelector } from "react-redux";
+import Joyride from "react-joyride";
+import { useState } from "react";
+
 const QrCodePage = () => {
   const { push } = useRouter();
   const orderStore: IOrderSlice = useSelector(
@@ -20,8 +23,46 @@ const QrCodePage = () => {
     push("/orders/create");
   };
 
+  const [{ run, steps }, setState] = useState<{ run: boolean; steps: any }>({
+    run: true,
+    steps: [
+      {
+        content: (
+          <h2 className='text-2xl'>
+            En esta ventana podremos encontrar un codigo QR que el cliente podrá
+            ecanear para seguir en tiempo real su pedido.
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "center",
+        target: "body",
+      },
+      {
+        content: (
+          <h2 className='text-2xl'>
+            Al terminar presionamos el botón "finalizar".
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "bottom",
+        target: "#first-step",
+        title: "Tipos de platillos",
+      },
+    ],
+  });
+
   return (
     <div className='flex flex-col h-[100vh] w-full'>
+      <Joyride
+        continuous
+        callback={() => {}}
+        run={run}
+        steps={steps}
+        scrollToFirstStep
+        hideCloseButton
+        showSkipButton
+        showProgress
+      />
       <div className='font-primary text-[1.5rem] font-bold px-4 py-4'>
         Escaneé el siguiente QR para verificar el estado de su orden
       </div>
@@ -39,6 +80,7 @@ const QrCodePage = () => {
       <button
         onClick={handleFinishOrder}
         className='w-full text-[2rem] font-primary font-bold bg-success text-white p-4'
+        id='first-step'
       >
         Finalizar
       </button>

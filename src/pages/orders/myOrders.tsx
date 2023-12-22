@@ -95,6 +95,9 @@ const MyOrdersPage = () => {
   const [selectOption, setSelectOption] = useState<OptionEnum>(
     OptionEnum.ACTIVE,
   );
+  const [tour, setTour] = useState(false);
+  const [run, setRun] = useState(false);
+  const [steps, setSteps] = useState<any>([]);
 
   const router = useRouter();
 
@@ -137,9 +140,12 @@ const MyOrdersPage = () => {
     getMyOrders();
   }, [personStore]);
 
-  const [{ run, steps }, setState] = useState<{ run: boolean; steps: any }>({
-    run: true,
-    steps: [
+  const handleTour = useCallback(() => {
+    setTour(true);
+  }, []);
+
+  useEffect(() => {
+    const joyrideSteps = [
       {
         content: (
           <h2 className='text-2xl'>
@@ -184,8 +190,11 @@ const MyOrdersPage = () => {
         target: "#thirth-step",
         title: "Mis ordenes",
       },
-    ],
-  });
+    ];
+
+    setRun(tour);
+    setSteps(joyrideSteps);
+  }, [tour]);
 
   return (
     <ProtectPage push={router.push}>
@@ -211,6 +220,12 @@ const MyOrdersPage = () => {
           </div>
           <div className='basis-4/5'>Ordenes</div>
         </div>
+        <button
+          className='bg-red-800 text-white w-20 h-8 rounded mx-2'
+          onClick={handleTour}
+        >
+          Tutorial
+        </button>
         <div className='mb-[6rem] grid grid-cols-2 gap-2 bg-enabled p-4'>
           {selectOption === OptionEnum.ACTIVE
             ? ordersActive.map((itm) => (

@@ -15,6 +15,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Joyride from "react-joyride";
 
 const style = {
   position: "absolute" as "absolute",
@@ -44,6 +45,9 @@ export default function typeSelector() {
   >();
   const [dishesNumber, setDishesNumber] = useState(0);
   const [load, setLoad] = useState(true);
+  const [tour, setTour] = useState(false);
+  const [run, setRun] = useState(false);
+  const [steps, setSteps] = useState<any>([]);
 
   const dispatch = useDispatch();
 
@@ -149,8 +153,61 @@ export default function typeSelector() {
     obtainCategories();
   }, []);
 
+  const handleTour = useCallback(() => {
+    setTour(true);
+  }, []);
+
+  useEffect(() => {
+    const joyrideSteps = [
+      {
+        content: (
+          <h2 className='text-2xl'>
+            Esta ventana nos ayudará a capturar el pedido del cliente
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "center",
+        target: "body",
+      },
+      {
+        content: (
+          <h2 className='text-2xl'>Aquí encontramos los tipo de platillos.</h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "bottom",
+        target: "#first-step",
+        title: "Tipos de platillos",
+      },
+      {
+        content: (
+          <h2 className='text-2xl'>
+            Al terminar de tomar la orden, este boton nos llevará a la
+            confirmacion de la orden
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "bottom",
+        target: "#second-step",
+        title: "Mis ordenes",
+      },
+    ];
+
+    setRun(tour);
+    setSteps(joyrideSteps);
+  }, [tour]);
+
   return (
     <ProtectPage push={router.push}>
+      <Joyride
+        continuous
+        callback={() => {}}
+        run={run}
+        steps={steps}
+        scrollToFirstStep
+        hideCloseButton
+        showSkipButton
+        showProgress
+      />
       <div className='relative overflow-x-hidden'>
         <p className='text-[2rem] font-primary h-[120px] grid content-center px-10 w-screen'>
           Seleccione un tipo de platillo
@@ -158,10 +215,20 @@ export default function typeSelector() {
         <button
           className='w-full bg-success text-white text-[2rem] font-secondary'
           onClick={finishOrder}
+          id='second-step'
         >
           Cerrar Orden
         </button>
-        <div className='flex content-center items-center flex-wrap justify-center'>
+        <button
+          className='bg-red-800 text-white w-20 h-8 rounded mx-2 my-2'
+          onClick={handleTour}
+        >
+          Tutorial
+        </button>
+        <div
+          className='flex content-center items-center flex-wrap justify-center'
+          id='first-step'
+        >
           {typeDishes?.map((dishes) => (
             <div className=' max-w-max justify-center'>
               <TypeComp

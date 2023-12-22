@@ -7,13 +7,16 @@ import {
   PowerSettingsNew,
 } from "@mui/icons-material";
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Joyride from "react-joyride";
 
 export default function createIndex() {
   const personStore: IUserRedux = useSelector((store: any) => store.user);
   const router = useRouter();
+  const [tour, setTour] = useState(false);
+  const [run, setRun] = useState(false);
+  const [steps, setSteps] = useState<any>([]);
 
   const handleOrderNavigate = () => {
     router.push("/orders/myOrders");
@@ -31,9 +34,12 @@ export default function createIndex() {
     router.push("/admin");
   }, []);
 
-  const [{ run, steps }, setState] = useState<{ run: boolean; steps: any }>({
-    run: true,
-    steps: [
+  const handleTour = useCallback(() => {
+    setTour(true);
+  }, []);
+
+  useEffect(() => {
+    const joyrideSteps = [
       {
         content: (
           <h2 className='text-2xl'>
@@ -80,8 +86,11 @@ export default function createIndex() {
         target: "#fourth-step",
         title: "Cerrar sesión",
       },
-    ],
-  });
+    ];
+
+    setRun(tour);
+    setSteps(joyrideSteps);
+  }, [tour, personStore.name]);
 
   return (
     <ProtectPage push={router.push}>
@@ -129,6 +138,12 @@ export default function createIndex() {
             </button>
           </div>
         </div>
+        <button
+          className='bg-red-800 text-white w-20 h-8 rounded mx-2 my-2'
+          onClick={handleTour}
+        >
+          Tutorial
+        </button>
       </div>
     </ProtectPage>
   );
