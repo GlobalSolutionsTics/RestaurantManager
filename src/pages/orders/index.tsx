@@ -21,10 +21,14 @@ import { StatusEnum } from "@/enums/states.enum";
 import Head from "next/head";
 import { updateOrderService } from "@/services/order";
 import { TOKEN_ID } from "@/utils/strings";
+import Joyride from "react-joyride";
 
 const HomeOrderPage = () => {
   const [orders, setOrders] = useState<Array<TResponseOrders>>([]);
   const [loading, setLoading] = useState(false);
+  const [tour, setTour] = useState(false);
+  const [run, setRun] = useState(false);
+  const [steps, setSteps] = useState<any>([]);
 
   //router controller
   const router = useRouter();
@@ -123,14 +127,18 @@ const HomeOrderPage = () => {
     if (status === StatusEnum.IN_PROGRESS) {
       return (
         <>
-          <Notifications /> Terminar Orden
+          <div id='fourth-step'>
+            <Notifications /> Terminar Orden
+          </div>
         </>
       );
     }
 
     return (
       <>
-        <KeyboardArrowRight /> Iniciar Orden
+        <div id='third-step'>
+          <KeyboardArrowRight /> Iniciar Orden
+        </div>
       </>
     );
   };
@@ -139,15 +147,118 @@ const HomeOrderPage = () => {
   useEffect(() => {
     autheticate();
   }, []);
+
+  const handleTour = useCallback(() => {
+    setTour(true);
+  }, []);
+
+  useEffect(() => {
+    const joyrideSteps = [
+      {
+        content: (
+          <h2 className='text-2xl'>
+            Bienvenido cocinero, esta ventana nos permitirá visualizar las
+            comandas activas.
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "center",
+        target: "body",
+      },
+      {
+        content: (
+          <h2 className='text-2xl'>
+            Aquí encontramos cuantas comandas se encuentran activas.
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "bottom",
+        target: "#first-step",
+        title: "Tipos de platillos",
+      },
+      {
+        content: (
+          <h2 className='text-2xl'>
+            Aquí encontramos las comandas y su estatus.
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "bottom",
+        target: "#second-step",
+        title: "Tipos de platillos",
+      },
+      {
+        content: (
+          <h2 className='text-2xl'>
+            Cuando se vaya a empezar a preparar una orden se presionará el botón
+            "Iniciar orden".
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "bottom",
+        target: "#third-step",
+        title: "Tipos de platillos",
+      },
+      {
+        content: (
+          <h2 className='text-2xl'>
+            Una vez presionado se cambiará de color la comanda a AMARILLO.
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "center",
+        target: "body",
+      },
+      {
+        content: (
+          <h2 className='text-2xl'>
+            Al terminar de preparar la orden se presionará el botón "Terminar
+            orden"
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "bottom",
+        target: "#fourth-step",
+        title: "Tipos de platillos",
+      },
+      {
+        content: (
+          <h2 className='text-2xl'>
+            Una vez presionado se quitará la comanda de la pantalla.
+          </h2>
+        ),
+        locale: { skip: <strong>OMITIR</strong> },
+        placement: "center",
+        target: "body",
+      },
+    ];
+
+    setRun(tour);
+    setSteps(joyrideSteps);
+  }, [tour]);
+
   return (
     <FullScreen handle={handleFullscreen}>
       <ProtectPage push={router.push}>
+        <Joyride
+          continuous
+          callback={() => {}}
+          run={run}
+          steps={steps}
+          scrollToFirstStep
+          hideCloseButton
+          showSkipButton
+          showProgress
+        />
         <Head>
-          <title>Comandas activas</title>
+          <title id='first-step'>Comandas activas</title>
         </Head>
         <div className='flex flex-col flex-start w-full h-[100vh]'>
           <div className='flex flex-row justify-between w-full bg-blue-dark h-[3.5rem]'>
-            <div className='text-white p-4 text-[1rem] font-primary'>
+            <div
+              id='first-step'
+              className='text-white p-4 text-[1rem] font-primary'
+            >
               <Checklist /> Comandas activas ({orders.length})
             </div>
             <div className='text-white p-4'>
@@ -159,10 +270,21 @@ const HomeOrderPage = () => {
               </button>
             </div>
           </div>
-          <div className='bg-black h-autp min-h-[calc(100vh_-_3.5rem)] p-6 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4 overflow-y-auto overflow-x-hidden'>
+          <div className='bg-black'>
+            <button
+              className='bg-red-800 text-white w-20 h-8 rounded ml-2 mt-2'
+              onClick={handleTour}
+            >
+              Tutorial
+            </button>
+          </div>
+          <div
+            id='second-step'
+            className='bg-black h-autp min-h-[calc(100vh_-_3.5rem)] p-6 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4 overflow-y-auto overflow-x-hidden'
+          >
             {orders.length > 0 &&
               orders.map((itm) => (
-                <div key={itm.uuid} className='min-h-[400px] rounded-lg mb-4'>
+                <div key={itm.uuid} className='min-h-[400px] rounded-lg mb-16'>
                   <div
                     className={`transition ease-in-out delay-150 ${getColorForHeader(
                       itm.status,
