@@ -64,6 +64,7 @@ export default function tableSelector() {
   }, [tour]);
   return (
     <ProtectPage push={router.push}>
+
       <Joyride
         continuous
         callback={() => {}}
@@ -103,6 +104,7 @@ export default function tableSelector() {
             ))}
           </div>
         )}
+
       </div>
     </ProtectPage>
   );

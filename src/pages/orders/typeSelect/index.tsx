@@ -45,9 +45,11 @@ export default function typeSelector() {
   >();
   const [dishesNumber, setDishesNumber] = useState(0);
   const [load, setLoad] = useState(true);
+
   const [tour, setTour] = useState(false);
   const [run, setRun] = useState(false);
   const [steps, setSteps] = useState<any>([]);
+
 
   const dispatch = useDispatch();
 
@@ -209,7 +211,7 @@ export default function typeSelector() {
         showProgress
       />
       <div className='relative overflow-x-hidden'>
-        <p className='text-[2rem] font-primary h-[120px] grid content-center px-10 w-screen'>
+        <p className='text-[2rem] bg-neutral-300 font-primary h-[120px] grid content-center px-10 w-screen'>
           Seleccione un tipo de platillo
         </p>
         <button
