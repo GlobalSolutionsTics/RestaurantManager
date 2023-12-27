@@ -46,6 +46,7 @@ export default function typeSelector() {
   const [load, setLoad] = useState(true);
 
   const dispatch = useDispatch();
+  const dishStore = useSelector((store: any) => store.ordersDishes);
 
   const finishOrder = () => {
     const numberOfDishes = dishesDescription.reduce((prev, itm) => {
@@ -58,8 +59,6 @@ export default function typeSelector() {
     dispatch(setDishesDescriptionRedux(dishesDescription));
     router.push("/orders/finishOrder");
   };
-
-  console.log("Dishes description:", dishesDescription);
 
   const toggleMenu = () => setShowItems(!showItems);
   /**
@@ -144,9 +143,22 @@ export default function typeSelector() {
       setDishesNumber(nextDishes);
     }
   };
+  //Check is selected
+  const isThisSelected = (id: string): boolean => {
+    const find = dishesDescription.findIndex((itm) => itm.type === id);
+    if (find !== -1) return true;
+    return false;
+  };
+  //Initialization
+  const verifyTable = () => {
+    if (dishStore.tableNumber === 0) {
+      router.push("/orders/tableSelect");
+    }
+  };
 
   useEffect(() => {
     obtainCategories();
+    verifyTable();
   }, []);
 
   return (
@@ -172,6 +184,7 @@ export default function typeSelector() {
                 content={`${dishes.image}`}
                 onClick={() => getDishesInfo(dishes)}
                 className={`h-[150px] w-[150px] bg-neutral-400 text-2xl p-2 text-center`}
+                isSelected={isThisSelected(dishes.id)}
               />
             </div>
           ))}

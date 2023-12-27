@@ -10,3 +10,11 @@ export type TOrder = {
   uuid: string;
   waiter: string;
 };
+
+export type UOrderReq = {
+  modifications: TOrder;
+  tableNumber: number;
+  status: StatusEnum;
+  waiter: string;
+  applicationStatus: string;
+};
