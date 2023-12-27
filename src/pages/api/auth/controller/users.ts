@@ -34,7 +34,7 @@ export const loginUsers = async (user: string, pass: string) => {
         type: find.type,
         uuid: find.uuid,
       };
-      const token = jwt.sign(payload, SEED_OF_JWT, { expiresIn: "48h" });
+      const token = jwt.sign(payload, SEED_OF_JWT, { expiresIn: "3m" });
       return { token: token, type: find.type };
     } else {
       return false;

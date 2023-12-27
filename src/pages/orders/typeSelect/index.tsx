@@ -43,6 +43,7 @@ export default function typeSelector() {
     TMenuResponse & { number?: number; image?: string }
   >();
   const [dishesNumber, setDishesNumber] = useState(0);
+  const [load, setLoad] = useState(true);
 
   const dispatch = useDispatch();
   const dishStore = useSelector((store: any) => store.ordersDishes);
@@ -93,9 +94,14 @@ export default function typeSelector() {
     if (dish.image) {
       setImageItem(dish.image);
     }
-    const dishes = await getDishService(dish.id);
-    if (dishes) {
-      setDishesList(dishes);
+    try {
+      setLoad(true);
+      const dishes = await getDishService(dish.id);
+      if (dishes) {
+        setDishesList(dishes);
+      }
+    } finally {
+      setLoad(false);
     }
   };
 
@@ -158,7 +164,7 @@ export default function typeSelector() {
   return (
     <ProtectPage push={router.push}>
       <div className='relative overflow-x-hidden'>
-        <p className='text-[2rem] font-primary h-[120px] grid content-center px-10 w-screen'>
+        <p className='text-[2rem] bg-neutral-300 font-primary h-[120px] grid content-center px-10 w-screen'>
           Seleccione un tipo de platillo
         </p>
         <button
@@ -204,6 +210,14 @@ export default function typeSelector() {
                   </div>
                 </div>
                 <div className='w-full grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4 p-4 md:p-6'>
+                  {load && (
+                    <div className='fixed w-full h-full bg-white top-0 left-0 flex items-center justify-center'>
+                      <div className='grid justify-items-center'>
+                        <div className='my-2'>Cargando...</div>
+                        <div className='loader my-2'></div>
+                      </div>
+                    </div>
+                  )}
                   {dishesList.length > 0 ? (
                     dishesList.map((dish) => (
                       <Dishes
