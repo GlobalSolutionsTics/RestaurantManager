@@ -8,6 +8,7 @@ export enum StatusEnum {
 }
 
 export enum StatusApplicationEnum {
+  SEND = "ENVIADA",
   ACTIVE = "ACTIVA",
-  CLOSE = "CERRADA",
+  REJECTED = "RECHAZADA",
 }
