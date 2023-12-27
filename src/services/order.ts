@@ -86,3 +86,21 @@ export const sendApplicationOrderEdit = async (
     return false;
   }
 };
+
+export const getApplicationList = async (token: string) => {
+  const config = {
+    method: HttpMethodsEnum.GET,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  };
+  try {
+    const consult = await fetch(`${URL_API_ORDER}/applications`, config);
+    const response = await consult.json();
+    return response.data;
+  } catch (e) {
+    console.log("Error al obtener las solicitud:", e);
+    return false;
+  }
+};

@@ -23,7 +23,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
             const body: UOrderReq = req.body;
             await insertInDB(DB_ORDERS_APPLICATION, "activas", {
               ...body,
-              applicationStatus: StatusApplicationEnum.ACTIVE,
+              applicationStatus: StatusApplicationEnum.SEND,
             });
             res
               .status(201)

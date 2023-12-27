@@ -1,6 +1,4 @@
 import { firestore } from "@firebase/config";
-import { getAuth, signInAnonymously } from "firebase/auth";
-import { child, getDatabase, ref } from "firebase/database";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 
@@ -43,6 +41,21 @@ export const insertInDB = async (
     }
   } catch (e) {
     console.log("Error al insertar en firestore:", e);
+    return false;
+  }
+};
+
+export const getInDB = async (dbName: string, collection: any) => {
+  try {
+    const dbRef = doc(firestore, dbName, collection);
+    const dbCollection = await getDoc(dbRef);
+    if (dbCollection.exists()) {
+      const data = dbCollection.data();
+      console.log("data:", data);
+      return data.data;
+    }
+    return false;
+  } catch (e) {
     return false;
   }
 };

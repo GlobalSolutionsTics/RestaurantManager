@@ -3,6 +3,7 @@ import { IUserRedux } from "@/store/slices/user.slice";
 import { TOKEN_ID } from "@/utils/strings";
 import {
   AddOutlined,
+  GridView,
   ListAltOutlined,
   PowerSettingsNew,
 } from "@mui/icons-material";
@@ -21,6 +22,10 @@ export default function createIndex() {
 
   const handleNavigation = () => {
     router.push("/orders/tableSelect");
+  };
+
+  const handleApplicationNavigation = () => {
+    router.push("/orders/myApplications");
   };
 
   const handleClose = useCallback(() => {
@@ -43,7 +48,7 @@ export default function createIndex() {
           </button>
         </div>
       </div>
-      <div className='h-[calc(100vh_-_70px)] w-full'>
+      <div className='h-[calc(100vh_-_92px)] w-full'>
         <div className='m-auto flex flex-col items-center w-full p-4 md:p-6 lg:p-8'>
           <div className='relative bg-whites'>
             <div className='h-[150px] w-[150px] rounded-full'>
@@ -66,12 +71,20 @@ export default function createIndex() {
               12
             </div>
           </div>
-          <div className='py-10 w-full'>
+          <div className='py-4 w-full'>
             <button
               onClick={handleOrderNavigate}
               className='disabled:bg-neutral-400 w-full h-[80px] font-primary text-[2rem] bg-blue text-white'
             >
               <ListAltOutlined /> Mis ordenes
+            </button>
+          </div>
+          <div className='py-4 w-full'>
+            <button
+              onClick={handleApplicationNavigation}
+              className='bg-neutral-400 w-full h-[80px] font-primary text-[2rem] bg-waiting-dark hover:bg-waiting hover:text-dark text-white'
+            >
+              <GridView /> Mis solicitudes
             </button>
           </div>
           <div className='py-4 w-full'>
