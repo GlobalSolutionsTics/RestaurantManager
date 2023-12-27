@@ -6,3 +6,8 @@ export enum StatusEnum {
   EDITED = "ORDEN EDITADA",
   CLOSED = "ORDEN CERRADA",
 }
+
+export enum StatusApplicationEnum {
+  ACTIVE = "ACTIVA",
+  CLOSE = "CERRADA",
+}

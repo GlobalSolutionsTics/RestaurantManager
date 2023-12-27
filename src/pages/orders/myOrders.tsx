@@ -27,9 +27,11 @@ enum OptionEnum {
 
 type Props = {
   element: TResponseOrders;
+  push: (page: string) => void;
 };
 
-const ToggleColumn = ({ element }: Props) => {
+const ToggleColumn = ({ element, push }: Props) => {
+  const EDIT_PAGE = `/orders/edit/${element.uuid}`;
   //Color controller
   const getColorForHeader = (status: string) => {
     if (status === StatusEnum.IN_PROGRESS) {
@@ -49,6 +51,10 @@ const ToggleColumn = ({ element }: Props) => {
     }
 
     return "bg-danger hover:bg-danger-dark text-white";
+  };
+
+  const handleEdit = () => {
+    push(EDIT_PAGE);
   };
   return (
     <div className='w-full rounded-lg shadow-lg bg-white flex flex-col justify-between'>
@@ -79,6 +85,7 @@ const ToggleColumn = ({ element }: Props) => {
           className={`p-1 w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
             element.status,
           )} `}
+          onClick={handleEdit}
         >
           <Edit /> Editar
         </button>
@@ -114,7 +121,8 @@ const MyOrdersPage = () => {
         );
         const filterElementsActive = elements.filter(
           (itm) =>
-            itm.status !== StatusEnum.ORDER_READY &&
+            (itm.status === StatusEnum.SEND ||
+              itm.status === StatusEnum.IN_PROGRESS) &&
             itm.waiter === personStore.uuid,
         );
         const filterElementsReady = elements.filter(
@@ -152,10 +160,10 @@ const MyOrdersPage = () => {
         <div className='mb-[6rem] grid grid-cols-2 gap-2 bg-enabled p-4'>
           {selectOption === OptionEnum.ACTIVE
             ? ordersActive.map((itm) => (
-                <ToggleColumn key={itm.uuid} element={itm} />
+                <ToggleColumn push={router.push} key={itm.uuid} element={itm} />
               ))
             : ordersReady.map((itm) => (
-                <ToggleColumn key={itm.uuid} element={itm} />
+                <ToggleColumn push={router.push} key={itm.uuid} element={itm} />
               ))}
         </div>
         <div className='fixed flex flex-row justify-between w-full bottom-0 bg-white'>
