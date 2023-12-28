@@ -6,6 +6,7 @@ import { getCategories, getDishService } from "@/services/dishes";
 import {
   setDishesDescriptionRedux,
   setDishesNumberRedux,
+  setOrderIdRedux,
   setTableOrder,
 } from "@/store/slices/orders.slice";
 import { TCatalog } from "@/types/catalog.types";
@@ -166,6 +167,7 @@ const EditOrderPage = () => {
         const data = arrayOrders[id];
 
         dispatch(setTableOrder(data.tableNumber));
+        dispatch(setOrderIdRedux(data.uuid));
         setDishState(data.status);
         setTableNumber(data.tableNumber);
         setDishesDescription(data.dishesDescription);

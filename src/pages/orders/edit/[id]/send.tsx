@@ -47,6 +47,7 @@ const SendOrderPage = () => {
         dishes: dishStore.dishes,
         name: dishStore.name,
         tableNumber: dishStore.tableNumber,
+        orderUUID: dishStore.id,
       },
       waiter: userStore.uuid,
     };

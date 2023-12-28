@@ -3,6 +3,7 @@ import { updateOrderService } from "@/services/order";
 import { TResponseOrders } from "@/types/menu.types";
 import { currencyFormat } from "@/utils/formats";
 import { TOKEN_ID } from "@/utils/strings";
+import { URL_BASE } from "@/utils/urls";
 import {
   AssignmentTurnedIn,
   DeleteForeverOutlined,
@@ -26,6 +27,15 @@ const TicketAdmin = ({ itm, handlePrintData }: TProps) => {
       await updateOrderService(token, itm.uuid, StatusEnum.CLOSED);
     }
     setLoading(false);
+  };
+
+  const handlePrint = (event: any) => {
+    event.preventDefault();
+    window.open(
+      `${URL_BASE}/admin/orders/${itm.uuid}/print`,
+      "",
+      "width=800,height=600",
+    );
   };
 
   return (
@@ -62,7 +72,7 @@ const TicketAdmin = ({ itm, handlePrintData }: TProps) => {
         <div className=' w-full mt-4'>
           <button
             className='w-full bg-success text-white font-primary p-2'
-            onClick={() => handlePrintData(itm)}
+            onClick={(event) => handlePrint(event)}
           >
             <PrintOutlined /> Imprimir
           </button>
@@ -71,12 +81,6 @@ const TicketAdmin = ({ itm, handlePrintData }: TProps) => {
             onClick={handleFinishOrder}
           >
             <AssignmentTurnedIn /> Terminar
-          </button>
-          <button className='w-full bg-blue text-white font-primary p-2'>
-            <EditOutlined /> Editar
-          </button>
-          <button className='w-full bg-danger text-white font-primary p-2'>
-            <DeleteForeverOutlined /> Eliminar
           </button>
         </div>
       )}

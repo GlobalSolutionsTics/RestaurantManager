@@ -41,6 +41,9 @@ const config: Config = {
         "waiting-light": "#FFFD70",
         waiting: "#EFEC00",
         "waiting-dark": "#C1BF15",
+        "orange-light": "#FFD9A2",
+        orange: "#FFA626",
+        "orange-dark": "#D07B00",
       },
       fontFamily: {
         primary: ["'Jost'", "Arial", "sans-serif"],
