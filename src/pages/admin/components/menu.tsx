@@ -3,6 +3,7 @@ import {
   FilterFramesOutlined,
   KitchenOutlined,
   MiscellaneousServicesOutlined,
+  Notifications,
   PeopleOutline,
   PowerSettingsNewOutlined,
   RequestQuote,
@@ -63,6 +64,9 @@ const MenuAdmin = ({ basePath, router }: Props) => {
         <MenuOption path={basePath} href={"/admin/dishes"}>
           <SetMealOutlined className='mr-4' /> Platillos
         </MenuOption>
+        <MenuOption path={basePath} href={"/admin/applications"}>
+          <Notifications className='mr-4' /> Notificaciones
+        </MenuOption>
         <MenuOption path={basePath} href={"/admin/users"}>
           <PeopleOutline className='mr-4' /> Usuarios
         </MenuOption>
@@ -88,6 +92,9 @@ const MenuAdmin = ({ basePath, router }: Props) => {
       <div className='lg:hidden'>
         <MenuOption path={basePath} href={"/admin/dishes"}>
           <SetMealOutlined fontSize='large' />
+        </MenuOption>
+        <MenuOption path={basePath} href={"/admin/applications"}>
+          <Notifications className='mr-4' />
         </MenuOption>
         <MenuOption path={basePath} href={"/admin/users"}>
           <PeopleOutline fontSize='large' />

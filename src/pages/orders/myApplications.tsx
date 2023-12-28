@@ -51,7 +51,6 @@ const MyApplicationsPage = () => {
     if (token) {
       const data = await getApplicationList(token);
       setListApplications(data);
-      console.log(data);
     }
   }, []);
 

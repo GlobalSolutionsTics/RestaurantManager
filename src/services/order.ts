@@ -104,3 +104,32 @@ export const getApplicationList = async (token: string) => {
     return false;
   }
 };
+
+export const acceptEditService = async (token: string, body: any) => {
+  try {
+    const headers = {
+      method: HttpMethodsEnum.PUT,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        applicationId: body.applicationId,
+        modifications: body.modifications,
+      }),
+    };
+    const petition = await fetch(
+      `${URL_API_ORDER}/update/accept-edit`,
+      headers,
+    );
+    const response = await petition.json();
+    if (response.error) {
+      return false;
+    } else {
+      return true;
+    }
+  } catch (e: any) {
+    console.error("Error al actualizar la configuracion");
+    return false;
+  }
+};

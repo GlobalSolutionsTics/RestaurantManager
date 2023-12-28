@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { useReactToPrint } from "react-to-print";
-import MenuAdmin from "./components/menu";
+import MenuAdmin from "../components/menu";
 import Head from "next/head";
-import ProtectPage from "./components/protectPage";
+import ProtectPage from "../components/protectPage";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { onValue, ref } from "firebase/database";
@@ -12,7 +12,7 @@ import { TResponseOrders } from "@/types/menu.types";
 import { Box, Modal } from "@mui/material";
 import Image from "next/image";
 import { currencyFormat, textToString } from "@/utils/formats";
-import TicketAdmin from "../../components/ticketAdmin";
+import TicketAdmin from "../../../components/ticketAdmin";
 import { StatusEnum } from "@/enums/states.enum";
 
 const style = {

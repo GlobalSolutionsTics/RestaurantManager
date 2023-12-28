@@ -11,4 +11,5 @@ export enum StatusApplicationEnum {
   SEND = "ENVIADA",
   ACTIVE = "ACTIVA",
   REJECTED = "RECHAZADA",
+  CLOSE = "CERRADA",
 }

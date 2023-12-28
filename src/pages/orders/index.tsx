@@ -71,6 +71,8 @@ const HomeOrderPage = () => {
       nextStatus = StatusEnum.IN_PROGRESS;
     } else if (order.status === StatusEnum.IN_PROGRESS) {
       nextStatus = StatusEnum.ORDER_READY;
+    } else if (order.status === StatusEnum.EDITED) {
+      nextStatus = StatusEnum.IN_PROGRESS;
     }
 
     //Send a next status
@@ -93,6 +95,8 @@ const HomeOrderPage = () => {
       return "bg-waiting-dark text-dark";
     } else if (status === StatusEnum.ORDER_READY) {
       return "bg-success-dark text-white";
+    } else if (status === StatusEnum.EDITED) {
+      return "bg-orange-dark text-dark";
     }
 
     return "bg-danger-dark text-white";
@@ -103,6 +107,8 @@ const HomeOrderPage = () => {
       return "bg-waiting-dark hover:bg-waiting-dark hover:text-dark";
     } else if (status === StatusEnum.ORDER_READY) {
       return "bg-success-dark text-white hidden";
+    } else if (status === StatusEnum.EDITED) {
+      return "bg-orange-dark hover:bg-orange hover:text-dark";
     }
 
     return "bg-danger hover:bg-danger-dark text-white";
@@ -159,10 +165,10 @@ const HomeOrderPage = () => {
               </button>
             </div>
           </div>
-          <div className='bg-black h-autp min-h-[calc(100vh_-_3.5rem)] p-6 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4 overflow-y-auto overflow-x-hidden'>
+          <div className='bg-black h-auto min-h-[calc(100vh_-_3.5rem)] p-6 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4 overflow-y-auto overflow-x-hidden'>
             {orders.length > 0 &&
               orders.map((itm) => (
-                <div key={itm.uuid} className='min-h-[400px] rounded-lg mb-4'>
+                <div key={itm.uuid} className='rounded-lg mb-4'>
                   <div
                     className={`transition ease-in-out delay-150 ${getColorForHeader(
                       itm.status,
