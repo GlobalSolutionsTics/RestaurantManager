@@ -21,6 +21,7 @@ import { StatusEnum } from "@/enums/states.enum";
 import Head from "next/head";
 import { updateOrderService } from "@/services/order";
 import { TOKEN_ID } from "@/utils/strings";
+import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 
 const HomeOrderPage = () => {
   const [orders, setOrders] = useState<Array<TResponseOrders>>([]);
@@ -174,7 +175,10 @@ const HomeOrderPage = () => {
                       itm.status,
                     )} text-[1.5rem] font-secondary w-full rounded-t-lg p-4`}
                   >
-                    {getIconHeader(itm.status)} Mesa {itm.tableNumber}
+                    {getIconHeader(itm.status)}{" "}
+                    {itm.tableNumber === DEFAULT_TABLE_LLEVAR
+                      ? "Para llevar"
+                      : "Mesa " + itm.tableNumber}
                     <p className='font-secondary text-[1rem]'>
                       Estatus:{" "}
                       {itm.status === StatusEnum.SEND

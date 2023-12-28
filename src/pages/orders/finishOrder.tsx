@@ -1,5 +1,6 @@
 import { createOrder } from "@/services/order";
 import { IOrderSlice, setOrderIdRedux } from "@/store/slices/orders.slice";
+import { TextField, TextareaAutosize } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -55,12 +56,22 @@ const FinishOrderPage = () => {
             <span className='font-primary text-[1.5rem] mb-2'>
               ¿Cuantos platillos van en la orden?
             </span>
-            {orderStore.dishesDescription.map((itm) => (
-              <div className='w-full flex justify-between my-4 bg-enabled py-4 px-2'>
-                <div className='text-secondary text-[1.5rem]'>{itm.name}</div>
-                <div>{itm.number}</div>
-              </div>
-            ))}
+            <div className='flex flex-col'>
+              {orderStore.dishesDescription.map((itm) => (
+                <div className='w-full flex justify-between bg-enabled py-2 px-2'>
+                  <div className='text-secondary text-[1rem]'>{itm.name}</div>
+                  <div>{itm.number}</div>
+                </div>
+              ))}
+            </div>
+            <TextField
+              id='anotations-textarea'
+              title='Anotaciones'
+              placeholder='Anotaciones'
+              label='Anotaciones'
+              maxRows={4}
+              variant='filled'
+            />
           </div>
         </div>
         {loading ? (

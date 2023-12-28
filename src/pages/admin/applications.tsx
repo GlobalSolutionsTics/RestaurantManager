@@ -11,6 +11,7 @@ import { acceptEditService, getApplicationList } from "@/services/order";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { Button } from "@mui/material";
+import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 
 type Props = {
   element: TResponseOrders;
@@ -84,7 +85,10 @@ const ToggleColumn = ({ element, itemComplete, acceptFn }: Props) => {
           )} text-white rounded-t-lg`}
         >
           <div className='text-[1rem] basis-4/6'>
-            Mesa {element.tableNumber}
+            {element.tableNumber === DEFAULT_TABLE_LLEVAR && "Para llevar"}
+            {element.tableNumber !== DEFAULT_TABLE_LLEVAR && (
+              <>Mesa {element.tableNumber}</>
+            )}
           </div>
           <div className='text-[1rem] basis-2/6'>
             <RoomService /> {element.dishes}

@@ -4,6 +4,7 @@ import { listConfigurationService } from "@/services/config";
 import { setTableOrder } from "@/store/slices/orders.slice";
 import { TConifg } from "@/types/configuration.types";
 import { TResponseOrders } from "@/types/menu.types";
+import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { TOKEN_ID } from "@/utils/strings";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
@@ -55,7 +56,6 @@ export default function tableSelector() {
         );
         const mapTables = filters.map((itm) => itm.tableNumber);
         setTablesActives(mapTables);
-        console.log(mapTables);
       }
     });
   }, []);
@@ -78,6 +78,15 @@ export default function tableSelector() {
             </div>
           ) : (
             <div className='grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4 overflow-y-auto'>
+              <div className='grid justify-items-center'>
+                <button
+                  onClick={() => handleNavigation(Number(DEFAULT_TABLE_LLEVAR))}
+                  className={` bg-blue-dark text-white text-2xl font-secondary w-[150px] h-[150px]`}
+                  disabled={tablesActives.includes(DEFAULT_TABLE_LLEVAR)}
+                >
+                  Para llevar
+                </button>
+              </div>
               {kitchen.map((itm, index) => (
                 <div key={index} className='grid justify-items-center'>
                   <button

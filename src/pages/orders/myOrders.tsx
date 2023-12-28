@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import ProtectPage from "../admin/components/protectPage";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 
 enum OptionEnum {
   ACTIVE = "ACTIVES",
@@ -65,7 +66,10 @@ const ToggleColumn = ({ element, push }: Props) => {
           )} text-white rounded-t-lg`}
         >
           <div className='text-[1rem] basis-4/6'>
-            Mesa {element.tableNumber}
+            {element.tableNumber === DEFAULT_TABLE_LLEVAR && "Para llevar"}
+            {element.tableNumber !== DEFAULT_TABLE_LLEVAR && (
+              <div> Mesa {element.tableNumber}</div>
+            )}
           </div>
           <div className='text-[1rem] basis-2/6'>
             <RoomService /> {element.dishes}

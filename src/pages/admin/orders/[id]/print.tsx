@@ -1,4 +1,5 @@
 import { TResponseOrders } from "@/types/menu.types";
+import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { currencyFormat, textToString } from "@/utils/formats";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
@@ -61,7 +62,11 @@ const PrintOrderPage = () => {
         </p>
         <p className='font-secondary text-center mb-2'>COMPROBANTE DE PAGO</p>
         <div className='gird grid-cols-3 font-secondary gap-3 mb-2'>
-          <div>Mesa {information?.tableNumber}</div>
+          {information?.tableNumber === DEFAULT_TABLE_LLEVAR &&
+            "Orden para llevar"}
+          {information?.tableNumber !== DEFAULT_TABLE_LLEVAR && (
+            <>Mesa {information?.tableNumber}</>
+          )}
         </div>
         <div className='grid grid-cols-4 font-secondary gap-4'>
           <div className='font-bold'>Cant.</div>

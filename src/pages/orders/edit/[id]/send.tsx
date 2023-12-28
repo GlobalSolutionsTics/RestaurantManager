@@ -5,6 +5,7 @@ import { sendApplicationOrderEdit, updateOrderService } from "@/services/order";
 import { IOrderSlice } from "@/store/slices/orders.slice";
 import { IUserRedux } from "@/store/slices/user.slice";
 import { TMenuResponse, TResponseOrders } from "@/types/menu.types";
+import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { TOKEN_ID } from "@/utils/strings";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
@@ -132,7 +133,8 @@ const SendOrderPage = () => {
           </div>
           <div className='basis-2/5 flex items-center font-bold'>
             <RoomService fontSize='large' className='mr-4' />
-            Mesa {tableNumber}
+            {tableNumber === DEFAULT_TABLE_LLEVAR && <>Para llevar</>}
+            {tableNumber !== DEFAULT_TABLE_LLEVAR && <>Mesa {tableNumber}</>}
           </div>
           <div className='!text-[0.75rem] !font-bold basis-2/5'>
             <p className='text-center'>Estatus:</p>

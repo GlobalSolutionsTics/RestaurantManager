@@ -14,6 +14,7 @@ import Image from "next/image";
 import { currencyFormat, textToString } from "@/utils/formats";
 import TicketAdmin from "../../../components/ticketAdmin";
 import { StatusEnum } from "@/enums/states.enum";
+import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 
 const style = {
   position: "absolute" as "absolute",
@@ -149,7 +150,11 @@ const OrdersPage = () => {
               COMPROBANTE DE PAGO
             </p>
             <div className='gird grid-cols-3 font-secondary gap-3 mb-2'>
-              <div>Mesa {dataOrderSelected.tableNumber}</div>
+              {dataOrderSelected.tableNumber === DEFAULT_TABLE_LLEVAR &&
+                "Orden para llevar"}
+              {dataOrderSelected.tableNumber !== DEFAULT_TABLE_LLEVAR && (
+                <>Mesa {dataOrderSelected.tableNumber}</>
+              )}
             </div>
             <div className='grid grid-cols-4 font-secondary gap-4'>
               <div className='font-bold'>Cant.</div>
