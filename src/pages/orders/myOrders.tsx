@@ -122,7 +122,8 @@ const MyOrdersPage = () => {
         const filterElementsActive = elements.filter(
           (itm) =>
             (itm.status === StatusEnum.SEND ||
-              itm.status === StatusEnum.IN_PROGRESS) &&
+              itm.status === StatusEnum.IN_PROGRESS ||
+              itm.status === StatusEnum.EDITED) &&
             itm.waiter === personStore.uuid,
         );
         const filterElementsReady = elements.filter(

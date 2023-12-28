@@ -52,7 +52,7 @@ const principalDecimal = (rest: number) => {
 
 const decimals = (val: number) => {
   const rest = val % 10;
-  const divi = Math.round(val / 10);
+  const divi = Math.floor(val / 10);
   switch (divi) {
     case 1:
       return principalDecimal(rest);

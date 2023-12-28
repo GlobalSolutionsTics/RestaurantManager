@@ -192,7 +192,7 @@ const HomeOrderPage = () => {
                           Cant.
                         </div>
                       </div>
-                      {itm.dishesDescription.map((dish) => (
+                      {itm.dishesDescription?.map((dish) => (
                         <div
                           key={dish.uuid}
                           className='w-full py-2 px-4 flex flex-row'
