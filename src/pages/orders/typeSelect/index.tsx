@@ -150,6 +150,11 @@ export default function typeSelector() {
     return false;
   };
   //Initialization
+  const initData = () => {
+    if (dishStore.tableNumber !== 0) {
+      setDishesDescription(dishStore.dishesDescription);
+    }
+  };
   const verifyTable = () => {
     if (dishStore.tableNumber === 0) {
       router.push("/orders/tableSelect");
@@ -159,6 +164,7 @@ export default function typeSelector() {
   useEffect(() => {
     obtainCategories();
     verifyTable();
+    initData();
   }, []);
 
   return (

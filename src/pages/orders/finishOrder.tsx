@@ -52,7 +52,7 @@ const FinishOrderPage = () => {
         </div>
         <div className='w-full'>
           <div className='flex flex-col flex-start mx-8 my-4'>
-            <span className='font-primary text-[2rem] mb-2'>
+            <span className='font-primary text-[1.5rem] mb-2'>
               ¿Cuantos platillos van en la orden?
             </span>
             {orderStore.dishesDescription.map((itm) => (
@@ -69,8 +69,9 @@ const FinishOrderPage = () => {
           </div>
         ) : (
           <button
-            className='text-[2rem] p-4 text-center w-full bg-success fixed bottom-0 text-white font-primary font-bold'
+            className='text-[2rem] p-4 text-center w-full bg-success disabled:!bg-enabled disabled:!text-dark fixed bottom-0 text-white font-primary font-bold'
             onClick={handleSendOrder}
+            disabled={orderStore.dishesDescription.length === 0}
           >
             Enviar orden
           </button>
