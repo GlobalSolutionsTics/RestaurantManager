@@ -8,6 +8,7 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { getApplicationList } from "@/services/order";
 import { TOKEN_ID } from "@/utils/strings";
+import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 
 type PropsColumn = {
   tableNumber: number;
@@ -24,7 +25,8 @@ const ColColumn = ({ tableNumber, status, detail }: PropsColumn) => {
         className='px-4 py-2 flex flex-row justify-between hover:cursor-pointer'
         onClick={toggleDetail}
       >
-        <div>Mesa {tableNumber}</div>
+        {tableNumber === DEFAULT_TABLE_LLEVAR && <div>Para llevar</div>}
+        {tableNumber !== DEFAULT_TABLE_LLEVAR && <div>Mesa {tableNumber}</div>}
         <div>Estatus:{status}</div>
         {!isOpen ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
       </div>

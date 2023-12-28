@@ -1,6 +1,7 @@
 import { StatusEnum } from "@/enums/states.enum";
 import { updateOrderService } from "@/services/order";
 import { TResponseOrders } from "@/types/menu.types";
+import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { currencyFormat } from "@/utils/formats";
 import { TOKEN_ID } from "@/utils/strings";
 import { URL_BASE } from "@/utils/urls";
@@ -42,7 +43,10 @@ const TicketAdmin = ({ itm, handlePrintData }: TProps) => {
     <div className='flex flex-col justify-between w-full bg-enabled mb-1 lg:mb-2 border-2 border-blue-dark pt-1 relative'>
       <div className='w-full'>
         <div className='font-secondary w-full text-[1.5rem] px-2'>
-          Orden de la mesa {itm.tableNumber}
+          {itm.tableNumber === DEFAULT_TABLE_LLEVAR && "Orden para llevar"}
+          {itm.tableNumber !== DEFAULT_TABLE_LLEVAR && (
+            <>Orden de la mesa {itm.tableNumber}</>
+          )}
         </div>
         <div className='font-secondary w-full px-2'>Platillos {itm.dishes}</div>
         {itm.dishesDescription?.map((itm) => (

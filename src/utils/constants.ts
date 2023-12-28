@@ -1,0 +1,1 @@
+export const DEFAULT_TABLE_LLEVAR = 999999999;
