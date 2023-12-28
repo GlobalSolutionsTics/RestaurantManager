@@ -162,7 +162,7 @@ const HomeOrderPage = () => {
           <div className='bg-black h-autp min-h-[calc(100vh_-_3.5rem)] p-6 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4 overflow-y-auto overflow-x-hidden'>
             {orders.length > 0 &&
               orders.map((itm) => (
-                <div key={itm.uuid} className='min-h-[400px] rounded-lg mb-4'>
+                <div key={itm.uuid} className='min-h-[400px] rounded-lg mb-20'>
                   <div
                     className={`transition ease-in-out delay-150 ${getColorForHeader(
                       itm.status,

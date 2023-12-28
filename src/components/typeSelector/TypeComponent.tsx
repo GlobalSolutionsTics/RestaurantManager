@@ -3,9 +3,11 @@ import { SectionProps } from "../types/section.type";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { URL_BASE } from "@/utils/urls";
+import { CheckCircle } from "@mui/icons-material";
 
 type TComp = {
   onClick: () => void;
+  isSelected: boolean;
 };
 
 const TypeComp: FC<SectionProps & TComp> = ({
@@ -14,6 +16,7 @@ const TypeComp: FC<SectionProps & TComp> = ({
   description,
   image,
   onClick,
+  isSelected,
 }) => {
   return (
     <section onClick={onClick} className={`relative grid ${className} m-4`}>
@@ -21,6 +24,8 @@ const TypeComp: FC<SectionProps & TComp> = ({
       <div className='absolute top-0 bottom-o bg-black z-10 content-space w-full h-full opacity-60'></div>
       <div className='m-auto absoulte w-full h-full z-20 font-primary font-bold text-white'>
         {title}
+
+        {isSelected && <CheckCircle />}
       </div>
     </section>
   );

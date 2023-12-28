@@ -11,7 +11,9 @@ export const loginService = async (user: string, pass: string) => {
     const header = {
       method: HttpMethodsEnum.POST,
       body: JSON.stringify(payload),
-      "Content-Type": ContentTypeEnum.JSON,
+      headers: {
+        "Content-Type": ContentTypeEnum.JSON,
+      },
     };
     const petition = await fetch(`${URL_API_AUTH}/login`, header);
     if (petition.status === 200) {

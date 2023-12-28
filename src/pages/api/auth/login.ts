@@ -4,7 +4,7 @@ import { loginUsers } from "./controller/users";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const method = req.method;
-  const body = JSON.parse(req.body);
+  const body = req.body;
   if (method === HttpMethodsEnum.POST) {
     const login = await loginUsers(body.user, body.password);
     if (login) {

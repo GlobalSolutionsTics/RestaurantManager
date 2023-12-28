@@ -43,8 +43,10 @@ export default function typeSelector() {
     TMenuResponse & { number?: number; image?: string }
   >();
   const [dishesNumber, setDishesNumber] = useState(0);
+  const [load, setLoad] = useState(true);
 
   const dispatch = useDispatch();
+  const dishStore = useSelector((store: any) => store.ordersDishes);
 
   const finishOrder = () => {
     const numberOfDishes = dishesDescription.reduce((prev, itm) => {
@@ -57,8 +59,6 @@ export default function typeSelector() {
     dispatch(setDishesDescriptionRedux(dishesDescription));
     router.push("/orders/finishOrder");
   };
-
-  console.log("Dishes description:", dishesDescription);
 
   const toggleMenu = () => setShowItems(!showItems);
   /**
@@ -94,9 +94,14 @@ export default function typeSelector() {
     if (dish.image) {
       setImageItem(dish.image);
     }
-    const dishes = await getDishService(dish.id);
-    if (dishes) {
-      setDishesList(dishes);
+    try {
+      setLoad(true);
+      const dishes = await getDishService(dish.id);
+      if (dishes) {
+        setDishesList(dishes);
+      }
+    } finally {
+      setLoad(false);
     }
   };
 
@@ -138,9 +143,22 @@ export default function typeSelector() {
       setDishesNumber(nextDishes);
     }
   };
+  //Check is selected
+  const isThisSelected = (id: string): boolean => {
+    const find = dishesDescription.findIndex((itm) => itm.type === id);
+    if (find !== -1) return true;
+    return false;
+  };
+  //Initialization
+  const verifyTable = () => {
+    if (dishStore.tableNumber === 0) {
+      router.push("/orders/tableSelect");
+    }
+  };
 
   useEffect(() => {
     obtainCategories();
+    verifyTable();
   }, []);
 
   return (
@@ -166,6 +184,7 @@ export default function typeSelector() {
                 content={`${dishes.image}`}
                 onClick={() => getDishesInfo(dishes)}
                 className={`h-[150px] w-[150px] bg-neutral-400 text-2xl p-2 text-center`}
+                isSelected={isThisSelected(dishes.id)}
               />
             </div>
           ))}
@@ -191,6 +210,14 @@ export default function typeSelector() {
                   </div>
                 </div>
                 <div className='w-full grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4 p-4 md:p-6'>
+                  {load && (
+                    <div className='fixed w-full h-full bg-white top-0 left-0 flex items-center justify-center'>
+                      <div className='grid justify-items-center'>
+                        <div className='my-2'>Cargando...</div>
+                        <div className='loader my-2'></div>
+                      </div>
+                    </div>
+                  )}
                   {dishesList.length > 0 ? (
                     dishesList.map((dish) => (
                       <Dishes

@@ -6,3 +6,9 @@ export enum StatusEnum {
   EDITED = "ORDEN EDITADA",
   CLOSED = "ORDEN CERRADA",
 }
+
+export enum StatusApplicationEnum {
+  SEND = "ENVIADA",
+  ACTIVE = "ACTIVA",
+  REJECTED = "RECHAZADA",
+}

@@ -5,12 +5,14 @@ import {
   setDishesNumber as setDishesNumberAction,
   setIdOrder as setIdOrderAction,
 } from "../reducers/orders.reducers";
+import { TMenuResponse } from "@/types/menu.types";
 
+type TDish = TMenuResponse & { number?: number; image?: string };
 export interface IOrderSlice {
   name: string;
   tableNumber: number;
   dishes: number;
-  dishesDescription: Array<any>;
+  dishesDescription: Array<TDish>;
   id?: string;
 }
 

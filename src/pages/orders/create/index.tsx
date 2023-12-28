@@ -3,9 +3,11 @@ import { IUserRedux } from "@/store/slices/user.slice";
 import { TOKEN_ID } from "@/utils/strings";
 import {
   AddOutlined,
+  GridView,
   ListAltOutlined,
   PowerSettingsNew,
 } from "@mui/icons-material";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
@@ -20,6 +22,10 @@ export default function createIndex() {
 
   const handleNavigation = () => {
     router.push("/orders/tableSelect");
+  };
+
+  const handleApplicationNavigation = () => {
+    router.push("/orders/myApplications");
   };
 
   const handleClose = useCallback(() => {
@@ -42,9 +48,30 @@ export default function createIndex() {
           </button>
         </div>
       </div>
-      <div className='grid h-screen w-full'>
+      <div className='h-[calc(100vh_-_92px)] w-full'>
         <div className='m-auto flex flex-col items-center w-full p-4 md:p-6 lg:p-8'>
-          <div className='py-6 w-full'>
+          <div className='relative bg-whites'>
+            <div className='h-[150px] w-[150px] rounded-full'>
+              <Image
+                src='/media/profile.png'
+                width={150}
+                height={150}
+                alt='profile'
+              />
+            </div>
+            <div className='absolute bottom-3 right-0 w-[45px] h-[45px] bg-white rounded-full'>
+              <Image
+                src='/media/bell.png'
+                alt='campana'
+                width={45}
+                height={45}
+              />
+            </div>
+            <div className='absolute bottom-1 -right-3 w-[30px] h-[30px] bg-danger text-white flex flex-col justify-center items-center rounded-full'>
+              12
+            </div>
+          </div>
+          <div className='py-4 w-full'>
             <button
               onClick={handleOrderNavigate}
               className='disabled:bg-neutral-400 w-full h-[80px] font-primary text-[2rem] bg-blue text-white'
@@ -52,7 +79,15 @@ export default function createIndex() {
               <ListAltOutlined /> Mis ordenes
             </button>
           </div>
-          <div className='py-6 w-full'>
+          <div className='py-4 w-full'>
+            <button
+              onClick={handleApplicationNavigation}
+              className='bg-neutral-400 w-full h-[80px] font-primary text-[2rem] bg-waiting-dark hover:bg-waiting hover:text-dark text-white'
+            >
+              <GridView /> Mis solicitudes
+            </button>
+          </div>
+          <div className='py-4 w-full'>
             <button
               onClick={handleNavigation}
               className='bg-neutral-400 w-full h-[80px] font-primary text-[2rem] bg-success-dark hover:bg-success text-white'
