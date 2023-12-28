@@ -1,15 +1,22 @@
+import { StatusEnum } from "@/enums/states.enum";
 import ProtectPage from "@/pages/admin/components/protectPage";
 import { listConfigurationService } from "@/services/config";
 import { setTableOrder } from "@/store/slices/orders.slice";
 import { TConifg } from "@/types/configuration.types";
+import { TResponseOrders } from "@/types/menu.types";
 import { TOKEN_ID } from "@/utils/strings";
+import { realtimeDB } from "@firebase/config";
+import { RT_ORDER_TABLE_NAME } from "@models/names";
+import { getAuth, signInAnonymously } from "firebase/auth";
+import { onValue, ref } from "firebase/database";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 export default function tableSelector() {
   const [loading, setLoading] = useState(false);
   const [kitchen, setKitchen] = useState([]);
+  const [tablesActives, setTablesActives] = useState<number[]>([]);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -33,7 +40,27 @@ export default function tableSelector() {
   };
 
   //Cargas iniciales
+  const init = useCallback(async () => {
+    const auth = getAuth();
+    await signInAnonymously(auth);
+    const connection = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+    return onValue(connection, (snapshot) => {
+      if (snapshot.exists()) {
+        const data: Array<TResponseOrders> = snapshot.val();
+        const elements: Array<TResponseOrders> = Object.values(data).sort(
+          (a: any, b: any) => a.orderId - b.orderId,
+        );
+        const filters = elements.filter(
+          (itm) => itm.status !== StatusEnum.CLOSED,
+        );
+        const mapTables = filters.map((itm) => itm.tableNumber);
+        setTablesActives(mapTables);
+        console.log(mapTables);
+      }
+    });
+  }, []);
   useEffect(() => {
+    init();
     getConfigurationInfo();
   }, []);
 
@@ -55,7 +82,12 @@ export default function tableSelector() {
                 <div key={index} className='grid justify-items-center'>
                   <button
                     onClick={() => handleNavigation(Number(index + 1))}
-                    className='bg-neutral-400 text-2xl font-secondary w-[150px] h-[150px]'
+                    className={`${
+                      tablesActives.includes(index + 1)
+                        ? "bg-danger"
+                        : "bg-neutral-400"
+                    } text-2xl font-secondary w-[150px] h-[150px]`}
+                    disabled={tablesActives.includes(index + 1)}
                   >
                     Mesa {index + 1}
                   </button>

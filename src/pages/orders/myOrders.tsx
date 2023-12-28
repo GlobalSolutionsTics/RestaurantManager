@@ -72,7 +72,7 @@ const ToggleColumn = ({ element, push }: Props) => {
           </div>
         </div>
         <div className='p-2 flex flex-col'>
-          {element.dishesDescription.map((dish) => (
+          {element?.dishesDescription?.map((dish) => (
             <div key={dish.uuid} className='flex flex-row font-secondary'>
               <div className='basis-5/6'>{dish.name}</div>
               <div className='basis-1/6'>{dish.number}</div>
