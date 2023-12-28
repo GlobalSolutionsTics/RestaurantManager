@@ -9,7 +9,7 @@ import { onValue, ref } from "firebase/database";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { TResponseOrders } from "@/types/menu.types";
-import { Box, Modal } from "@mui/material";
+import { Box, Button, Modal } from "@mui/material";
 import Image from "next/image";
 import { currencyFormat, textToString } from "@/utils/formats";
 import TicketAdmin from "../../../components/ticketAdmin";
@@ -86,6 +86,7 @@ const OrdersPage = () => {
         const filters = elements.filter(
           (itm) => itm.status !== StatusEnum.CLOSED,
         );
+
         setOrderList(filters);
       }
     });
@@ -99,9 +100,15 @@ const OrdersPage = () => {
       <div className='flex flex-row'>
         <MenuAdmin router={router} basePath={router.pathname} />
         <div className='flex flex-col w-full h-min-[100vh] px-8 py-4'>
-          <p className='font-primary text-[2rem] mb-4 text-black'>
-            Listado de ordenes actuales
-          </p>
+          <div className='flex flex-row justify-between'>
+            <div className='font-primary text-[2rem] mb-4 text-black'>
+              Listado de ordenes actuales
+            </div>
+            <div>
+              <Button>Ordenes abiertas</Button>
+              <Button>Ordenes cerradas</Button>
+            </div>
+          </div>
           <div className='grid lg:grid-cols-4 lg:gap-4 md:grid-cols-3 md:gap-3 sm:grid-cols-1 sm:gap-1 overflow-y-auto '>
             {orderList.length > 0 &&
               orderList.map((itm) => (
