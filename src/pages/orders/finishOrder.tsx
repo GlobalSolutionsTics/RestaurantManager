@@ -1,10 +1,108 @@
 import { createOrder } from "@/services/order";
-import { IOrderSlice, setOrderIdRedux } from "@/store/slices/orders.slice";
+import {
+  IOrderSlice,
+  setDishesDescriptionRedux,
+  setOrderIdRedux,
+} from "@/store/slices/orders.slice";
+import { TMenuResponse } from "@/types/menu.types";
+import { Check, Edit } from "@mui/icons-material";
 import { TextField, TextareaAutosize } from "@mui/material";
+import { useFormik } from "formik";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+type Props = {
+  name: string;
+  dishesNumber: number;
+  price: number;
+  uuid: string;
+  onChange: (a: any, b: any, c: any, d: any) => void;
+};
+
+const FieldEditedOption = ({
+  name,
+  dishesNumber,
+  price,
+  uuid,
+  onChange,
+}: Props) => {
+  const [editValues, setEditValues] = useState(false);
+
+  const INITAL_VALUES = {
+    name: name,
+    dishesNumber: dishesNumber,
+    price: price,
+  };
+
+  const toggleEdit = () => setEditValues(!editValues);
+
+  const formik = useFormik({
+    initialValues: INITAL_VALUES,
+    onSubmit: () => {},
+  });
+
+  const handleChangeEdit = () => {
+    const values = formik.values;
+    toggleEdit();
+    return onChange(values.name, values.dishesNumber, values.price, uuid);
+  };
+
+  return (
+    <>
+      <div className='w-full flex justify-between bg-enabled-dark py-2 px-2'>
+        <div className='text-secondary text-[1rem] basis-4/6'>
+          {formik.values.name}
+        </div>
+        <div className='basis-1/6'>{formik.values.dishesNumber}</div>
+        <div className='basis-1/6 flex justify-end'>
+          {editValues ? (
+            <button onClick={handleChangeEdit}>
+              <Check />
+            </button>
+          ) : (
+            <button onClick={toggleEdit}>
+              <Edit />
+            </button>
+          )}
+        </div>
+      </div>
+      {editValues && (
+        <div className='flex flex-col bg-enabled p-4'>
+          <TextField
+            className='text-secondary text-[1rem] w-full basis-4/6 !mb-4 bg-white'
+            value={formik.values.name}
+            onChange={formik.handleChange("name")}
+            onBlur={formik.handleBlur("name")}
+            variant='outlined'
+            label='Platillo'
+          />
+          <TextField
+            className='text-secondary text-[1rem] w-full basis-4/6 !mb-4 bg-white'
+            value={formik.values.dishesNumber}
+            onChange={formik.handleChange("dishesNumber")}
+            onBlur={formik.handleBlur("dishesNumber")}
+            variant='outlined'
+            label='Cantidad'
+            type='number'
+            inputMode='numeric'
+          />
+          <TextField
+            className='text-secondary text-[1rem] w-full basis-4/6 bg-white'
+            value={formik.values.price}
+            onChange={formik.handleChange("price")}
+            onBlur={formik.handleBlur("price")}
+            variant='outlined'
+            label='Costo'
+            type='number'
+            inputMode='numeric'
+          />
+        </div>
+      )}
+    </>
+  );
+};
 
 const FinishOrderPage = () => {
   const [loading, setLoading] = useState(false);
@@ -15,6 +113,26 @@ const FinishOrderPage = () => {
   );
   const dispatch = useDispatch();
   const userStore = useSelector((store: any) => store.user);
+
+  const onChangeDish = (
+    name: string,
+    dishNumber: number,
+    price: number,
+    uuid: string,
+  ) => {
+    const dishesDescription: Array<TMenuResponse> =
+      orderStore.dishesDescription;
+
+    const newDish = dishesDescription.map((itm) => {
+      if (itm.uuid === uuid) {
+        return { ...itm, name: name, price: price, number: dishNumber };
+      }
+      return itm;
+    });
+    dispatch(setDishesDescriptionRedux(newDish));
+  };
+
+  console.log(orderStore.dishesDescription);
 
   const handleSendOrder = async () => {
     setLoading(true);
@@ -56,12 +174,16 @@ const FinishOrderPage = () => {
             <span className='font-primary text-[1.5rem] mb-2'>
               ¿Cuantos platillos van en la orden?
             </span>
-            <div className='flex flex-col'>
-              {orderStore.dishesDescription.map((itm) => (
-                <div className='w-full flex justify-between bg-enabled py-2 px-2'>
-                  <div className='text-secondary text-[1rem]'>{itm.name}</div>
-                  <div>{itm.number}</div>
-                </div>
+            <div className='flex flex-col pb-4'>
+              {orderStore.dishesDescription.map((itm, index) => (
+                <FieldEditedOption
+                  key={"id-" + index}
+                  name={itm.name}
+                  dishesNumber={itm.number || 0}
+                  price={itm.price}
+                  uuid={itm.uuid || ""}
+                  onChange={onChangeDish}
+                />
               ))}
             </div>
             <TextField
@@ -80,7 +202,7 @@ const FinishOrderPage = () => {
           </div>
         ) : (
           <button
-            className='text-[2rem] p-4 text-center w-full bg-success disabled:!bg-enabled disabled:!text-dark fixed bottom-0 text-white font-primary font-bold'
+            className='text-[2rem] p-4 text-center w-full bg-success disabled:!bg-enabled disabled:!text-dark bottom-0 text-white font-primary font-bold'
             onClick={handleSendOrder}
             disabled={orderStore.dishesDescription.length === 0}
           >

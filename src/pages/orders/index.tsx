@@ -44,9 +44,7 @@ const HomeOrderPage = () => {
           (a: any, b: any) => a.orderId - b.orderId,
         );
         const filterElements = elements.filter(
-          (itm) =>
-            itm.status !== StatusEnum.ORDER_READY &&
-            itm.status !== StatusEnum.CLOSED,
+          (itm) => itm.status !== StatusEnum.CLOSED,
         );
         setOrders(filterElements);
       }
