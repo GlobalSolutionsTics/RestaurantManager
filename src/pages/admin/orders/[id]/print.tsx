@@ -1,6 +1,8 @@
+import { listUserSerive } from "@/services/users";
 import { TResponseOrders } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { currencyFormat, textToString } from "@/utils/formats";
+import { TOKEN_ID } from "@/utils/strings";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { getAuth, signInAnonymously } from "firebase/auth";
@@ -12,6 +14,7 @@ import { useReactToPrint } from "react-to-print";
 
 const PrintOrderPage = () => {
   const [information, setInformation] = useState<TResponseOrders>();
+  const [wainterName, setWainterName] = useState("");
 
   const { query } = useRouter();
   //Print controller
@@ -19,6 +22,20 @@ const PrintOrderPage = () => {
   //Handle functions
   const handlePrint = useReactToPrint({ content: () => componentRef.current });
   //Initial charger
+  const getWinterInformation = useCallback(async () => {
+    const token = sessionStorage.getItem(TOKEN_ID);
+    if (token !== null) {
+      const wainters = await listUserSerive(token);
+      const findWaint = wainters.filter(
+        (itm: any) => itm.uuid === information?.waiter,
+      );
+      if (findWaint) {
+        const wainter = findWaint[0];
+        setWainterName(wainter.name);
+      }
+    }
+  }, [information?.waiter]);
+
   const init = useCallback(async () => {
     const id = query.id as string;
     if (id !== undefined) {
@@ -29,14 +46,14 @@ const PrintOrderPage = () => {
         if (snapshot.exists()) {
           const data = snapshot.val();
           setInformation(data[id]);
-          console.log(data[id]);
         }
       });
     }
   }, [query]);
   useEffect(() => {
+    getWinterInformation();
     init();
-  }, [query]);
+  }, [query, information?.waiter]);
 
   return (
     <>
@@ -59,6 +76,9 @@ const PrintOrderPage = () => {
         <p className='font-secondary mb-2 mb-2'>
           Valle del vístula esquina Valle de Oaxaca. Valle de Aragon 2da Secc,
           57100 Nezahualcóyotl, Méx., Mexico City, Mexico
+        </p>
+        <p className='font-secondary text-center mb-2'>
+          ATENDIO POR {wainterName}
         </p>
         <p className='font-secondary text-center mb-2'>COMPROBANTE DE PAGO</p>
         <div className='gird grid-cols-3 font-secondary gap-3 mb-2'>
