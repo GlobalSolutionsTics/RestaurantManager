@@ -35,11 +35,12 @@ const handle = async (req: NextApiRequest, res: NextApiResponse) => {
                   message,
                 });
               }
+            } else {
+              res.status(403).send({
+                error: true,
+                message: "No se encontro la operación a realizar",
+              });
             }
-            res.status(403).send({
-              error: true,
-              message: "No se encontro la operación a realizar",
-            });
             break;
           default:
             res.status(403).send({
