@@ -3,8 +3,10 @@ import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import {
+  Check,
   CheckCircle,
   Checklist,
+  Close,
   HourglassFull,
   KeyboardArrowRight,
   Notifications,
@@ -22,9 +24,24 @@ import Head from "next/head";
 import { updateOrderService } from "@/services/order";
 import { TOKEN_ID } from "@/utils/strings";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
+import { Button } from "@mui/material";
+
+enum OrdersStatusEnum {
+  ACTIVE = "ACTIVAS",
+  READY = "LISTAS",
+  CLOSE = "CERRADAS",
+}
 
 const HomeOrderPage = () => {
+  const [orderView, setOrderView] = useState<OrdersStatusEnum>(
+    OrdersStatusEnum.ACTIVE,
+  );
   const [orders, setOrders] = useState<Array<TResponseOrders>>([]);
+  const [ordersActived, setOrdersActived] = useState<Array<TResponseOrders>>(
+    [],
+  );
+  const [ordersClose, setOrdersClose] = useState<Array<TResponseOrders>>([]);
+  const [ordersReady, setOrdersReady] = useState<Array<TResponseOrders>>([]);
   const [loading, setLoading] = useState(false);
 
   //router controller
@@ -43,10 +60,22 @@ const HomeOrderPage = () => {
         const elements = Object.values(data).sort(
           (a: any, b: any) => a.orderId - b.orderId,
         );
-        const filterElements = elements.filter(
-          (itm) => itm.status !== StatusEnum.CLOSED,
+        const ordersActived = elements.filter(
+          (itm) =>
+            itm.status !== StatusEnum.CLOSED &&
+            itm.status !== StatusEnum.ORDER_READY,
         );
-        setOrders(filterElements);
+        const ordersClose = elements.filter(
+          (itm) => itm.status === StatusEnum.CLOSED,
+        );
+        const ordersReady = elements.filter(
+          (itm) => itm.status === StatusEnum.ORDER_READY,
+        );
+
+        setOrders(ordersActived);
+        setOrdersClose(ordersClose);
+        setOrdersReady(ordersReady);
+        setOrdersActived(ordersActived);
       }
     });
   }, []);
@@ -54,6 +83,17 @@ const HomeOrderPage = () => {
   //Handle functions
   const sentFullscreen = async () => {
     await handleFullscreen.enter();
+  };
+
+  const handleChangeView = (status: OrdersStatusEnum) => {
+    if (status === OrdersStatusEnum.ACTIVE) {
+      setOrders(ordersActived);
+    } else if (status === OrdersStatusEnum.READY) {
+      setOrders(ordersReady);
+    } else {
+      setOrders(ordersClose);
+    }
+    setOrderView(status);
   };
 
   const handleClose = useCallback(() => {
@@ -104,7 +144,10 @@ const HomeOrderPage = () => {
   const getColorButton = (status: string) => {
     if (status === StatusEnum.IN_PROGRESS) {
       return "bg-waiting-dark hover:bg-waiting-dark hover:text-dark";
-    } else if (status === StatusEnum.ORDER_READY) {
+    } else if (
+      status === StatusEnum.ORDER_READY ||
+      status === StatusEnum.CLOSED
+    ) {
       return "bg-success-dark text-white hidden";
     } else if (status === StatusEnum.EDITED) {
       return "bg-orange-dark hover:bg-orange hover:text-dark";
@@ -152,8 +195,37 @@ const HomeOrderPage = () => {
         </Head>
         <div className='flex flex-col flex-start w-full h-[100vh]'>
           <div className='flex flex-row justify-between w-full bg-blue-dark h-[3.5rem]'>
-            <div className='text-white p-4 text-[1rem] font-primary'>
-              <Checklist /> Comandas activas ({orders.length})
+            <div className='flex flex-row'>
+              <Button
+                className={
+                  orderView === OrdersStatusEnum.ACTIVE
+                    ? "!bg-blue-light !text-blue-dark"
+                    : "!text-white"
+                }
+                onClick={() => handleChangeView(OrdersStatusEnum.ACTIVE)}
+              >
+                <Checklist /> Activas ({ordersActived.length})
+              </Button>
+              <Button
+                className={
+                  orderView === OrdersStatusEnum.READY
+                    ? "!bg-blue-light !text-blue-dark"
+                    : "!text-white"
+                }
+                onClick={() => handleChangeView(OrdersStatusEnum.READY)}
+              >
+                <Check /> Listas ({ordersReady.length})
+              </Button>
+              <Button
+                className={
+                  orderView === OrdersStatusEnum.CLOSE
+                    ? "!bg-blue-light !text-blue-dark"
+                    : "!text-white"
+                }
+                onClick={() => handleChangeView(OrdersStatusEnum.CLOSE)}
+              >
+                <Close /> Cerradas ({ordersClose.length})
+              </Button>
             </div>
             <div className='text-white p-4'>
               <button className='hover:bg-blue mr-4' onClick={sentFullscreen}>
@@ -184,20 +256,20 @@ const HomeOrderPage = () => {
                         : itm.status}
                     </p>
                   </div>
-                  <div className='h-[calc(400px_-_3rem)] bg-enabled rounded-b-lg flex flex-col flex-start justify-between'>
-                    <div className='overflow-y-auto'>
+                  <div className='bg-enabled rounded-b-lg flex flex-col flex-start justify-between'>
+                    <div className=''>
                       <div className='w-full py-2 px-4 flex flex-row'>
-                        <div className='basis-5/6 font-bold font-secondary'>
+                        <div className='basis-5/6 font-bold text-[1.5rem] font-secondary'>
                           Descripción
                         </div>
-                        <div className='basis-1/6 font-bold text-center font-secondary'>
+                        <div className='basis-1/6 font-bold text-[1.5rem] text-center font-secondary'>
                           Cant.
                         </div>
                       </div>
                       {itm.dishesDescription?.map((dish) => (
                         <div
                           key={dish.uuid}
-                          className='w-full py-2 px-4 flex flex-row'
+                          className='w-full py-2 px-4 text-[1.5rem] flex flex-row'
                         >
                           <div className='basis-5/6 font-secondary'>
                             {dish.name}
