@@ -34,15 +34,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               res
                 .status(200)
                 .send({ error: errorUpdate, message: messageUpdate });
+            } else {
+              res
+                .status(500)
+                .send({ error: errorUpdate, message: messageUpdate });
+              break;
             }
-            res
-              .status(500)
-              .send({ error: errorUpdate, message: messageUpdate });
-            break;
           default:
             res
               .status(404)
               .send({ message: "No se encontro la ruta especificada" });
+            break;
         }
       }
     });
