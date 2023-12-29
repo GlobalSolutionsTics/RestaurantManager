@@ -8,12 +8,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   if (method === "POST") {
     const body: TOrder = JSON.parse(req.body);
     const uuid = uuidv4();
+    const newDishes = body.dishesDescription.map((itm) => ({
+      ...itm,
+      status: "ACTIVO",
+    }));
     const add = await addOrder(
       body.name,
       body.dishes,
       uuid,
       body.tableNumber,
-      body.dishesDescription,
+      newDishes,
       body.waiter,
     );
     if (add) {
