@@ -77,10 +77,7 @@ const IndexComp = () => {
         push("/orders/create");
       } else if (tipo === UsersTypesEnum.ADMINISTRATOR) {
         push("/admin/dishes");
-      } else if (
-        tipo === UsersTypesEnum.COCINERO_FRIA ||
-        UsersTypesEnum.COCINERO_CALIENTE
-      ) {
+      } else if (tipo === UsersTypesEnum.COCINERO) {
         push("/orders");
       }
     } else {

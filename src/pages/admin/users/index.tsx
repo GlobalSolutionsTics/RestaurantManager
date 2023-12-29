@@ -385,10 +385,7 @@ const UsersAdministratorPage = () => {
                     >
                       <MenuItem value='admin'>Administrador</MenuItem>
                       <MenuItem value='mesero'>Mesero</MenuItem>
-                      <MenuItem value='cocina_Fria'>Cocina Fría</MenuItem>
-                      <MenuItem value='cocina_Caliente'>
-                        Cocina Caliente
-                      </MenuItem>
+                      <MenuItem value='cocina'>Cocina</MenuItem>
                       <MenuItem value='caja'>Caja</MenuItem>
                     </Select>
                   </FormControl>
