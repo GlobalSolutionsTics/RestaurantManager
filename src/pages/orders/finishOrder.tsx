@@ -19,6 +19,7 @@ type Props = {
   price: number;
   uuid: string;
   onChange: (a: any, b: any, c: any, d: any) => void;
+  onOpen?: (val: any) => void;
 };
 
 const FieldEditedOption = ({
@@ -27,8 +28,10 @@ const FieldEditedOption = ({
   price,
   uuid,
   onChange,
+  onOpen,
 }: Props) => {
   const [editValues, setEditValues] = useState(false);
+  const [initialPrice, setInitialPrice] = useState(price);
 
   const INITAL_VALUES = {
     name: name,
@@ -36,7 +39,16 @@ const FieldEditedOption = ({
     price: price,
   };
 
-  const toggleEdit = () => setEditValues(!editValues);
+  const toggleEdit = () => {
+    if (onOpen) {
+      if (editValues) {
+        onOpen(false);
+      } else {
+        onOpen(true);
+      }
+    }
+    setEditValues(!editValues);
+  };
 
   const formik = useFormik({
     initialValues: INITAL_VALUES,
@@ -89,10 +101,11 @@ const FieldEditedOption = ({
             inputMode='numeric'
           />
           <TextField
-            className='text-secondary text-[1rem] w-full basis-4/6 bg-white'
+            className='text-secondary text-[1rem] w-full basis-4/6 bg-white disabled:!bg-enabled disabled:!text-dark'
             value={formik.values.price}
             onChange={formik.handleChange("price")}
             onBlur={formik.handleBlur("price")}
+            disabled={initialPrice !== 0}
             variant='outlined'
             label='Costo'
             type='number'
@@ -106,6 +119,7 @@ const FieldEditedOption = ({
 
 const FinishOrderPage = () => {
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState([]);
 
   const { push } = useRouter();
   const orderStore: IOrderSlice = useSelector(
@@ -131,9 +145,7 @@ const FinishOrderPage = () => {
     });
     dispatch(setDishesDescriptionRedux(newDish));
   };
-
-  console.log(orderStore.dishesDescription);
-
+  //Handle functions
   const handleSendOrder = async () => {
     setLoading(true);
     const payload = {
@@ -186,14 +198,6 @@ const FinishOrderPage = () => {
                 />
               ))}
             </div>
-            <TextField
-              id='anotations-textarea'
-              title='Anotaciones'
-              placeholder='Anotaciones'
-              label='Anotaciones'
-              maxRows={4}
-              variant='filled'
-            />
           </div>
         </div>
         {loading ? (
