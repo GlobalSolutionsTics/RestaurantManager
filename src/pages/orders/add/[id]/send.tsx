@@ -2,16 +2,21 @@ import { StatusEnum } from "@/enums/states.enum";
 import ProtectPage from "@/pages/admin/components/protectPage";
 import { UOrderReq } from "@/pages/api/types/Order/order.type";
 import { sendApplicationOrderEdit, updateOrderService } from "@/services/order";
-import { IOrderSlice } from "@/store/slices/orders.slice";
+import {
+  IOrderSlice,
+  setDishesDescriptionRedux,
+} from "@/store/slices/orders.slice";
 import { IUserRedux } from "@/store/slices/user.slice";
 import { TMenuResponse, TResponseOrders } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { TOKEN_ID } from "@/utils/strings";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
-import { ArrowBack, RoomService, Send } from "@mui/icons-material";
+import { ArrowBack, Check, Edit, RoomService, Send } from "@mui/icons-material";
+import { TextField } from "@mui/material";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { onValue, ref } from "firebase/database";
+import { useFormik } from "formik";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
@@ -23,6 +28,110 @@ type TDish = TMenuResponse & { number?: number; image?: string };
 type TDishesDescription = Array<TDish>;
 
 const MessageComponent = withReactContent(Swal);
+
+type Props = {
+  name: string;
+  dishesNumber: number;
+  price: number;
+  uuid: string;
+  onChange: (a: any, b: any, c: any, d: any) => void;
+  onOpen?: (val: any) => void;
+};
+
+const FieldEditedOption = ({
+  name,
+  dishesNumber,
+  price,
+  uuid,
+  onChange,
+  onOpen,
+}: Props) => {
+  const [editValues, setEditValues] = useState(false);
+  const [initialPrice, setInitialPrice] = useState(price);
+
+  const INITAL_VALUES = {
+    name: name,
+    dishesNumber: dishesNumber,
+    price: price,
+  };
+
+  const toggleEdit = () => {
+    if (onOpen) {
+      if (editValues) {
+        onOpen(false);
+      } else {
+        onOpen(true);
+      }
+    }
+    setEditValues(!editValues);
+  };
+
+  const formik = useFormik({
+    initialValues: INITAL_VALUES,
+    onSubmit: () => {},
+  });
+
+  const handleChangeEdit = () => {
+    const values = formik.values;
+    toggleEdit();
+    return onChange(values.name, values.dishesNumber, values.price, uuid);
+  };
+
+  return (
+    <>
+      <div className='w-full flex justify-between bg-enabled-dark py-2 px-2'>
+        <div className='text-secondary text-[1rem] basis-4/6'>
+          {formik.values.name}
+        </div>
+        <div className='basis-1/6'>{formik.values.dishesNumber}</div>
+        <div className='basis-1/6 flex justify-end'>
+          {editValues ? (
+            <button onClick={handleChangeEdit}>
+              <Check />
+            </button>
+          ) : (
+            <button onClick={toggleEdit}>
+              <Edit />
+            </button>
+          )}
+        </div>
+      </div>
+      {editValues && (
+        <div className='flex flex-col bg-enabled p-4'>
+          <TextField
+            className='text-secondary text-[1rem] w-full basis-4/6 !mb-4 bg-white'
+            value={formik.values.name}
+            onChange={formik.handleChange("name")}
+            onBlur={formik.handleBlur("name")}
+            variant='outlined'
+            label='Platillo'
+          />
+          <TextField
+            className='text-secondary text-[1rem] w-full basis-4/6 !mb-4 bg-white'
+            value={formik.values.dishesNumber}
+            onChange={formik.handleChange("dishesNumber")}
+            onBlur={formik.handleBlur("dishesNumber")}
+            variant='outlined'
+            label='Cantidad'
+            type='number'
+            inputMode='numeric'
+          />
+          <TextField
+            className='text-secondary text-[1rem] w-full basis-4/6 bg-white disabled:!bg-enabled disabled:!text-dark'
+            value={formik.values.price}
+            onChange={formik.handleChange("price")}
+            onBlur={formik.handleBlur("price")}
+            disabled={initialPrice !== 0}
+            variant='outlined'
+            label='Costo'
+            type='number'
+            inputMode='numeric'
+          />
+        </div>
+      )}
+    </>
+  );
+};
 
 const SendOrderPage = () => {
   const [dishState, setDishState] = useState("");
@@ -39,6 +148,22 @@ const SendOrderPage = () => {
   const router = useRouter();
   const { query } = useRouter();
   //Handlers
+  const onChangeDish = (
+    name: string,
+    dishNumber: number,
+    price: number,
+    uuid: string,
+  ) => {
+    const dishesDescription: Array<TMenuResponse> = dishStore.dishesDescription;
+
+    const newDish = dishesDescription.map((itm) => {
+      if (itm.uuid === uuid) {
+        return { ...itm, name: name, price: price, number: dishNumber };
+      }
+      return itm;
+    });
+    dispatch(setDishesDescriptionRedux(newDish));
+  };
   const sendOrder = async () => {
     setLoadin(true);
     const token = sessionStorage.getItem(TOKEN_ID);
@@ -141,11 +266,15 @@ const SendOrderPage = () => {
             <p className='text-center'>{dishState}</p>
           </div>
         </div>
-        <div className='flex flex-col [&>*:nth-child(odd)]:bg-blue [&>*:nth-child(odd)]:text-white'>
+        <div className='flex flex-col bg-enabled'>
           {dishStore.dishesDescription.map((itm) => (
-            <div className='flex flex-row justify-between px-4 py-2 font-secondary text-[1.5rem]'>
-              <div>{itm.name}</div> <div>{itm.number}</div>
-            </div>
+            <FieldEditedOption
+              uuid={itm.uuid || ""}
+              name={itm.name}
+              price={itm.price}
+              dishesNumber={itm.number || 0}
+              onChange={onChangeDish}
+            />
           ))}
         </div>
       </div>

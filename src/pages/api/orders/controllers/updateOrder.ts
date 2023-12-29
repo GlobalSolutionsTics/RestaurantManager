@@ -17,14 +17,17 @@ export const updateStatusOrder = async (
     const getOrders = await get(child(docRef, orderUUID));
     if (getOrders.exists()) {
       if (status !== StatusEnum.ORDER_READY) {
-        const data: Array<TResponseOrders> = getOrders.val();
+        const data: TResponseOrders = getOrders.val();
         const newData = { ...data, status };
         await update(child(docRef, orderUUID), newData);
         return { error: false, message: "Datos actualizados correctamente" };
       } else {
-        const data: Array<TResponseOrders> = getOrders.val();
-        const newData = { ...data, status };
-
+        const data: TResponseOrders = getOrders.val();
+        const newDishes = data.dishesDescription.map((itm) => ({
+          ...itm,
+          status: "LISTO",
+        }));
+        const newData = { ...data, status, dishesDescription: newDishes };
         await changeStatusRequestEditionForOrderId(
           StatusApplicationEnum.CLOSE,
           orderUUID,

@@ -4,6 +4,7 @@ import { TResponseOrders } from "@/types/menu.types";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import {
+  Add,
   ArrowBack,
   CheckCircle,
   Checklist,
@@ -33,6 +34,7 @@ type Props = {
 
 const ToggleColumn = ({ element, push }: Props) => {
   const EDIT_PAGE = `/orders/edit/${element.uuid}`;
+  const ADD_PAGE = `/orders/add/${element.uuid}`;
   //Color controller
   const getColorForHeader = (status: string) => {
     if (status === StatusEnum.IN_PROGRESS) {
@@ -54,9 +56,15 @@ const ToggleColumn = ({ element, push }: Props) => {
     return "bg-danger hover:bg-danger-dark text-white";
   };
 
+  //Handles
   const handleEdit = () => {
     push(EDIT_PAGE);
   };
+
+  const handleAdd = () => {
+    push(ADD_PAGE);
+  };
+
   return (
     <div className='w-full rounded-lg shadow-lg bg-white flex flex-col justify-between'>
       <div className='flex flex-col'>
@@ -86,12 +94,12 @@ const ToggleColumn = ({ element, push }: Props) => {
       </div>
       <div className='p-2'>
         <button
-          className={`p-1 w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
+          className={`mb-4 p-1 w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
             element.status,
           )} `}
-          onClick={handleEdit}
+          onClick={handleAdd}
         >
-          <Edit /> Editar
+          <Add /> Añadir
         </button>
       </div>
     </div>

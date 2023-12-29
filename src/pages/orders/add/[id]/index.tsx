@@ -4,6 +4,7 @@ import TypeComp from "@/components/typeSelector/TypeComponent";
 import ProtectPage from "@/pages/admin/components/protectPage";
 import { getCategories, getDishService } from "@/services/dishes";
 import {
+  IOrderSlice,
   setDishesDescriptionRedux,
   setDishesNumberRedux,
   setOrderIdRedux,
@@ -11,6 +12,7 @@ import {
 } from "@/store/slices/orders.slice";
 import { TCatalog } from "@/types/catalog.types";
 import { TMenuResponse, TResponseOrders } from "@/types/menu.types";
+import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { ArrowBack, DoneAll, RoomService, Send } from "@mui/icons-material";
@@ -55,6 +57,7 @@ const EditOrderPage = () => {
 
   //Redux handlers
   const dispatch = useDispatch();
+  const dishStore: IOrderSlice = useSelector((itm: any) => itm.ordersDishes);
   //Taggle
   const toggleMenu = () => setShowItems(!showItems);
   const toggleCalculatorNew = () => {
@@ -128,7 +131,7 @@ const EditOrderPage = () => {
     }, 0);
     dispatch(setDishesNumberRedux(numberOfDishes));
     dispatch(setDishesDescriptionRedux(dishesDescription));
-    router.push(`/orders/edit/${query.id}/send`);
+    router.push(`/orders/add/${query.id}/send`);
   };
   //Getter
   const getDishesInfo = async (dish: TCatalog) => {
@@ -170,7 +173,7 @@ const EditOrderPage = () => {
         dispatch(setOrderIdRedux(data.uuid));
         setDishState(data.status);
         setTableNumber(data.tableNumber);
-        setDishesDescription(data.dishesDescription);
+        //setDishesDescription(data.dishesDescription);
       }
     });
   }, [query]);
@@ -185,6 +188,7 @@ const EditOrderPage = () => {
         <title>Listado Ordenes</title>
       </Head>
       <div className='w-full fixed z-30 bg-white'>
+        <div className='px-2 py-2 text-center bg-blue'>Añadir a la orden</div>
         <div className='font-primary text-[1.5rem] p-4 flex flex-row'>
           <div className='basis-1/5'>
             <button onClick={router.back}>
@@ -192,8 +196,10 @@ const EditOrderPage = () => {
             </button>
           </div>
           <div className='basis-2/5 flex items-center font-bold'>
-            <RoomService fontSize='large' className='mr-4' />
-            Mesa {tableNumber}
+            <RoomService fontSize='small' className='mr-4' />
+            {tableNumber === DEFAULT_TABLE_LLEVAR
+              ? "Para llevar"
+              : "MESA " + tableNumber}
           </div>
           <div className='!text-[0.75rem] !font-bold basis-2/5'>
             <p className='text-center'>Estatus:</p>
@@ -201,7 +207,7 @@ const EditOrderPage = () => {
           </div>
         </div>
       </div>
-      <div className='flex content-center items-center flex-wrap justify-center mt-20 mb-16'>
+      <div className='flex content-center items-center flex-wrap justify-center mt-[7rem] mb-16'>
         {typeDishes?.map((dishes) => (
           <div key={"t-" + dishes.id} className=' max-w-max justify-center'>
             <TypeComp
@@ -275,7 +281,7 @@ const EditOrderPage = () => {
       />
       <CalculatorComp
         show={showCalculatorNew}
-        initialValues={calculatorVal}
+        initialValues={0}
         onAccept={handleCreateNew}
         onClose={toggleCalculatorNew}
       />
@@ -283,7 +289,7 @@ const EditOrderPage = () => {
         className='w-full fixed bottom-0 z-20 bg-success text-white text-[1.5rem] itmes-center justify-center flex font-secondary py-2'
         onClick={handleSendModification}
       >
-        <DoneAll /> Ver nueva orden
+        <DoneAll /> Ver orden
       </button>
     </ProtectPage>
   );
