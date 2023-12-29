@@ -1,5 +1,6 @@
 export enum UsersTypesEnum {
   MESERO = "mesero",
   ADMINISTRATOR = "admin",
-  COCINERO = "cocina",
+  COCINERO_FRIA = "cocina_Fria",
+  COCINERO_CALIENTE = "cocina_Caliente",
 }
