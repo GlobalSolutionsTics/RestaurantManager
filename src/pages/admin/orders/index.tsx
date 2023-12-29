@@ -29,8 +29,15 @@ const style = {
   overflowY: "auto",
 };
 
+enum EListOrders {
+  ACTIVED = "ACTIVE",
+  CLOSED = "CLOSED",
+}
+
 const OrdersPage = () => {
-  const [orderList, setOrderList] = useState<Array<TResponseOrders>>([]);
+  const [orderShow, setOrderShow] = useState<EListOrders>(EListOrders.ACTIVED);
+  const [ordersClosed, setOrdersClosed] = useState<Array<TResponseOrders>>([]);
+  const [ordersActive, setOrdersActived] = useState<Array<TResponseOrders>>([]);
   const [dataOrderSelected, setDataOrderSelected] = useState<TResponseOrders>({
     name: "",
     uuid: "",
@@ -52,6 +59,8 @@ const OrdersPage = () => {
     setDataOrderSelected(data);
     setShowModalPrint(true);
   };
+
+  const handleChangeView = (status: EListOrders) => setOrderShow(status);
 
   //Toggle functions
   const toggleModalPrint = () => {
@@ -75,6 +84,18 @@ const OrdersPage = () => {
     await signInAnonymously(auth);
   }, []);
 
+  function filtrarPorFecha(objetos: any, fecha: any) {
+    const fechaFiltro = Date.parse(fecha);
+
+    return objetos.filter((objeto: any) => {
+      const fechaObjeto = Date.parse(objeto.creatAt);
+      if (objeto.creatAt !== undefined) {
+        console.log(new Date(objeto.creatAt).toDateString(), objeto.uuid);
+      }
+      return fechaObjeto === fechaFiltro;
+    });
+  }
+
   useEffect(() => {
     autheticate();
     const connection = ref(realtimeDB, RT_ORDER_TABLE_NAME);
@@ -84,11 +105,18 @@ const OrdersPage = () => {
         const elements: Array<TResponseOrders> = Object.values(data).sort(
           (a: any, b: any) => a.orderId - b.orderId,
         );
-        const filters = elements.filter(
+        const filtersActived = elements.filter(
           (itm) => itm.status !== StatusEnum.CLOSED,
         );
+        const filtersClosed = elements.filter(
+          (itm) => itm.status === StatusEnum.CLOSED,
+        );
+        setOrdersClosed(filtersClosed);
+        setOrdersActived(filtersActived);
 
-        setOrderList(filters);
+        // Ejemplo de uso: Filtrar por la fecha "Thu Dec 28 2023"
+        const resultado = filtrarPorFecha(elements, "Thu Dec 28 2023");
+        console.log("Resultado:", resultado);
       }
     });
   }, []);
@@ -106,13 +134,39 @@ const OrdersPage = () => {
               Listado de ordenes actuales
             </div>
             <div>
-              <Button>Ordenes abiertas</Button>
-              <Button>Ordenes cerradas</Button>
+              <Button
+                onClick={() => handleChangeView(EListOrders.ACTIVED)}
+                className={
+                  orderShow === EListOrders.ACTIVED
+                    ? "!bg-blue !text-white"
+                    : ""
+                }
+              >
+                Ordenes abiertas
+              </Button>
+              <Button
+                onClick={() => handleChangeView(EListOrders.CLOSED)}
+                className={
+                  orderShow === EListOrders.CLOSED ? "!bg-blue !text-white" : ""
+                }
+              >
+                Ordenes cerradas
+              </Button>
             </div>
           </div>
           <div className='grid lg:grid-cols-4 lg:gap-4 md:grid-cols-3 md:gap-3 sm:grid-cols-1 sm:gap-1 overflow-y-auto '>
-            {orderList.length > 0 &&
-              orderList.map((itm) => (
+            {orderShow === EListOrders.ACTIVED &&
+              ordersActive.length > 0 &&
+              ordersActive.map((itm) => (
+                <TicketAdmin
+                  key={itm.uuid}
+                  itm={itm}
+                  handlePrintData={handlePrintData}
+                />
+              ))}
+            {orderShow === EListOrders.CLOSED &&
+              ordersClosed.length > 0 &&
+              ordersClosed.map((itm) => (
                 <TicketAdmin
                   key={itm.uuid}
                   itm={itm}

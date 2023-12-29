@@ -82,7 +82,6 @@ export default function tableSelector() {
                 <button
                   onClick={() => handleNavigation(Number(DEFAULT_TABLE_LLEVAR))}
                   className={` bg-blue-dark text-white text-2xl font-secondary w-[150px] h-[150px]`}
-                  disabled={tablesActives.includes(DEFAULT_TABLE_LLEVAR)}
                 >
                   Para llevar
                 </button>
