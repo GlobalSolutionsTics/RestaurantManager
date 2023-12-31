@@ -52,7 +52,7 @@ export const updateOrderService = async (
   }
 };
 
-export const sendApplicationOrderEdit = async (
+export const sendApplicationOrderAdd = async (
   token: string,
   uuid: string,
   payload: UOrderReq,
@@ -73,6 +73,41 @@ export const sendApplicationOrderEdit = async (
     };
     const petition = await fetch(
       `${URL_API_ORDER}/update/${uuid}/add`,
+      headers,
+    );
+    const response = await petition.json();
+    if (response.error) {
+      return false;
+    } else {
+      return true;
+    }
+  } catch (e: any) {
+    console.error("Error al actualizar la configuracion");
+    return false;
+  }
+};
+
+export const sendApplicationOrderEdit = async (
+  token: string,
+  uuid: string,
+  payload: UOrderReq,
+) => {
+  try {
+    const headers = {
+      method: HttpMethodsEnum.PUT,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        modifications: payload.modifications,
+        tableNumber: payload.tableNumber,
+        waiter: payload.waiter,
+        status: payload.status,
+      }),
+    };
+    const petition = await fetch(
+      `${URL_API_ORDER}/update/${uuid}/order`,
       headers,
     );
     const response = await petition.json();

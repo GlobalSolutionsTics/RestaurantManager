@@ -115,3 +115,31 @@ export const changeStatusRequestEditionForOrderId = async (
     await changeRequestedEdition(applicationId, status);
   }
 };
+
+export const updateDishesAndNumber = async (
+  orderId: string,
+  dishesDescription: Array<any>,
+) => {
+  try {
+    const auth = getAuth();
+    await signInAnonymously(auth);
+    const docRef = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+    const getOrders = await get(child(docRef, orderId));
+    if (getOrders.exists()) {
+      const data: Array<TResponseOrders> = getOrders.val();
+      const newData = {
+        ...data,
+        dishes: dishesDescription.length,
+        dishesDescription: dishesDescription,
+        status: StatusEnum.EDITED,
+      };
+      await update(child(docRef, orderId), newData);
+      return { error: false, message: "Datos actualizados correctamente" };
+    }
+
+    return { error: true, message: "Error al actualizar el estatus" };
+  } catch (e) {
+    console.log("Error:", e);
+    return { error: true, message: "Error en los servicios de google" };
+  }
+};

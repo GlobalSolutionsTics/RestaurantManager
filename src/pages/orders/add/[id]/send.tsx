@@ -1,7 +1,7 @@
 import { StatusEnum } from "@/enums/states.enum";
 import ProtectPage from "@/pages/admin/components/protectPage";
 import { UOrderReq } from "@/pages/api/types/Order/order.type";
-import { sendApplicationOrderEdit, updateOrderService } from "@/services/order";
+import { sendApplicationOrderAdd, updateOrderService } from "@/services/order";
 import {
   IOrderSlice,
   setDishesDescriptionRedux,
@@ -179,7 +179,7 @@ const SendOrderPage = () => {
     };
     if (query.id && token) {
       const id: string = query.id as string;
-      const response = await sendApplicationOrderEdit(token, id, payload);
+      const response = await sendApplicationOrderAdd(token, id, payload);
       if (response) {
         MessageComponent.fire({
           icon: "success",

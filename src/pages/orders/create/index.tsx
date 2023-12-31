@@ -1,4 +1,5 @@
 import ProtectPage from "@/pages/admin/components/protectPage";
+import { resetComanda } from "@/store/slices/orders.slice";
 import { IUserRedux } from "@/store/slices/user.slice";
 import { TOKEN_ID } from "@/utils/strings";
 import {
@@ -9,12 +10,14 @@ import {
 } from "@mui/icons-material";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
-import { useSelector } from "react-redux";
+import { useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function createIndex() {
   const personStore: IUserRedux = useSelector((store: any) => store.user);
   const router = useRouter();
+
+  const dispatch = useDispatch();
 
   const handleOrderNavigate = () => {
     router.push("/orders/myOrders");
@@ -34,6 +37,15 @@ export default function createIndex() {
     }
     sessionStorage.removeItem(TOKEN_ID);
     router.push("/admin");
+  }, []);
+
+  //Initializer
+  const init = useCallback(() => {
+    dispatch(resetComanda());
+  }, []);
+
+  useEffect(() => {
+    init();
   }, []);
 
   return (

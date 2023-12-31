@@ -52,7 +52,9 @@ const TicketAdmin = ({ itm, handlePrintData }: TProps) => {
         {itm.dishesDescription?.map((itm) => (
           <div
             key={itm.uuid}
-            className='flex flex-row w-full font-primary px-2'
+            className={`flex flex-row w-full font-primary px-2 ${
+              itm.number === 0 ? "bg-danger text-white" : ""
+            }`}
           >
             <div className='basis-5/6'>{itm.name}</div>
             <div className='basis-1/6 text-center'>{itm.number}</div>

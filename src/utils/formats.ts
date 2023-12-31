@@ -1,3 +1,5 @@
+import { TMenuResponse } from "@/types/menu.types";
+
 export const currencyFormat = (val: number) => {
   const newValue = Intl.NumberFormat("es-MX", {
     style: "currency",
@@ -145,4 +147,33 @@ const milesimas = (val: number) => {
 export const textToString = (val: number) => {
   const value = milesimas(val);
   return value.charAt(0).toUpperCase() + value.slice(1);
+};
+
+export const formatDate = (date: string) => {
+  const datePreprocesed = new Date(date);
+  const yyyy = datePreprocesed.getFullYear();
+  let mm: number | string = datePreprocesed.getMonth() + 1; // Months start at 0!
+  let dd: number | string = datePreprocesed.getDate();
+
+  if (dd < 10) dd = "0" + dd;
+  if (mm < 10) mm = "0" + mm;
+  return yyyy + "/" + mm + "/" + dd;
+};
+
+export const formatDateTime = (date: string) => {
+  const datePreprocesed = new Date(date).toLocaleString();
+  return datePreprocesed;
+};
+
+export const getTotalDish = (
+  dishes: Array<TMenuResponse & { number: number }>,
+) => {
+  if (dishes !== undefined) {
+    const total = dishes.reduce(
+      (prev, itm) => prev + itm.price * itm.number,
+      0,
+    );
+    return total;
+  }
+  return 0;
 };

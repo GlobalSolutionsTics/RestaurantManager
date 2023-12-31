@@ -1,10 +1,16 @@
 import { listUserSerive } from "@/services/users";
 import { TResponseOrders } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
-import { currencyFormat, textToString } from "@/utils/formats";
+import {
+  currencyFormat,
+  formatDate,
+  formatDateTime,
+  textToString,
+} from "@/utils/formats";
 import { TOKEN_ID } from "@/utils/strings";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
+import { Edit } from "@mui/icons-material";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { onValue, ref } from "firebase/database";
 import Image from "next/image";
@@ -13,8 +19,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 
 const PrintOrderPage = () => {
-  const [information, setInformation] = useState<TResponseOrders>();
+  const [information, setInformation] = useState<
+    TResponseOrders & { creatAt: string }
+  >();
   const [wainterName, setWainterName] = useState("");
+
+  const [total, setTotal] = useState(0);
+  const [subtotaly, setSubtotaly] = useState(0);
+  const [iva, setIVA] = useState(0);
 
   const { query } = useRouter();
   //Print controller
@@ -31,7 +43,7 @@ const PrintOrderPage = () => {
       );
       if (findWaint) {
         const wainter = findWaint[0];
-        setWainterName(wainter.name);
+        setWainterName(wainter?.name);
       }
     }
   }, [information?.waiter]);
@@ -45,7 +57,17 @@ const PrintOrderPage = () => {
       return onValue(connection, (snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.val();
+          const select: TResponseOrders = data[id];
+          const totaly = select?.dishesDescription.reduce(
+            (prev, next) => prev + next.number * next.price,
+            0,
+          );
+          const subTotal = totaly / 1.16;
+
           setInformation(data[id]);
+          setTotal(totaly);
+          setSubtotaly(subTotal);
+          setIVA(totaly - subTotal);
         }
       });
     }
@@ -54,6 +76,10 @@ const PrintOrderPage = () => {
     getWinterInformation();
     init();
   }, [query, information?.waiter]);
+
+  if (information === undefined) {
+    return <>Cargando</>;
+  }
 
   return (
     <>
@@ -67,58 +93,101 @@ const PrintOrderPage = () => {
         <div className='flex items-center justify-center'>
           <Image
             src={"/logo_con_fondo.png"}
-            width={200}
-            height={200}
+            width={100}
+            height={100}
             alt='Image logo'
           />
         </div>
-        <p className='font-primary font-bold text-center mb-2'>MARIS QUERIDA</p>
-        <p className='font-secondary mb-2 mb-2'>
+        <p className='font-primary font-bold text-center mb-2 print-title'>
+          MARIS QUERIDA
+        </p>
+        <p className='font-secondary mb-2 mb-2 text-center print-text'>
           Valle del vístula esquina Valle de Oaxaca. Valle de Aragon 2da Secc,
           57100 Nezahualcóyotl, Méx., Mexico City, Mexico
         </p>
-        <p className='font-secondary text-center mb-2'>
-          ATENDIO POR {wainterName}
-        </p>
-        <p className='font-secondary text-center mb-2'>COMPROBANTE DE PAGO</p>
-        <div className='gird grid-cols-3 font-secondary gap-3 mb-2'>
-          {information?.tableNumber === DEFAULT_TABLE_LLEVAR &&
-            "Orden para llevar"}
-          {information?.tableNumber !== DEFAULT_TABLE_LLEVAR && (
-            <>Mesa {information?.tableNumber}</>
-          )}
-        </div>
-        <div className='grid grid-cols-4 font-secondary gap-4'>
-          <div className='font-bold'>Cant.</div>
-          <div className='font-bold'>Desc.</div>
-          <div className='font-bold'>Precio Unit.</div>
-          <div className='font-bold'>Importe</div>
-        </div>
-        {information?.dishesDescription.map((itm) => (
-          <div className='grid grid-cols-4 font-secondary gap-4'>
-            <div>{itm.number}</div>
-            <div>{itm.name}</div>
-            <div>{currencyFormat(itm.price)}</div>
-            <div>{currencyFormat(itm.price * itm.number)}</div>
-          </div>
-        ))}
-        <div className='font-primary font-bold w-full mt-4'>
-          TOTAL:{" "}
-          {currencyFormat(
-            information?.dishesDescription.reduce(
-              (prev, next) => prev + next.number * next.price,
-              0,
-            ) || 0,
-          )}
-        </div>
-        <div className='font-secondary text-[1.25rem] w-full mt-4'>
-          {textToString(
-            information?.dishesDescription.reduce(
-              (prev, next) => prev + next.number * next.price,
-              0,
-            ) || 0,
-          )}{" "}
-          pesos
+        <hr className='my-2' />
+        <table className='w-full'>
+          <tr>
+            <td className='print-text-small'>Fecha y hora de entrada:</td>
+            <td className='print-text-small text-right'>
+              {formatDateTime(information?.creatAt || "")}
+            </td>
+          </tr>
+          <tr>
+            <td className='print-text-small'>Mesero:</td>
+            <td className='print-text-small text-right'>{wainterName}</td>
+          </tr>
+          <tr>
+            <td className='print-text-small'>Mesa:</td>
+            <td className='print-text-small text-right'>
+              {information?.tableNumber === DEFAULT_TABLE_LLEVAR
+                ? "PARA LLEVAR"
+                : "MESA " + information.tableNumber}
+            </td>
+          </tr>
+        </table>
+        <hr className='my-2' />
+        <table className='w-full'>
+          <thead>
+            <tr>
+              <td className='font-bold print-text'>Cant.</td>
+              <td className='font-bold print-text'>Descripción</td>
+              <td className='font-bold print-text'>Importe</td>
+              <td className='font-bold no-print'>Acciones</td>
+            </tr>
+          </thead>
+          <tbody>
+            {information?.dishesDescription !== undefined ? (
+              information?.dishesDescription.map((itm) => (
+                <tr
+                  className={`font-secondary print-text ${
+                    itm.number === 0 ? "no-print" : ""
+                  }} `}
+                >
+                  <td className={itm.number === 0 ? "no-print" : ""}>
+                    {itm.number}
+                  </td>
+                  <td className={itm.number === 0 ? "no-print" : ""}>
+                    {itm.name}
+                  </td>
+                  <td className={itm.number === 0 ? "no-print" : ""}>
+                    {currencyFormat(itm.price * itm.number)}
+                  </td>
+                  <td className='no-print'>
+                    <Edit />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td></td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        <hr className='my-2' />
+        <table className='w-full'>
+          <tr>
+            <td className='print-text-small'>SUBTOTAL:</td>
+            <td className='print-text-small text-right'>
+              {currencyFormat(subtotaly || 0)}
+            </td>
+          </tr>
+          <tr>
+            <td className='print-text-small'>IVA:</td>
+            <td className='print-text-small text-right'>
+              {currencyFormat(iva || 0)}
+            </td>
+          </tr>
+          <tr>
+            <td className='print-text-small'>TOTAL:</td>
+            <td className='print-text-small text-right'>
+              {currencyFormat(total || 0)}
+            </td>
+          </tr>
+        </table>
+        <div className='font-secondary text-[1.25rem] w-full mt-4 print-text'>
+          {textToString(total)} pesos
         </div>
       </div>
     </>

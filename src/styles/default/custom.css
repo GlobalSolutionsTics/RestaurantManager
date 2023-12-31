@@ -337,3 +337,18 @@ body {
     opacity: 0;
   }
 }
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-text {
+    font-size: 0.75rem !important;
+  }
+  .print-text-small {
+    font-size: 0.65rem !important;
+  }
+  .print-title {
+    font-size: 1rem !important;
+  }
+}
