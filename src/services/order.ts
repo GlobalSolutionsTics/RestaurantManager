@@ -107,7 +107,7 @@ export const sendApplicationOrderEdit = async (
       }),
     };
     const petition = await fetch(
-      `${URL_API_ORDER}/update/${uuid}/order`,
+      `${URL_API_ORDER}/update/${uuid}/add`,
       headers,
     );
     const response = await petition.json();
