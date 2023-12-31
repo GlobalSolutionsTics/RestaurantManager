@@ -1,0 +1,95 @@
+import { TOKEN_ID } from "@/utils/strings";
+import {
+  FilterFramesOutlined,
+  KitchenOutlined,
+  MiscellaneousServicesOutlined,
+  Notifications,
+  PeopleOutline,
+  PowerSettingsNewOutlined,
+  RequestQuote,
+  SetMealOutlined,
+} from "@mui/icons-material";
+import Image from "next/image";
+import Link from "next/link";
+import { useCallback } from "react";
+
+type Props = {
+  basePath: string;
+  router: any;
+};
+
+type TMenuOpt = {
+  path: string;
+  href: string;
+  children: any;
+};
+
+const MenuOption = ({ path, href, children }: TMenuOpt) => {
+  return (
+    <Link
+      href={href}
+      className={`px-4 py-2 w-full flex items-left justify-left font-secondary block tracking-widest hover:bg-aqua hover:opacity-60 ${
+        path === href ? "text-white bg-aqua" : ""
+      }`}
+    >
+      {children}
+    </Link>
+  );
+};
+
+const MenuCasher = ({ basePath, router }: Props) => {
+  const handleClose = useCallback(() => {
+    if (!router.isReady) {
+      return;
+    }
+    sessionStorage.removeItem(TOKEN_ID);
+    router.push("/admin");
+  }, []);
+  return (
+    <div className='h-[100vh] w-[70px] lg:w-[20%] overflow-y-auto bg-white top-0'>
+      <div className='w-full h-min-[30%] bg-blue-dark'>
+        <div className='flex flex-col justify-center items-center pt-4'>
+          <Image
+            src={"/logo_con_fondo.png"}
+            width={200}
+            height={200}
+            alt='Image logo'
+          />
+        </div>
+        <div className='text-white font-primary py-4 text-center text-[0.5rem] lg:text-[1.5rem]'>
+          Cajero
+        </div>
+      </div>
+      <div className='hidden lg:block'>
+        <MenuOption path={basePath} href={"/casher/applications"}>
+          <Notifications className='mr-4' /> Notificaciones
+        </MenuOption>
+        <MenuOption path={basePath} href={"/casher/orders"}>
+          <FilterFramesOutlined className='mr-4' /> Ordenes
+        </MenuOption>
+        <button
+          className='px-4 py-2 w-full font-secondary flex items-left justify-left tracking-widest hover:bg-aqua hover:opacity-60'
+          onClick={handleClose}
+        >
+          <PowerSettingsNewOutlined className='mr-4' /> Cerrar sesión
+        </button>
+      </div>
+      <div className='lg:hidden'>
+        <MenuOption path={basePath} href={"/casher/applications"}>
+          <Notifications className='mr-4' />
+        </MenuOption>
+        <MenuOption path={basePath} href={"/casher/orders"}>
+          <FilterFramesOutlined fontSize='large' />
+        </MenuOption>
+        <button
+          className='px-4 py-2 w-full font-secondary flex items-left justify-left tracking-widest hover:bg-aqua hover:opacity-60'
+          onClick={handleClose}
+        >
+          <PowerSettingsNewOutlined fontSize='large' />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default MenuCasher;

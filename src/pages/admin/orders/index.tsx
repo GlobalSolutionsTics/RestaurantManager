@@ -121,6 +121,8 @@ const OrdersPage = () => {
     });
   }, []);
 
+  console.log(ordersActive);
+
   return (
     <ProtectPage push={router.push}>
       <Head>
