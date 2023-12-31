@@ -94,7 +94,15 @@ const ToggleColumn = ({ element, push }: Props) => {
       </div>
       <div className='p-2'>
         <button
-          className={`mb-4 p-1 w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
+          className={`mb-2 p-1 w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
+            element.status,
+          )} `}
+          onClick={handleAdd}
+        >
+          <Add /> Añadir
+        </button>
+        <button
+          className={`p-1  w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
             element.status,
           )} `}
           onClick={handleAdd}
