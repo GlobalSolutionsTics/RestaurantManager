@@ -9,8 +9,8 @@ import {
   CheckCircle,
   Checklist,
   Edit,
-  KeyboardArrowDown,
-  KeyboardArrowRight,
+  Notes,
+  QrCode2,
   RoomService,
 } from "@mui/icons-material";
 import { getAuth, signInAnonymously } from "firebase/auth";
@@ -33,8 +33,9 @@ type Props = {
 };
 
 const ToggleColumn = ({ element, push }: Props) => {
-  const EDIT_PAGE = `/orders/edit/${element.uuid}`;
   const ADD_PAGE = `/orders/add/${element.uuid}`;
+  const EDIT_PAGE = `/orders/edit/${element.uuid}`;
+  const NOTE_PAGE = `/orders/notes/${element.uuid}`;
   //Color controller
   const getColorForHeader = (status: string) => {
     if (status === StatusEnum.IN_PROGRESS) {
@@ -57,6 +58,10 @@ const ToggleColumn = ({ element, push }: Props) => {
   };
 
   //Handles
+  const handleNote = () => {
+    push(NOTE_PAGE);
+  };
+
   const handleEdit = () => {
     push(EDIT_PAGE);
   };
@@ -102,12 +107,20 @@ const ToggleColumn = ({ element, push }: Props) => {
           <Add /> Añadir
         </button>
         <button
+          className={`mb-2 p-1  w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
+            element.status,
+          )} `}
+          onClick={handleEdit}
+        >
+          <Edit /> Editar
+        </button>
+        <button
           className={`p-1  w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
             element.status,
           )} `}
-          onClick={handleAdd}
+          onClick={handleNote}
         >
-          <Add /> Añadir
+          <Notes /> Cuenta
         </button>
       </div>
     </div>
