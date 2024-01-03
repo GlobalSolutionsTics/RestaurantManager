@@ -7,22 +7,24 @@ import { v4 as uuidv4 } from "uuid";
 const COLLECTION = "activos";
 export const createDirectory = async (
   uuidDirectory: string,
-  nombre: string,
-  telefono: int,
+  name: string,
+  phone: number,
   adress: string,
 ) => {
   try {
     const listRef = doc(firestore, DB_DIRECTORY, COLLECTION);
     const collection = await getDoc(listRef);
-    if (collection.exist()) {
+
+    if (collection.exists()) {
       const data = collection.data();
 
       return { error: false, message: "", data: data };
     } else {
       const payload: TDirectory = {
-        nombre: nombre,
-        telefono: telefono,
-        adress,
+        name: name,
+        phone: phone,
+        adress: adress,
+        uuidDirectory: uuidDirectory,
       };
       await setDoc(listRef, payload);
 

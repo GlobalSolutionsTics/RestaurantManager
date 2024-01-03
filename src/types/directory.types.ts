@@ -1,5 +1,6 @@
 export type TDirectory = {
   name: string;
-  phone?: string;
-  direction?: string;
+  phone?: number;
+  adress?: string;
+  uuidDirectory?: string;
 };
