@@ -4,12 +4,13 @@ import { TResponseOrders } from "@/types/menu.types";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import {
+  Add,
   ArrowBack,
   CheckCircle,
   Checklist,
   Edit,
-  KeyboardArrowDown,
-  KeyboardArrowRight,
+  Notes,
+  QrCode2,
   RoomService,
 } from "@mui/icons-material";
 import { getAuth, signInAnonymously } from "firebase/auth";
@@ -32,7 +33,9 @@ type Props = {
 };
 
 const ToggleColumn = ({ element, push }: Props) => {
+  const ADD_PAGE = `/orders/add/${element.uuid}`;
   const EDIT_PAGE = `/orders/edit/${element.uuid}`;
+  const NOTE_PAGE = `/orders/notes/${element.uuid}`;
   //Color controller
   const getColorForHeader = (status: string) => {
     if (status === StatusEnum.IN_PROGRESS) {
@@ -54,9 +57,19 @@ const ToggleColumn = ({ element, push }: Props) => {
     return "bg-danger hover:bg-danger-dark text-white";
   };
 
+  //Handles
+  const handleNote = () => {
+    push(NOTE_PAGE);
+  };
+
   const handleEdit = () => {
     push(EDIT_PAGE);
   };
+
+  const handleAdd = () => {
+    push(ADD_PAGE);
+  };
+
   return (
     <div className='w-full rounded-lg shadow-lg bg-white flex flex-col justify-between'>
       <div className='flex flex-col'>
@@ -86,12 +99,28 @@ const ToggleColumn = ({ element, push }: Props) => {
       </div>
       <div className='p-2'>
         <button
-          className={`p-1 w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
+          className={`mb-2 p-1 w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
+            element.status,
+          )} `}
+          onClick={handleAdd}
+        >
+          <Add /> Añadir
+        </button>
+        <button
+          className={`mb-2 p-1  w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
             element.status,
           )} `}
           onClick={handleEdit}
         >
           <Edit /> Editar
+        </button>
+        <button
+          className={`p-1  w-full rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
+            element.status,
+          )} `}
+          onClick={handleNote}
+        >
+          <Notes /> Cuenta
         </button>
       </div>
     </div>

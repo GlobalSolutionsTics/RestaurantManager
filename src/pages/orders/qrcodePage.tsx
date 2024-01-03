@@ -1,6 +1,6 @@
 import {
   IOrderSlice,
-  reset as resetOrderRedux,
+  resetComanda as resetOrderRedux,
 } from "@/store/slices/orders.slice";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

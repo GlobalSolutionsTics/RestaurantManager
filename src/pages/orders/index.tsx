@@ -266,19 +266,36 @@ const HomeOrderPage = () => {
                           Cant.
                         </div>
                       </div>
-                      {itm.dishesDescription?.map((dish) => (
-                        <div
-                          key={dish.uuid}
-                          className='w-full py-2 px-4 text-[1.5rem] flex flex-row'
-                        >
-                          <div className='basis-5/6 font-secondary'>
-                            {dish.name}
+                      {orderView === OrdersStatusEnum.ACTIVE &&
+                        itm.dishesDescription
+                          ?.filter((itm: any) => itm.status === "ACTIVO")
+                          .map((dish) => (
+                            <div
+                              key={dish.uuid}
+                              className='w-full py-2 px-4 text-[1.5rem] flex flex-row'
+                            >
+                              <div className='basis-5/6 font-secondary'>
+                                {dish.name}
+                              </div>
+                              <div className='basis-1/6 text-center font-secondary'>
+                                {dish.number}
+                              </div>
+                            </div>
+                          ))}
+                      {orderView !== OrdersStatusEnum.ACTIVE &&
+                        itm.dishesDescription?.map((dish) => (
+                          <div
+                            key={dish.uuid}
+                            className='w-full py-2 px-4 text-[1.5rem] flex flex-row'
+                          >
+                            <div className='basis-5/6 font-secondary'>
+                              {dish.name}
+                            </div>
+                            <div className='basis-1/6 text-center font-secondary'>
+                              {dish.number}
+                            </div>
                           </div>
-                          <div className='basis-1/6 text-center font-secondary'>
-                            {dish.number}
-                          </div>
-                        </div>
-                      ))}
+                        ))}
                     </div>
                     <div className='p-1 bottom-1 w-full'>
                       {loading ? (

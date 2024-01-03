@@ -17,14 +17,17 @@ export const updateStatusOrder = async (
     const getOrders = await get(child(docRef, orderUUID));
     if (getOrders.exists()) {
       if (status !== StatusEnum.ORDER_READY) {
-        const data: Array<TResponseOrders> = getOrders.val();
+        const data: TResponseOrders = getOrders.val();
         const newData = { ...data, status };
         await update(child(docRef, orderUUID), newData);
         return { error: false, message: "Datos actualizados correctamente" };
       } else {
-        const data: Array<TResponseOrders> = getOrders.val();
-        const newData = { ...data, status };
-
+        const data: TResponseOrders = getOrders.val();
+        const newDishes = data.dishesDescription.map((itm) => ({
+          ...itm,
+          status: "LISTO",
+        }));
+        const newData = { ...data, status, dishesDescription: newDishes };
         await changeStatusRequestEditionForOrderId(
           StatusApplicationEnum.CLOSE,
           orderUUID,
@@ -110,5 +113,33 @@ export const changeStatusRequestEditionForOrderId = async (
     }
     const applicationId = findElement.uuid;
     await changeRequestedEdition(applicationId, status);
+  }
+};
+
+export const updateDishesAndNumber = async (
+  orderId: string,
+  dishesDescription: Array<any>,
+) => {
+  try {
+    const auth = getAuth();
+    await signInAnonymously(auth);
+    const docRef = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+    const getOrders = await get(child(docRef, orderId));
+    if (getOrders.exists()) {
+      const data: Array<TResponseOrders> = getOrders.val();
+      const newData = {
+        ...data,
+        dishes: dishesDescription.length,
+        dishesDescription: dishesDescription,
+        status: StatusEnum.EDITED,
+      };
+      await update(child(docRef, orderId), newData);
+      return { error: false, message: "Datos actualizados correctamente" };
+    }
+
+    return { error: true, message: "Error al actualizar el estatus" };
+  } catch (e) {
+    console.log("Error:", e);
+    return { error: true, message: "Error en los servicios de google" };
   }
 };
