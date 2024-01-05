@@ -2,10 +2,19 @@ import { HttpMethodsEnum } from "@/enums/http.enum";
 import { NextApiRequest, NextApiResponse } from "next";
 import { updateInformationPayment } from "../../controllers/updateOrder";
 
+enum EButtonActives {
+  EFECTIVE = "EFECTIVO",
+  DEBIT = "TARJETA DE DEBITO",
+  CREDIT = "TARJETA DE CREDITO",
+  VOUCHER = "VALES",
+  COUTERSY = "CORTESIA",
+}
+
 type TModification = {
   payWith: number;
   propine: number;
   shift: number;
+  paymentType: EButtonActives;
 };
 
 type TBody = {

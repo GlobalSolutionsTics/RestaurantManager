@@ -98,6 +98,7 @@ const PrintOrderPage = () => {
         payWith: payWith,
         propine: propine,
         shift: shift,
+        paymentType: payment,
       },
     };
     const save = await editPaymentInformationService(
@@ -157,11 +158,14 @@ const PrintOrderPage = () => {
             if (
               select.payWith !== undefined &&
               select.propine !== undefined &&
-              select.shift !== undefined
+              select.shift !== undefined &&
+              select.pymentType !== undefined
             ) {
               const totaly =
                 parseFloat(total.toString()) +
                 parseFloat(select.propine.toString());
+
+              setPayment(select.pymentType);
               setTotalWithPay(totaly);
               setIsSaved(true);
             }
@@ -422,7 +426,7 @@ const PrintOrderPage = () => {
           <div className='font-secondary text-[1.25rem] w-full my-2 print-text'>
             {textToString(total)} pesos
           </div>
-          {isSaved && (
+          {isSaved && payment === EButtonActives.EFECTIVE && (
             <div className='flex flex-col'>
               <hr />
               <p className='font-bold text-center my-2 print-text'>
@@ -446,6 +450,25 @@ const PrintOrderPage = () => {
                   </td>
                   <td className='text-center print-text'>
                     {currencyFormat(shift)}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          )}
+          {isSaved && payment !== EButtonActives.EFECTIVE && (
+            <div className='flex flex-col'>
+              <hr />
+              <p className='font-bold text-center my-2 print-text'>
+                FORMA DE PAGO: {payment}
+              </p>
+              <hr />
+              <table>
+                <tr>
+                  <td className='font-bold text-center print-text'>PROPINA</td>
+                </tr>
+                <tr>
+                  <td className='text-center print-text'>
+                    {currencyFormat(parseInt(propine))}
                   </td>
                 </tr>
               </table>
