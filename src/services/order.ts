@@ -168,3 +168,35 @@ export const acceptEditService = async (token: string, body: any) => {
     return false;
   }
 };
+
+export const editPaymentInformationService = async (
+  token: string,
+  uuid: string,
+  body: any,
+) => {
+  try {
+    const headers = {
+      method: HttpMethodsEnum.PUT,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        modifications: body.modifications,
+      }),
+    };
+    const petition = await fetch(
+      `${URL_API_ORDER}/update/${uuid}/payment-info`,
+      headers,
+    );
+    const response = await petition.json();
+    if (response.error) {
+      return false;
+    } else {
+      return true;
+    }
+  } catch (e: any) {
+    console.error("Error al actualizar la configuracion");
+    return false;
+  }
+};
