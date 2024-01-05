@@ -35,7 +35,7 @@ const TicketAdmin = ({ itm, handlePrintData }: TProps) => {
     window.open(
       `${URL_BASE}/admin/orders/${itm.uuid}/print`,
       "",
-      "width=800,height=600",
+      "width=1200,height=600",
     );
   };
 
@@ -82,12 +82,14 @@ const TicketAdmin = ({ itm, handlePrintData }: TProps) => {
           >
             <PrintOutlined /> Imprimir
           </button>
-          <button
-            className='w-full bg-aqua text-white font-primary p-2'
-            onClick={handleFinishOrder}
-          >
-            <AssignmentTurnedIn /> Terminar
-          </button>
+          {itm.status !== StatusEnum.CLOSED && (
+            <button
+              className='w-full bg-aqua text-white font-primary p-2'
+              onClick={handleFinishOrder}
+            >
+              <AssignmentTurnedIn /> Terminar
+            </button>
+          )}
         </div>
       )}
     </div>

@@ -143,3 +143,31 @@ export const updateDishesAndNumber = async (
     return { error: true, message: "Error en los servicios de google" };
   }
 };
+
+export const updateInformationPayment = async (
+  orderId: string,
+  paymentInformation: { payWith: number; propine: number; shift: number },
+) => {
+  try {
+    const auth = getAuth();
+    await signInAnonymously(auth);
+    const docRef = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+    const getOrders = await get(child(docRef, orderId));
+    if (getOrders.exists()) {
+      const data: Array<TResponseOrders> = getOrders.val();
+      const newData = {
+        ...data,
+        payWith: paymentInformation.payWith,
+        propine: paymentInformation.propine,
+        shift: paymentInformation.shift,
+      };
+      await update(child(docRef, orderId), newData);
+      return { error: false, message: "Datos actualizados correctamente" };
+    }
+
+    return { error: true, message: "Error al actualizar el estatus" };
+  } catch (e) {
+    console.log("Error:", e);
+    return { error: true, message: "Error en los servicios de google" };
+  }
+};
