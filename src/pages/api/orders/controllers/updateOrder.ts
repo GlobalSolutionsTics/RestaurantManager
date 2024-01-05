@@ -144,9 +144,22 @@ export const updateDishesAndNumber = async (
   }
 };
 
+enum EButtonActives {
+  EFECTIVE = "EFECTIVO",
+  DEBIT = "TARJETA DE DEBITO",
+  CREDIT = "TARJETA DE CREDITO",
+  VOUCHER = "VALES",
+  COUTERSY = "CORTESIA",
+}
+
 export const updateInformationPayment = async (
   orderId: string,
-  paymentInformation: { payWith: number; propine: number; shift: number },
+  paymentInformation: {
+    payWith: number;
+    propine: number;
+    shift: number;
+    paymentType: EButtonActives;
+  },
 ) => {
   try {
     const auth = getAuth();
@@ -160,6 +173,7 @@ export const updateInformationPayment = async (
         payWith: paymentInformation.payWith,
         propine: paymentInformation.propine,
         shift: paymentInformation.shift,
+        paymentType: paymentInformation.paymentType,
       };
       await update(child(docRef, orderId), newData);
       return { error: false, message: "Datos actualizados correctamente" };
