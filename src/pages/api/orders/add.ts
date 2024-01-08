@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { TOrder } from "../types/Order/order.type";
 import { v4 as uuidv4 } from "uuid";
 import addOrder from "./controllers/addOrder";
+import { OrdersDishesStatus } from "@/enums/orders.enum";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   const method = req.method;
@@ -10,7 +11,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
     const uuid = uuidv4();
     const newDishes = body.dishesDescription.map((itm) => ({
       ...itm,
-      status: "ACTIVO",
+      status: OrdersDishesStatus.ACTIVE,
     }));
     const add = await addOrder(
       body.name,

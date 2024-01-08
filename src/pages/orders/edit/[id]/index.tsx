@@ -1,7 +1,10 @@
+import { OrdersDishesStatus } from "@/enums/orders.enum";
 import ProtectPage from "@/pages/admin/components/protectPage";
 import { sendApplicationOrderEdit } from "@/services/order";
 import {
   IOrderSlice,
+  resetComanda,
+  resetTableNumber,
   setDishesDescriptionRedux,
   setOrderIdRedux,
   setTableOrder,
@@ -26,7 +29,11 @@ import withReactContent from "sweetalert2-react-content";
 
 const MessageComponent = withReactContent(Swal);
 
-type TDish = TMenuResponse & { number?: number; image?: string };
+type TDish = TMenuResponse & {
+  number?: number;
+  image?: string;
+  status?: string;
+};
 
 type TDishesDescription = Array<TDish>;
 
@@ -35,6 +42,7 @@ type Props = {
   dishesNumber: number;
   price: number;
   uuid: string;
+  status: string;
   onChange: (a: any, b: any, c: any, d: any) => void;
   onOpen?: (val: any) => void;
 };
@@ -44,6 +52,7 @@ const FieldEditedOption = ({
   dishesNumber,
   price,
   uuid,
+  status,
   onChange,
   onOpen,
 }: Props) => {
@@ -80,22 +89,40 @@ const FieldEditedOption = ({
 
   return (
     <>
-      <div className='w-full flex justify-between bg-enabled-dark py-2 px-2'>
-        <div className='text-secondary text-[1rem] basis-4/6'>
+      <div
+        className={`w-full flex justify-between ${
+          status === OrdersDishesStatus.READY ? "bg-success" : "bg-enabled-dark"
+        } bg-enabled-dark py-2 px-2 `}
+      >
+        <div
+          className={`text-secondary text-[1rem] basis-4/6 ${
+            status === OrdersDishesStatus.READY && "line-through"
+          }`}
+        >
           {formik.values.name}
         </div>
-        <div className='basis-1/6'>{formik.values.dishesNumber}</div>
-        <div className='basis-1/6 flex justify-end'>
-          {editValues ? (
-            <button onClick={handleChangeEdit}>
-              <Check />
-            </button>
-          ) : (
-            <button onClick={toggleEdit}>
-              <Edit />
-            </button>
-          )}
+        <div
+          className={`text-secondary text-[1rem] basis-1/6 ${
+            status === OrdersDishesStatus.READY && "line-through"
+          }`}
+        >
+          {formik.values.dishesNumber}
         </div>
+        {status == OrdersDishesStatus.ACTIVE ? (
+          <div className='basis-1/6 flex justify-end'>
+            {editValues ? (
+              <button onClick={handleChangeEdit}>
+                <Check />
+              </button>
+            ) : (
+              <button onClick={toggleEdit}>
+                <Edit />
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className='basis-1/6 flex justify-end'></div>
+        )}
       </div>
       {editValues && (
         <div className='flex flex-col bg-enabled p-4'>
@@ -190,6 +217,8 @@ const EditOrderPage = () => {
       const id: string = query.id as string;
       const response = await sendApplicationOrderEdit(token, id, payload);
       if (response) {
+        dispatch(resetComanda());
+        dispatch(resetTableNumber());
         MessageComponent.fire({
           icon: "success",
           title: "Orden modifcada",
@@ -244,6 +273,7 @@ const EditOrderPage = () => {
 
         dispatch(setTableOrder(data.tableNumber));
         dispatch(setOrderIdRedux(data.uuid));
+        dispatch(setDishesDescriptionRedux(data.dishesDescription));
         setDishState(data.status);
         setTableNumber(data.tableNumber);
         setDishesDescription(data.dishesDescription);
@@ -276,15 +306,16 @@ const EditOrderPage = () => {
           <p className='text-center'>{dishState}</p>
         </div>
       </div>
-      <div>
+      <div className='mb-[3rem]'>
         <div className='flex flex-col bg-enabled'>
-          {dishesDescription?.map((itm) => (
+          {dishesDescription.map((itm, idx) => (
             <FieldEditedOption
-              key={itm.uuid}
+              key={itm.uuid + "-" + idx}
               uuid={itm.uuid || ""}
               name={itm.name}
               price={itm.price}
               dishesNumber={itm.number || 0}
+              status={itm.status || ""}
               onChange={onChangeDish}
             />
           ))}

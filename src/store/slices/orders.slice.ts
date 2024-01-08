@@ -29,6 +29,7 @@ const ordersSlice = createSlice({
   initialState: INITAL_STATE,
   reducers: {
     resetComanda: () => INITAL_STATE,
+    resetTableNumber: () => ({ ...INITAL_STATE, tableNumber: 0 }),
     setTableOrder: setTableNumber,
     setDishesDescriptionRedux: setDishesDescAction,
     setDishesNumberRedux: setDishesNumberAction,
@@ -42,5 +43,6 @@ export const {
   setDishesDescriptionRedux,
   setDishesNumberRedux,
   setOrderIdRedux,
+  resetTableNumber,
 } = ordersSlice.actions;
 export default ordersSlice.reducer;

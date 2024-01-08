@@ -25,6 +25,7 @@ import { updateOrderService } from "@/services/order";
 import { TOKEN_ID } from "@/utils/strings";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { Button } from "@mui/material";
+import { OrdersDishesStatus } from "@/enums/orders.enum";
 
 enum OrdersStatusEnum {
   ACTIVE = "ACTIVAS",
@@ -268,10 +269,13 @@ const HomeOrderPage = () => {
                       </div>
                       {orderView === OrdersStatusEnum.ACTIVE &&
                         itm.dishesDescription
-                          ?.filter((itm: any) => itm.status === "ACTIVO")
-                          .map((dish) => (
+                          ?.filter(
+                            (itm: any) =>
+                              itm.status === OrdersDishesStatus.ACTIVE,
+                          )
+                          .map((dish, indx) => (
                             <div
-                              key={dish.uuid}
+                              key={dish.uuid + "-" + indx}
                               className='w-full py-2 px-4 text-[1.5rem] flex flex-row'
                             >
                               <div className='basis-5/6 font-secondary'>
@@ -283,9 +287,9 @@ const HomeOrderPage = () => {
                             </div>
                           ))}
                       {orderView !== OrdersStatusEnum.ACTIVE &&
-                        itm.dishesDescription?.map((dish) => (
+                        itm.dishesDescription?.map((dish, indx) => (
                           <div
-                            key={dish.uuid}
+                            key={dish.uuid + "-" + indx}
                             className='w-full py-2 px-4 text-[1.5rem] flex flex-row'
                           >
                             <div className='basis-5/6 font-secondary'>
