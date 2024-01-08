@@ -136,12 +136,12 @@ const NotePage = () => {
             </thead>
             <tbody>
               {information?.dishesDescription !== undefined ? (
-                information?.dishesDescription.map((itm) => (
+                information?.dishesDescription.map((itm, idx) => (
                   <tr
                     className={`font-secondary print-text ${
                       itm.number === 0 ? "no-print" : ""
                     }} `}
-                    key={itm.uuid}
+                    key={itm.uuid + "-" + idx}
                   >
                     <td className={itm.number === 0 ? "no-print" : ""}>
                       {itm.number}

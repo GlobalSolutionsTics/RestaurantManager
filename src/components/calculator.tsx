@@ -27,8 +27,8 @@ const CalculatorComp = ({
   onClose,
   onAccept,
 }: TPropsCalculator) => {
-  console.log(initialValues);
-  const [dishesNumber, setDishesNumber] = useState(initialValues || 0);
+  const DEFAULT_INITAL_VALUE = initialValues !== undefined ? initialValues : 0;
+  const [dishesNumber, setDishesNumber] = useState(DEFAULT_INITAL_VALUE);
   //Handlers
   const handleChangeDishesNumber = (number: number) => {
     if (dishesNumber === 0 && number === 0) {
@@ -60,13 +60,18 @@ const CalculatorComp = ({
   };
   //Initial values
   const initCalculator = useCallback(() => {
-    if (initialValues) {
+    if (initialValues !== undefined) {
       setDishesNumber(initialValues);
+    } else {
+      setDishesNumber(0);
     }
   }, [initialValues]);
 
   useEffect(() => {
     initCalculator();
+    return () => {
+      setDishesNumber(0);
+    };
   }, [initialValues]);
 
   return (

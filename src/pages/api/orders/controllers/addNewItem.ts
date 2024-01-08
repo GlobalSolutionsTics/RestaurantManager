@@ -1,3 +1,4 @@
+import { OrdersDishesStatus } from "@/enums/orders.enum";
 import { StatusEnum } from "@/enums/states.enum";
 import { TResponseOrders } from "@/types/menu.types";
 import { realtimeDB } from "@firebase/config";
@@ -17,7 +18,7 @@ export const addNewItem = async (
     const data: TResponseOrders = snapshot.val();
     const newDishes = modifications.dishesDescription.map((itm) => ({
       ...itm,
-      status: "ACTIVO",
+      status: OrdersDishesStatus.ACTIVE,
     }));
     const newDishesDescription = data.dishesDescription.concat(newDishes);
     set(ref(realtimeDB, RT_ORDER_TABLE_NAME + "/" + orderId), {

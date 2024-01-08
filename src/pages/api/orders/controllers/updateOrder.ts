@@ -1,3 +1,4 @@
+import { OrdersDishesStatus } from "@/enums/orders.enum";
 import { StatusApplicationEnum, StatusEnum } from "@/enums/states.enum";
 import { TResponseOrders } from "@/types/menu.types";
 import { firestore, realtimeDB } from "@firebase/config";
@@ -25,7 +26,7 @@ export const updateStatusOrder = async (
         const data: TResponseOrders = getOrders.val();
         const newDishes = data.dishesDescription.map((itm) => ({
           ...itm,
-          status: "LISTO",
+          status: OrdersDishesStatus.READY,
         }));
         const newData = { ...data, status, dishesDescription: newDishes };
         await changeStatusRequestEditionForOrderId(
