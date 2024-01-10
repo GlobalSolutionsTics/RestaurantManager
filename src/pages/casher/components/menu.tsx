@@ -1,13 +1,8 @@
 import { TOKEN_ID } from "@/utils/strings";
 import {
   FilterFramesOutlined,
-  KitchenOutlined,
-  MiscellaneousServicesOutlined,
   Notifications,
-  PeopleOutline,
   PowerSettingsNewOutlined,
-  RequestQuote,
-  SetMealOutlined,
 } from "@mui/icons-material";
 import Image from "next/image";
 import Link from "next/link";
@@ -61,11 +56,14 @@ const MenuCasher = ({ basePath, router }: Props) => {
         </div>
       </div>
       <div className='hidden lg:block'>
-        <MenuOption path={basePath} href={"/casher/applications"}>
+        <MenuOption path={basePath} href={"/casher/notifications"}>
           <Notifications className='mr-4' /> Notificaciones
         </MenuOption>
         <MenuOption path={basePath} href={"/casher/orders"}>
           <FilterFramesOutlined className='mr-4' /> Ordenes
+        </MenuOption>
+        <MenuOption path={basePath} href={"/casher/directory"}>
+          Directorio
         </MenuOption>
         <button
           className='px-4 py-2 w-full font-secondary flex items-left justify-left tracking-widest hover:bg-aqua hover:opacity-60'
@@ -75,11 +73,14 @@ const MenuCasher = ({ basePath, router }: Props) => {
         </button>
       </div>
       <div className='lg:hidden'>
-        <MenuOption path={basePath} href={"/casher/applications"}>
+        <MenuOption path={basePath} href={"/casher/notifications"}>
           <Notifications className='mr-4' />
         </MenuOption>
         <MenuOption path={basePath} href={"/casher/orders"}>
           <FilterFramesOutlined fontSize='large' />
+        </MenuOption>
+        <MenuOption path={basePath} href={"/casher/directory"}>
+          Directorio
         </MenuOption>
         <button
           className='px-4 py-2 w-full font-secondary flex items-left justify-left tracking-widest hover:bg-aqua hover:opacity-60'

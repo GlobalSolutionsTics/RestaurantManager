@@ -124,7 +124,7 @@ const OrdersPage = () => {
   return (
     <ProtectPage push={router.push}>
       <Head>
-        <title>Administrador | Ordenes</title>
+        <title>Cajero | Ordenes</title>
       </Head>
       <div className='flex flex-row'>
         <MenuCasher router={router} basePath={router.pathname} />

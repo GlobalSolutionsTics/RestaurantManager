@@ -166,7 +166,7 @@ const ApplicationAdminPage = () => {
   return (
     <ProtectPage push={router.push}>
       <Head>
-        <title>Administrador | Solicitudes de cambio</title>
+        <title>Cajero | Solicitudes de cambio</title>
       </Head>
       <div className='flex flex-row'>
         <MenuCasher basePath={router.pathname} router={router} />
