@@ -3,7 +3,7 @@ import { SEED_OF_JWT } from "../auth/controller/users";
 import jwt from "jsonwebtoken";
 import { HttpMethodsEnum } from "@/enums/http.enum";
 import { getAllList } from "./controllers/list";
-import { createDirectory } from "./controllers/create";
+import { createDirectory } from "./create";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const method = req.method;

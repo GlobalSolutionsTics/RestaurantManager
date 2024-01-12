@@ -1,7 +1,11 @@
+import { IClientResponse } from "@/pages/api/directory/controllers/client";
+import withReactContent from "sweetalert2-react-content";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import ProtectPage from "../../admin/components/protectPage";
-import Head from "next/head";
 import MenuCasher from "../components/menu";
+import Head from "next/head";
+import Swal from "sweetalert2";
 import {
   AddOutlined,
   CancelOutlined,
@@ -9,6 +13,9 @@ import {
   Edit,
   EditOutlined,
 } from "@mui/icons-material";
+import { listClient } from "@/pages/api/directory/controllers/client";
+
+const MessageComponent = withReactContent(Swal);
 
 type PropsCol = {
   name: string;
@@ -22,8 +29,8 @@ type PropsCol = {
 const ColComponents = ({
   name,
   adress,
-  index,
   phone,
+  index,
   editFn,
   deleteFn,
 }: PropsCol) => {
@@ -34,7 +41,8 @@ const ColComponents = ({
       }`}
     >
       <div className='font-secondary basis-1/4'>{name}</div>
-      <div className='font-secondary basis-1/4'>{adress}</div>
+      <div className='font-secondary basis-1/4'>{adress}</div>{" "}
+      <div className='font-secondary basis-1/4'>{phone}</div>
       <div className='font-secondary basis-1/4 flex flex-row'>
         <button className='text-blue mr-4' onClick={editFn}>
           <EditOutlined />
@@ -46,8 +54,72 @@ const ColComponents = ({
     </div>
   );
 };
+
 const DirectoryPage = () => {
+  const [userList, setUserList] = useState<Array<IClientResponse>>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  //Add modal controll
+  const [showAddModal, setShowAddModal] = useState(false);
+  //Edit modal controll
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [initialStateEditModal, setInitialStateEditModal] = useState({
+    name: "",
+    phone: "",
+    adress: "",
+    uuid: "",
+  });
+  //Delete modal controll
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteUUID, setDeleteUUID] = useState("");
+  const [nameDelete, setNameDelete] = useState("");
+
+  const toggleAddModal = () => {
+    if (!isLoading) {
+      setShowAddModal(!showAddModal);
+    }
+  };
+
+  const toggleEditModal = () => {
+    if (!isLoading) {
+      setShowEditModal(!showEditModal);
+    }
+  };
+
+  const toggleDeleteModal = () => {
+    if (!isLoading) {
+      setDeleteUUID("");
+      setNameDelete("");
+      setShowDeleteModal(!showDeleteModal);
+    }
+  };
+
   const router = useRouter();
+
+  const showMessage = (
+    title: string,
+    description: string,
+    okText?: string,
+    icon?: "error" | "success",
+  ) => {
+    MessageComponent.fire({
+      icon: icon || "success",
+      title: title,
+      text: description,
+      timer: 1500,
+      confirmButtonText: okText,
+      showConfirmButton: false,
+      showLoaderOnConfirm: false,
+      showLoaderOnDeny: false,
+    });
+  };
+
+  const getUsersList = async () => {
+    const token = sessionStorage.getItem(TOKEN_ID);
+    if (token) {
+      const users = await listClientSerive(token);
+      setUserList(users);
+    }
+  };
   return (
     <ProtectPage push={router.push}>
       <Head>

@@ -2,7 +2,6 @@ import { TDirectory } from "@/types/directory.types";
 import { firestore } from "@firebase/config";
 import { DB_DIRECTORY } from "@models/names";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { v4 as uuidv4 } from "uuid";
 
 const COLLECTION = "activos";
 export const createDirectory = async (
