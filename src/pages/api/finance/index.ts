@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAllOrdersFS } from "./controllers/getOrders";
-import { formatDate, getTotalDish } from "@/utils/formats";
+import { formatDate, formatHour, getTotalDish } from "@/utils/formats";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const orders = await getAllOrdersFS();
@@ -9,6 +9,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const data = dataPreprocesed.map((itm: any) => ({
       ...itm,
       createdAtTmp: formatDate(itm.creatAt),
+      createAtHour: formatHour(itm.creatAt),
+      createAtDay: new Date(itm.creatAt).getDay(),
       createdAtFullTm: new Date(itm.creatAt).toLocaleString("es-MX"),
       createAtTime: new Date(itm.creatAt).getTime(),
       total: getTotalDish(itm.dishesDescription),
