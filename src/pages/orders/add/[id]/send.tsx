@@ -1,9 +1,9 @@
-import { StatusEnum } from "@/enums/states.enum";
 import ProtectPage from "@/pages/admin/components/protectPage";
-import { UOrderReq } from "@/pages/api/types/Order/order.type";
 import { sendApplicationOrderAdd, updateOrderService } from "@/services/order";
 import {
   IOrderSlice,
+  resetComanda,
+  resetTableNumber,
   setDishesDescriptionRedux,
 } from "@/store/slices/orders.slice";
 import { IUserRedux } from "@/store/slices/user.slice";
@@ -181,6 +181,8 @@ const SendOrderPage = () => {
       const id: string = query.id as string;
       const response = await sendApplicationOrderAdd(token, id, payload);
       if (response) {
+        dispatch(resetComanda());
+        dispatch(resetTableNumber());
         MessageComponent.fire({
           icon: "success",
           title: "Orden enviada",
@@ -265,6 +267,11 @@ const SendOrderPage = () => {
             <p className='text-center'>Estatus:</p>
             <p className='text-center'>{dishState}</p>
           </div>
+        </div>
+        <div className='flex flex-row bg-enabled px-2'>
+          <div className='basis-4/6'>Descripción</div>
+          <div className='basis-1/6'>Cantidad</div>
+          <div className='basis-1/6'></div>
         </div>
         <div className='flex flex-col bg-enabled'>
           {dishStore.dishesDescription.map((itm) => (

@@ -1,22 +1,28 @@
+import { editPaymentInformationService } from "@/services/order";
 import { listUserSerive } from "@/services/users";
 import { TResponseOrders } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
-import {
-  currencyFormat,
-  formatDate,
-  formatDateTime,
-  textToString,
-} from "@/utils/formats";
+import { currencyFormat, formatDateTime, textToString } from "@/utils/formats";
 import { TOKEN_ID } from "@/utils/strings";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
-import { Edit } from "@mui/icons-material";
+import { Edit, Print, Save } from "@mui/icons-material";
+import { Button, TextField } from "@mui/material";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { onValue, ref } from "firebase/database";
+import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
+
+enum EButtonActives {
+  EFECTIVE = "EFECTIVO",
+  DEBIT = "TARJETA DE DEBITO",
+  CREDIT = "TARJETA DE CREDITO",
+  VOUCHER = "VALES",
+  COUTERSY = "CORTESIA",
+}
 
 const PrintOrderPage = () => {
   const [information, setInformation] = useState<
@@ -27,12 +33,84 @@ const PrintOrderPage = () => {
   const [total, setTotal] = useState(0);
   const [subtotaly, setSubtotaly] = useState(0);
   const [iva, setIVA] = useState(0);
+  //Form controller
+  const [propine, setPropine] = useState("");
+  const [payWith, setPayWith] = useState("");
+  const [shift, setShift] = useState(0);
+  const [totalWithPay, setTotalWithPay] = useState(0);
+  //Button controller
+  const [payment, setPayment] = useState<EButtonActives>(
+    EButtonActives.EFECTIVE,
+  );
+  //Save controller
+  const [isSaved, setIsSaved] = useState(false);
 
   const { query } = useRouter();
   //Print controller
   const componentRef = useRef(null);
   //Handle functions
   const handlePrint = useReactToPrint({ content: () => componentRef.current });
+  const handleChangePayment = (val: EButtonActives) => {
+    if (val !== EButtonActives.EFECTIVE) {
+      setTotalWithPay(0);
+      setPayWith("");
+      setShift(0);
+      if (propine !== "") {
+        const newVal = total + parseInt(propine);
+        setTotalWithPay(newVal);
+      }
+    }
+    setPayment(val);
+  };
+  const handleChangePropine = (val: ChangeEvent<HTMLInputElement>) => {
+    const value = val.target.value;
+    if (value !== "") {
+      const shiftPay = parseInt(payWith) - total - parseInt(val.target.value);
+      const subtotal = parseInt(value) + total;
+      setShift(shiftPay);
+      setPropine(value);
+      setTotalWithPay(subtotal);
+    } else {
+      const shiftPay = parseInt(payWith) - total;
+      const subtotal = parseInt(value) + total;
+      setShift(shiftPay);
+      setPropine(value);
+      setTotalWithPay(subtotal);
+    }
+  };
+  const handleChangePayWith = (val: ChangeEvent<HTMLInputElement>) => {
+    const value = val.target.value;
+    if (propine !== "") {
+      const shiftPay = parseInt(value) - total - parseInt(propine);
+      setShift(shiftPay);
+      setPayWith(value);
+    } else {
+      const shiftPay = parseInt(value) - total;
+      setShift(shiftPay);
+      setPayWith(value);
+    }
+  };
+
+  const handleSavePaymentInfo = async () => {
+    const token = sessionStorage.getItem(TOKEN_ID);
+    const body = {
+      modifications: {
+        payWith: payWith,
+        propine: propine,
+        shift: shift,
+        paymentType: payment,
+      },
+    };
+    const save = await editPaymentInformationService(
+      token || "",
+      query.id as string,
+      body,
+    );
+    if (save) {
+      setIsSaved(true);
+    }
+  };
+
   //Initial charger
   const getWinterInformation = useCallback(async () => {
     const token = sessionStorage.getItem(TOKEN_ID);
@@ -49,145 +127,353 @@ const PrintOrderPage = () => {
   }, [information?.waiter]);
 
   const init = useCallback(async () => {
-    const id = query.id as string;
-    if (id !== undefined) {
-      const auth = getAuth();
-      await signInAnonymously(auth);
-      const connection = ref(realtimeDB, RT_ORDER_TABLE_NAME);
-      return onValue(connection, (snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const select: TResponseOrders = data[id];
-          const totaly = select?.dishesDescription.reduce(
-            (prev, next) => prev + next.number * next.price,
-            0,
-          );
-          const subTotal = totaly / 1.16;
+    try {
+      const id = query.id as string;
+      if (id !== undefined) {
+        const auth = getAuth();
+        await signInAnonymously(auth);
+        const connection = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+        return onValue(connection, (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            const select: TResponseOrders = data[id];
+            const totaly = select?.dishesDescription.reduce(
+              (prev, next) => prev + next.number * next.price,
+              0,
+            );
+            const subTotal = totaly / 1.16;
 
-          setInformation(data[id]);
-          setTotal(totaly);
-          setSubtotaly(subTotal);
-          setIVA(totaly - subTotal);
-        }
-      });
+            if (select.payWith !== undefined) {
+              setPayWith(select.payWith.toString());
+            }
+
+            if (select.propine !== undefined) {
+              setPropine(select.propine.toString());
+            }
+
+            if (select.shift !== undefined) {
+              setShift(select.shift);
+            }
+
+            if (
+              select.payWith !== undefined &&
+              select.propine !== undefined &&
+              select.shift !== undefined &&
+              select.pymentType !== undefined
+            ) {
+              const totaly =
+                parseFloat(total.toString()) +
+                parseFloat(select.propine.toString());
+
+              setPayment(select.pymentType);
+              setTotalWithPay(totaly);
+              setIsSaved(true);
+            }
+
+            setInformation(data[id]);
+            setTotal(totaly);
+            setSubtotaly(subTotal);
+            setIVA(totaly - subTotal);
+          }
+        });
+      }
+    } catch (e) {
+      console.error("Error al cargar la información:", e);
     }
-  }, [query]);
+  }, [query, total]);
+
   useEffect(() => {
     getWinterInformation();
     init();
-  }, [query, information?.waiter]);
+  }, [query, information?.waiter, total]);
+
+  useEffect(() => {
+    init();
+  }, []);
 
   if (information === undefined) {
-    return <>Cargando</>;
+    return (
+      <div className='min-w-[1100px] min-h-[590px] flex justify-center items-center font-primary text-[1.3rem]'>
+        <span className='loader mr-4'></span> Cargando Infomración
+      </div>
+    );
   }
 
   return (
     <>
-      <button
-        onClick={handlePrint}
-        className='bg-aqua text-white font-secondary p-2'
-      >
-        IMPRIMIR
-      </button>
-      <div ref={componentRef} className='mb-4 px-4'>
-        <div className='flex items-center justify-center'>
-          <Image
-            src={"/logo_con_fondo.png"}
-            width={100}
-            height={100}
-            alt='Image logo'
-          />
+      <Head>
+        <title>Imprimir ticket</title>
+      </Head>
+      <div className='flex flex-row'>
+        <div className='basis-1/2'>
+          <div className='p-2'>
+            <p className='font-secondary'>Forma de pago</p>
+            <div className='flex flex-row'>
+              <Button
+                className={`${
+                  payment === EButtonActives.EFECTIVE
+                    ? "!bg-aqua !text-white"
+                    : ""
+                } !mr-2 !text-[0.75rem]`}
+                onClick={() => handleChangePayment(EButtonActives.EFECTIVE)}
+                disabled={isSaved}
+              >
+                Efectivo
+              </Button>
+              <Button
+                className={`${
+                  payment === EButtonActives.DEBIT ? "!bg-aqua !text-white" : ""
+                } !mr-2 !text-[0.75rem]`}
+                onClick={() => handleChangePayment(EButtonActives.DEBIT)}
+                disabled={isSaved}
+              >
+                Tarjeta de debito
+              </Button>
+              <Button
+                className={`${
+                  payment === EButtonActives.CREDIT
+                    ? "!bg-aqua !text-white"
+                    : ""
+                } !mr-2 !text-[0.75rem]`}
+                onClick={() => handleChangePayment(EButtonActives.CREDIT)}
+                disabled={isSaved}
+              >
+                Tarjeta de credito
+              </Button>
+              <Button
+                className={`${
+                  payment === EButtonActives.VOUCHER
+                    ? "!bg-aqua !text-white"
+                    : ""
+                } !mr-2 !text-[0.75rem]`}
+                onClick={() => handleChangePayment(EButtonActives.VOUCHER)}
+                disabled={isSaved}
+              >
+                Vales
+              </Button>
+              <Button
+                className={`${
+                  payment === EButtonActives.COUTERSY
+                    ? "!bg-aqua !text-white"
+                    : ""
+                } !mr-2 !text-[0.75rem]`}
+                onClick={() => handleChangePayment(EButtonActives.COUTERSY)}
+                disabled={isSaved}
+              >
+                Cortesia
+              </Button>
+            </div>
+            <p className='font-secondary'>Infomración de pago</p>
+            <div className='flex flex-col py-4'>
+              <div className='mb-2 w-full'>
+                <TextField
+                  label='Total a pagar'
+                  className='w-full'
+                  value={currencyFormat(total)}
+                  disabled
+                />
+              </div>
+              {payment === EButtonActives.EFECTIVE && (
+                <div className='mb-2 w-full'>
+                  <TextField
+                    label='Pago con'
+                    className='w-full'
+                    value={payWith}
+                    onChange={handleChangePayWith}
+                    type='number'
+                    disabled={isSaved}
+                  />
+                </div>
+              )}
+              <div className='mb-2 w-full'>
+                <TextField
+                  label='Propina'
+                  className='w-full'
+                  value={propine}
+                  onChange={handleChangePropine}
+                  type='number'
+                  disabled={isSaved}
+                />
+              </div>
+              <TextField
+                label='Total a pagar + Propina'
+                value={currencyFormat(totalWithPay || total)}
+                disabled
+              />
+              {payment === EButtonActives.EFECTIVE && (
+                <div className='mt-2 w-full'>
+                  <TextField
+                    label='Cambio'
+                    className='w-full'
+                    value={currencyFormat(shift || 0)}
+                    disabled
+                  />
+                </div>
+              )}
+              <button
+                onClick={handleSavePaymentInfo}
+                className='bg-aqua text-white font-secondary p-2 mt-4 disabled:bg-gray'
+                disabled={isSaved}
+              >
+                <Save /> GUARDAR
+              </button>
+              <button
+                onClick={handlePrint}
+                className='bg-blue text-white font-secondary p-2 mt-4'
+              >
+                <Print /> IMPRIMIR
+              </button>
+            </div>
+          </div>
         </div>
-        <p className='font-primary font-bold text-center mb-2 print-title'>
-          MARIS QUERIDA
-        </p>
-        <p className='font-secondary mb-2 mb-2 text-center print-text'>
-          Valle del vístula esquina Valle de Oaxaca. Valle de Aragon 2da Secc,
-          57100 Nezahualcóyotl, Méx., Mexico City, Mexico
-        </p>
-        <hr className='my-2' />
-        <table className='w-full'>
-          <tr>
-            <td className='print-text-small'>Fecha y hora de entrada:</td>
-            <td className='print-text-small text-right'>
-              {formatDateTime(information?.creatAt || "")}
-            </td>
-          </tr>
-          <tr>
-            <td className='print-text-small'>Mesero:</td>
-            <td className='print-text-small text-right'>{wainterName}</td>
-          </tr>
-          <tr>
-            <td className='print-text-small'>Mesa:</td>
-            <td className='print-text-small text-right'>
-              {information?.tableNumber === DEFAULT_TABLE_LLEVAR
-                ? "PARA LLEVAR"
-                : "MESA " + information.tableNumber}
-            </td>
-          </tr>
-        </table>
-        <hr className='my-2' />
-        <table className='w-full'>
-          <thead>
+        <div ref={componentRef} className='basis-1/2 mb-4 px-4'>
+          <div className='flex items-center justify-center'>
+            <Image
+              src={"/logo_con_fondo.png"}
+              width={100}
+              height={100}
+              alt='Image logo'
+            />
+          </div>
+          <p className='font-primary font-bold text-center mb-2 print-title'>
+            MARIS QUERIDA
+          </p>
+          <p className='font-secondary mb-2 mb-2 text-center print-text'>
+            Valle del vístula esquina Valle de Oaxaca. Valle de Aragon 2da Secc,
+            57100 Nezahualcóyotl, Méx., Mexico City, Mexico
+          </p>
+          <hr className='my-2' />
+          <table className='w-full'>
             <tr>
-              <td className='font-bold print-text'>Cant.</td>
-              <td className='font-bold print-text'>Descripción</td>
-              <td className='font-bold print-text'>Importe</td>
-              <td className='font-bold no-print'>Acciones</td>
+              <td className='print-text-small'>Fecha y hora de entrada:</td>
+              <td className='print-text-small text-right'>
+                {formatDateTime(information?.creatAt || "")}
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {information?.dishesDescription !== undefined ? (
-              information?.dishesDescription.map((itm) => (
-                <tr
-                  className={`font-secondary print-text ${
-                    itm.number === 0 ? "no-print" : ""
-                  }} `}
-                >
-                  <td className={itm.number === 0 ? "no-print" : ""}>
-                    {itm.number}
+            <tr>
+              <td className='print-text-small'>Mesero:</td>
+              <td className='print-text-small text-right'>{wainterName}</td>
+            </tr>
+            <tr>
+              <td className='print-text-small'>Mesa:</td>
+              <td className='print-text-small text-right'>
+                {information?.tableNumber === DEFAULT_TABLE_LLEVAR
+                  ? "PARA LLEVAR"
+                  : "MESA " + information.tableNumber}
+              </td>
+            </tr>
+          </table>
+          <hr className='my-2' />
+          <table className='w-full'>
+            <thead>
+              <tr>
+                <td className='font-bold print-text'>Cant.</td>
+                <td className='font-bold print-text'>Descripción</td>
+                <td className='font-bold print-text'>Importe</td>
+                <td className='font-bold no-print'>Acciones</td>
+              </tr>
+            </thead>
+            <tbody>
+              {information?.dishesDescription !== undefined ? (
+                information?.dishesDescription.map((itm) => (
+                  <tr
+                    className={`font-secondary print-text ${
+                      itm.number === 0 ? "no-print" : ""
+                    }} `}
+                  >
+                    <td className={itm.number === 0 ? "no-print" : ""}>
+                      {itm.number}
+                    </td>
+                    <td className={itm.number === 0 ? "no-print" : ""}>
+                      {itm.name}
+                    </td>
+                    <td className={itm.number === 0 ? "no-print" : ""}>
+                      {currencyFormat(itm.price * itm.number)}
+                    </td>
+                    <td className='no-print'>
+                      <Edit />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td></td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          <hr className='my-2' />
+          <table className='w-full'>
+            <tr>
+              <td className='print-text-small'>SUBTOTAL:</td>
+              <td className='print-text-small text-right'>
+                {currencyFormat(subtotaly || 0)}
+              </td>
+            </tr>
+            <tr>
+              <td className='print-text-small'>IVA:</td>
+              <td className='print-text-small text-right'>
+                {currencyFormat(iva || 0)}
+              </td>
+            </tr>
+            <tr>
+              <td className='print-text-small'>TOTAL:</td>
+              <td className='print-text-small text-right'>
+                {currencyFormat(total || 0)}
+              </td>
+            </tr>
+          </table>
+          <div className='font-secondary text-[1.25rem] w-full my-2 print-text'>
+            {textToString(total)} pesos
+          </div>
+          {isSaved && payment === EButtonActives.EFECTIVE && (
+            <div className='flex flex-col'>
+              <hr />
+              <p className='font-bold text-center my-2 print-text'>
+                FORMA DE PAGO: {payment}
+              </p>
+              <hr />
+              <table>
+                <tr>
+                  <td className='font-bold text-center print-text'>
+                    MONTO PAGADO
                   </td>
-                  <td className={itm.number === 0 ? "no-print" : ""}>
-                    {itm.name}
+                  <td className='font-bold text-center print-text'>PROPINA</td>
+                  <td className='font-bold text-center print-text'>CAMBIO</td>
+                </tr>
+                <tr>
+                  <td className='text-center print-text'>
+                    {currencyFormat(parseFloat(payWith))}
                   </td>
-                  <td className={itm.number === 0 ? "no-print" : ""}>
-                    {currencyFormat(itm.price * itm.number)}
+                  <td className='text-center print-text'>
+                    {currencyFormat(parseInt(propine))}
                   </td>
-                  <td className='no-print'>
-                    <Edit />
+                  <td className='text-center print-text'>
+                    {currencyFormat(shift)}
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td></td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        <hr className='my-2' />
-        <table className='w-full'>
-          <tr>
-            <td className='print-text-small'>SUBTOTAL:</td>
-            <td className='print-text-small text-right'>
-              {currencyFormat(subtotaly || 0)}
-            </td>
-          </tr>
-          <tr>
-            <td className='print-text-small'>IVA:</td>
-            <td className='print-text-small text-right'>
-              {currencyFormat(iva || 0)}
-            </td>
-          </tr>
-          <tr>
-            <td className='print-text-small'>TOTAL:</td>
-            <td className='print-text-small text-right'>
-              {currencyFormat(total || 0)}
-            </td>
-          </tr>
-        </table>
-        <div className='font-secondary text-[1.25rem] w-full mt-4 print-text'>
-          {textToString(total)} pesos
+              </table>
+            </div>
+          )}
+          {isSaved && payment !== EButtonActives.EFECTIVE && (
+            <div className='flex flex-col'>
+              <hr />
+              <p className='font-bold text-center my-2 print-text'>
+                FORMA DE PAGO: {payment}
+              </p>
+              <hr />
+              <table>
+                <tr>
+                  <td className='font-bold text-center print-text'>PROPINA</td>
+                </tr>
+                <tr>
+                  <td className='text-center print-text'>
+                    {currencyFormat(parseInt(propine))}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </>

@@ -15,6 +15,14 @@ export type TMenu = {
   price: number;
 };
 
+enum EButtonActives {
+  EFECTIVE = "EFECTIVO",
+  DEBIT = "TARJETA DE DEBITO",
+  CREDIT = "TARJETA DE CREDITO",
+  VOUCHER = "VALES",
+  COUTERSY = "CORTESIA",
+}
+
 export type TResponseOrders = {
   name: string;
   dishes: number;
@@ -23,4 +31,8 @@ export type TResponseOrders = {
   dishesDescription: Array<TMenuResponse & { number: number }>;
   status: string;
   waiter?: string;
+  payWith?: number;
+  propine?: number;
+  shift?: number;
+  pymentType?: EButtonActives;
 };

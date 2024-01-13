@@ -160,6 +160,14 @@ export const formatDate = (date: string) => {
   return yyyy + "/" + mm + "/" + dd;
 };
 
+export const formatHour = (date: string) => {
+  const newFromat = new Date(date).toLocaleString("es-MX");
+  const separate = newFromat.split(" ");
+  const pointsSeparate = separate[1].split(":");
+  const hour = pointsSeparate[0];
+  return hour;
+};
+
 export const formatDateTime = (date: string) => {
   const datePreprocesed = new Date(date).toLocaleString();
   return datePreprocesed;

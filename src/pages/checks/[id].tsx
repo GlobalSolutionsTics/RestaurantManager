@@ -164,9 +164,9 @@ const CheckPages = () => {
               <div className='font-primary basis-1/6 text-center'>Cant.</div>
               <div className='font-primary basis-1/6 text-center'>Cost.</div>
             </div>
-            {orderDetail.dishesDescription.map((itm) => (
+            {orderDetail.dishesDescription.map((itm, idx) => (
               <div
-                key={itm.uuid}
+                key={itm.uuid + "-" + idx}
                 className='flex flex-row font-bold text-[1rem]'
               >
                 <div className='font-primary basis-4/6'>{itm.name}</div>

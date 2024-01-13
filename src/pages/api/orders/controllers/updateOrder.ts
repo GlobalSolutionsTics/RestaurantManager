@@ -1,3 +1,4 @@
+import { OrdersDishesStatus } from "@/enums/orders.enum";
 import { StatusApplicationEnum, StatusEnum } from "@/enums/states.enum";
 import { TResponseOrders } from "@/types/menu.types";
 import { firestore, realtimeDB } from "@firebase/config";
@@ -25,7 +26,7 @@ export const updateStatusOrder = async (
         const data: TResponseOrders = getOrders.val();
         const newDishes = data.dishesDescription.map((itm) => ({
           ...itm,
-          status: "LISTO",
+          status: OrdersDishesStatus.READY,
         }));
         const newData = { ...data, status, dishesDescription: newDishes };
         await changeStatusRequestEditionForOrderId(
@@ -132,6 +133,48 @@ export const updateDishesAndNumber = async (
         dishes: dishesDescription.length,
         dishesDescription: dishesDescription,
         status: StatusEnum.EDITED,
+      };
+      await update(child(docRef, orderId), newData);
+      return { error: false, message: "Datos actualizados correctamente" };
+    }
+
+    return { error: true, message: "Error al actualizar el estatus" };
+  } catch (e) {
+    console.log("Error:", e);
+    return { error: true, message: "Error en los servicios de google" };
+  }
+};
+
+enum EButtonActives {
+  EFECTIVE = "EFECTIVO",
+  DEBIT = "TARJETA DE DEBITO",
+  CREDIT = "TARJETA DE CREDITO",
+  VOUCHER = "VALES",
+  COUTERSY = "CORTESIA",
+}
+
+export const updateInformationPayment = async (
+  orderId: string,
+  paymentInformation: {
+    payWith: number;
+    propine: number;
+    shift: number;
+    paymentType: EButtonActives;
+  },
+) => {
+  try {
+    const auth = getAuth();
+    await signInAnonymously(auth);
+    const docRef = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+    const getOrders = await get(child(docRef, orderId));
+    if (getOrders.exists()) {
+      const data: Array<TResponseOrders> = getOrders.val();
+      const newData = {
+        ...data,
+        payWith: paymentInformation.payWith,
+        propine: paymentInformation.propine,
+        shift: paymentInformation.shift,
+        paymentType: paymentInformation.paymentType,
       };
       await update(child(docRef, orderId), newData);
       return { error: false, message: "Datos actualizados correctamente" };

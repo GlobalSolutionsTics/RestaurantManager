@@ -61,9 +61,7 @@ const EditOrderPage = () => {
   //Taggle
   const toggleMenu = () => setShowItems(!showItems);
   const toggleCalculatorNew = () => {
-    if (showCalculatorNew) {
-      setCalculatorVal(0);
-    }
+    setCalculatorVal(0);
     setShowCalculatorNew(!showCalculatorNew);
   };
   const toggleCalculator = () => {
@@ -83,6 +81,7 @@ const EditOrderPage = () => {
         if (findDish.number) setCalculatorVal(findDish.number);
         toggleCalculator();
       } else {
+        setCalculatorVal(0);
         toggleCalculatorNew();
       }
     }
@@ -274,14 +273,15 @@ const EditOrderPage = () => {
         </>
       )}
       <CalculatorComp
+        key={"normal-calc"}
         show={showCalculator}
         initialValues={calculatorVal}
         onAccept={handleAccept}
         onClose={toggleCalculator}
       />
       <CalculatorComp
+        key={"new-calc"}
         show={showCalculatorNew}
-        initialValues={0}
         onAccept={handleCreateNew}
         onClose={toggleCalculatorNew}
       />

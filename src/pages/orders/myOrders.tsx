@@ -21,6 +21,7 @@ import ProtectPage from "../admin/components/protectPage";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
+import { IOrderSlice } from "@/store/slices/orders.slice";
 
 enum OptionEnum {
   ACTIVE = "ACTIVES",
@@ -89,8 +90,11 @@ const ToggleColumn = ({ element, push }: Props) => {
           </div>
         </div>
         <div className='p-2 flex flex-col'>
-          {element?.dishesDescription?.map((dish) => (
-            <div key={dish.uuid} className='flex flex-row font-secondary'>
+          {element?.dishesDescription?.map((dish, indx) => (
+            <div
+              key={dish.uuid + "-" + indx}
+              className='flex flex-row font-secondary'
+            >
               <div className='basis-5/6'>{dish.name}</div>
               <div className='basis-1/6'>{dish.number}</div>
             </div>
@@ -185,7 +189,7 @@ const MyOrdersPage = () => {
       <div className='w-full min-h-[100vh]'>
         <div className='font-primary font-bold text-[1.5rem] p-4 flex flex-row'>
           <div className='basis-1/5'>
-            <button onClick={router.back}>
+            <button onClick={() => router.push("/orders/create")}>
               <ArrowBack fontSize='large' />
             </button>
           </div>
@@ -193,11 +197,19 @@ const MyOrdersPage = () => {
         </div>
         <div className='mb-[6rem] grid grid-cols-2 gap-2 bg-enabled p-4'>
           {selectOption === OptionEnum.ACTIVE
-            ? ordersActive.map((itm) => (
-                <ToggleColumn push={router.push} key={itm.uuid} element={itm} />
+            ? ordersActive.map((itm, indx) => (
+                <ToggleColumn
+                  push={router.push}
+                  key={itm.uuid + "-" + indx}
+                  element={itm}
+                />
               ))
-            : ordersReady.map((itm) => (
-                <ToggleColumn push={router.push} key={itm.uuid} element={itm} />
+            : ordersReady.map((itm, indx) => (
+                <ToggleColumn
+                  push={router.push}
+                  key={itm.uuid + "-" + indx}
+                  element={itm}
+                />
               ))}
         </div>
         <div className='fixed flex flex-row justify-between w-full bottom-0 bg-white'>
