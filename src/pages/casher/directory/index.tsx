@@ -1,7 +1,7 @@
 import { IClientResponse } from "@/pages/api/directory/controllers/client";
 import withReactContent from "sweetalert2-react-content";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProtectPage from "../../admin/components/protectPage";
 import MenuCasher from "../components/menu";
 import Head from "next/head";
@@ -13,7 +13,13 @@ import {
   Edit,
   EditOutlined,
 } from "@mui/icons-material";
-import { listClient } from "@/pages/api/directory/controllers/client";
+import {
+  createClientService,
+  deleteClientService,
+  listClienService,
+  updateClientService,
+} from "@/services/client";
+import { TOKEN_ID } from "@/utils/strings";
 
 const MessageComponent = withReactContent(Swal);
 
@@ -56,7 +62,7 @@ const ColComponents = ({
 };
 
 const DirectoryPage = () => {
-  const [userList, setUserList] = useState<Array<IClientResponse>>([]);
+  const [clientList, setClientList] = useState<Array<IClientResponse>>([]);
   const [isLoading, setIsLoading] = useState(false);
   //Add modal controll
   const [showAddModal, setShowAddModal] = useState(false);
@@ -64,8 +70,8 @@ const DirectoryPage = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [initialStateEditModal, setInitialStateEditModal] = useState({
     name: "",
-    phone: "",
     adress: "",
+    phone: 0,
     uuid: "",
   });
   //Delete modal controll
@@ -113,13 +119,107 @@ const DirectoryPage = () => {
     });
   };
 
-  const getUsersList = async () => {
+  const getClientList = async () => {
     const token = sessionStorage.getItem(TOKEN_ID);
     if (token) {
-      const users = await listClientSerive(token);
-      setUserList(users);
+      const client = await listClienService(token);
+      setClientList(client);
     }
   };
+
+  //Handle function to create client
+  const handleSubmitAddModal = async (client: any) => {
+    setIsLoading(true);
+    const token = sessionStorage.getItem(TOKEN_ID);
+    if (token) {
+      const create = await createClientService(client, token);
+      if (create) {
+        setShowAddModal(false);
+        showMessage("Usuario creado", "Se creó el cliente exitosamente");
+        await getClientList();
+      } else {
+        showMessage(
+          "Ocurrió un error",
+          "Ocurrií un error al crear el usuario",
+          "Entendido",
+          "error",
+        );
+      }
+    }
+    setIsLoading(false);
+  };
+  //Edit User
+  const onEditSubmit = async (client: any) => {
+    setIsLoading(true);
+    const token = sessionStorage.getItem(TOKEN_ID);
+    if (token) {
+      const update = await updateClientService(client, token);
+      if (update) {
+        setShowEditModal(false);
+        showMessage(
+          "Usuario modificado",
+          "El usuario se modificó exitosamente",
+        );
+        await getClientList();
+      } else {
+        showMessage(
+          "Ocurrió un error",
+          "Ocurrió un error al modificar el usuario",
+          "Entendido",
+          "error",
+        );
+      }
+    }
+    setIsLoading(false);
+  };
+  //Delete User
+  const onDelete = async () => {
+    setIsLoading(true);
+    const token = sessionStorage.getItem(TOKEN_ID);
+    if (token) {
+      const isDeleted = await deleteClientService(deleteUUID, token);
+      if (isDeleted) {
+        setShowAddModal(false);
+        showMessage("Cliente se eliminó", "El usuario se eliminó exitosamente");
+        await getClientList;
+      } else {
+        showMessage(
+          "Ocurrió un error",
+          "Ocurrió un error al eliminar al usuario",
+          "Entendido",
+          "error",
+        );
+      }
+    }
+    setIsLoading(false);
+  };
+
+  //Handle functions
+
+  const handleEdit = (client: IClientResponse) => {
+    setInitialStateEditModal(client);
+    setShowEditModal(true);
+  };
+
+  const handleDelete = (uuid: string, name: string) => {
+    setDeleteUUID(uuid);
+    setNameDelete(name);
+    setShowDeleteModal(true);
+  };
+
+  //Area of effects to incremetace a UX
+
+  useEffect(() => {
+    getClientList();
+  }, []);
+
+  //Initial values in formik to add user
+  const INITIAL_VALUE_ADD_MODAL = {
+    name: "",
+    adress: "",
+    phone: 0,
+  };
+
   return (
     <ProtectPage push={router.push}>
       <Head>
@@ -136,8 +236,11 @@ const DirectoryPage = () => {
             </div>
             <div className='flex flex-col w-full h-[100vh] py-4'>
               <div className='flex justify-end'>
-                <button className='mx-8 p-2 px-2 bg-success-dark text-white font-primary mb-4 hover:bg-success'>
-                  +Agregar
+                <button
+                  className='bg-aqua font-secondary p-2 text-white'
+                  onClick={toggleAddModal}
+                >
+                  <AddOutlined /> Añadir cliente
                 </button>
               </div>
               <div className='flex flex-row bg-blue p-4'>
