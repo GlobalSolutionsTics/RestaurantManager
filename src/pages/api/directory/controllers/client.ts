@@ -1,8 +1,8 @@
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import jwt from "jsonwebtoken";
+import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
 import { firestore } from "@firebase/config";
 import { DB_DIRECTORY } from "@models/names";
 import { v4 as uuidv4 } from "uuid";
+import { TDirectory } from "@/types/directory.types";
 
 export interface IClientResponse {
   name: string;
@@ -17,6 +17,8 @@ const ERROR_DONT_DELETE_USER = "No se puede eliminar a este usuario";
 const USER_UPDATE_MESSAGE = "Usuario actualizado exitosamente";
 
 export const SEED_OF_JWT = "AñOS_LUZ";
+
+const COLLECTION = "activos";
 
 export const searchClientByClient = async (name: string) => {
   const usersRef = doc(firestore, DB_DIRECTORY, "activos");
@@ -36,31 +38,51 @@ export const createClient = async (
   name: string,
   adress: string,
   phone: number,
+  uuidDirectory: string,
 ) => {
-  const existUser = await searchClientByClient(name);
-  if (existUser) {
-    return { error: true, message: "Usuario existente" };
-  }
-  const usersRef = doc(firestore, DB_DIRECTORY, "activos");
-  const usersCollections = await getDoc(usersRef);
-  if (usersCollections.exists()) {
-    const uuid = uuidv4();
-    const usersData = usersCollections.data();
-    const usersItems: Array<IClientResponse> = usersData.data;
-    const userPayload: IClientResponse = {
-      name,
-      adress,
-      phone,
-      uuid,
+  try {
+    const usersRef = doc(firestore, DB_DIRECTORY, COLLECTION);
+    const usersCollections = await getDoc(usersRef);
+    if (usersCollections.exists()) {
+      const uuid = uuidv4();
+      const usersData = usersCollections.data();
+      const usersItems: Array<IClientResponse> = usersData.data;
+      const userPayload: IClientResponse = {
+        name,
+        adress,
+        phone,
+        uuid,
+      };
+      usersItems.push(userPayload);
+      const payload = {
+        data: usersItems,
+      };
+      await updateDoc(usersRef, payload);
+      return { error: false, message: " Usuario creado" };
+    } else {
+      const userPayload: TDirectory = {
+        name: name,
+        phone: phone,
+        adress: adress,
+        uuidDirectory: uuidDirectory,
+      };
+      const payload = {
+        data: [userPayload],
+      };
+      await setDoc(usersRef, payload);
+      return {
+        error: false,
+        message: "Se creo correctamente el directorio",
+        data: [],
+      };
+    }
+  } catch (e: any) {
+    return {
+      error: true,
+      message: "Error al creae la vinculacion en firebase",
+      data: [],
     };
-    usersItems.push(userPayload);
-    const payload = {
-      data: usersItems,
-    };
-    await updateDoc(usersRef, payload);
-    return { error: false, message: " Usuario creado" };
   }
-  return { error: true, message: "No se pudo crear el usuario" };
 };
 
 export const listClient = async () => {
@@ -69,9 +91,9 @@ export const listClient = async () => {
   if (usersCollections.exists()) {
     const usersData = usersCollections.data();
     const usersItems: Array<IClientResponse> = usersData.data;
-    return { data: usersItems };
+    return { error: false, message: "", data: usersItems };
   }
-  return { data: [] };
+  return { error: true, message: "Error al conectar con la bd", data: [] };
 };
 
 export const deleteClient = async (uuid: string) => {

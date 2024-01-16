@@ -14,14 +14,36 @@ import {
   EditOutlined,
 } from "@mui/icons-material";
 import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Modal,
+  OutlinedInput,
+  Select,
+} from "@mui/material";
+import {
   createClientService,
   deleteClientService,
-  listClienService,
+  listClientService,
   updateClientService,
 } from "@/services/client";
 import { TOKEN_ID } from "@/utils/strings";
+import { Formik } from "formik";
 
 const MessageComponent = withReactContent(Swal);
+
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 600,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 type PropsCol = {
   name: string;
@@ -122,32 +144,69 @@ const DirectoryPage = () => {
   const getClientList = async () => {
     const token = sessionStorage.getItem(TOKEN_ID);
     if (token) {
-      const client = await listClienService(token);
-      setClientList(client);
+      try {
+        const client = await listClientService(token);
+        console.log("Lista de clientes:", client);
+        setClientList(client);
+      } catch (error) {
+        console.error("Error al obtener la lista de clientes:", error);
+      }
     }
   };
 
   //Handle function to create client
   const handleSubmitAddModal = async (client: any) => {
     setIsLoading(true);
-    const token = sessionStorage.getItem(TOKEN_ID);
-    if (token) {
+    try {
+      const token = sessionStorage.getItem(TOKEN_ID);
+      console.log(token);
+
       const create = await createClientService(client, token);
       if (create) {
         setShowAddModal(false);
         showMessage("Usuario creado", "Se creó el cliente exitosamente");
         await getClientList();
+        console.log(create);
       } else {
         showMessage(
           "Ocurrió un error",
-          "Ocurrií un error al crear el usuario",
+          "Ocurrió un error al crear el cliente",
+          "Entendido",
+          "error",
+        );
+      }
+    } catch (error) {
+      console.error("Error al crear el cliente:", error);
+      showMessage(
+        "Ocurrió un error",
+        "Ocurrió un error al crear el cliene",
+        "Entendido",
+        "error",
+      );
+    }
+    setIsLoading(false);
+  };
+  /*
+  const handleSubmitAddModal = async (user: any) => {
+    setIsLoading(true);
+    const token = sessionStorage.getItem(TOKEN_ID);
+    if (token) {
+      const create = await createClientService(user);
+      if (create) {
+        setShowAddModal(false);
+        showMessage("Usuario creado", "Se creo el usuario exitosamente");
+        await getClientList();
+      } else {
+        showMessage(
+          "Ocurrio un error",
+          "Ocurrio un error al crear el usuario",
           "Entendido",
           "error",
         );
       }
     }
     setIsLoading(false);
-  };
+  };*/
   //Edit User
   const onEditSubmit = async (client: any) => {
     setIsLoading(true);
@@ -181,7 +240,7 @@ const DirectoryPage = () => {
       if (isDeleted) {
         setShowAddModal(false);
         showMessage("Cliente se eliminó", "El usuario se eliminó exitosamente");
-        await getClientList;
+        await getClientList();
       } else {
         showMessage(
           "Ocurrió un error",
@@ -230,9 +289,9 @@ const DirectoryPage = () => {
           <MenuCasher router={router} basePath={router.pathname} />
           <div className='flex flex-col w-full h-min-[100vh] px-8 py-4'>
             <div className='flex flex-row justify-between'>
-              <div className='font-primary text-[2rem] mb-4 text-black'>
+              <p className='font-primary text-[2rem] mb-4 text-black'>
                 Directorio de clientes
-              </div>
+              </p>
             </div>
             <div className='flex flex-col w-full h-[100vh] py-4'>
               <div className='flex justify-end'>
@@ -254,12 +313,104 @@ const DirectoryPage = () => {
                   Telefono
                 </div>
               </div>
-              <div className='grid lg:grid-cols-4 lg:gap-4 md:grid-cols-3 md:gap-3 sm:grid-cols-1 sm:gap-1 overflow-y-auto '>
-                <div>momria</div>
-                <div>fde</div>
-              </div>
+              {clientList?.length > 0 ? (
+                clientList.map((itm, ind) => (
+                  <ColComponents
+                    index={ind}
+                    key={itm.uuid}
+                    name={itm.name}
+                    phone={itm.phone}
+                    adress={itm.adress}
+                    editFn={() => handleEdit(itm)}
+                    deleteFn={() => handleDelete(itm.uuid, itm.name)}
+                  />
+                ))
+              ) : (
+                <div> No hay clientes que mostrar </div>
+              )}
             </div>
           </div>
+          <Modal open={showAddModal} onClose={toggleAddModal}>
+            <Box sx={style}>
+              <p className='font-primary text-[1.5rem] mb-4'>Añadir usuario</p>
+              <Formik
+                initialValues={INITIAL_VALUE_ADD_MODAL}
+                onSubmit={handleSubmitAddModal}
+              >
+                {({
+                  values,
+                  errors,
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                }) => (
+                  <form onSubmit={handleSubmit}>
+                    <div className='flex flex-row'>
+                      <FormControl fullWidth className='basis-1/2 !mr-4'>
+                        <InputLabel htmlFor='outline-name-input'>
+                          Nombre
+                        </InputLabel>
+                        <OutlinedInput
+                          id='outline-name-input'
+                          label='Nombre'
+                          name='name'
+                          value={values.name}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormControl fullWidth className='basis-1/2'>
+                        <InputLabel htmlFor='outline-user-input'>
+                          Telefono
+                        </InputLabel>
+                        <OutlinedInput
+                          id='outline-phone-input'
+                          label='Phone'
+                          name='phone'
+                          value={values.phone}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                    </div>
+                    <div className='flex flex-row mt-4'>
+                      <FormControl fullWidth className='basis-1/2 !mr-4'>
+                        <InputLabel htmlFor='outline-password-input'>
+                          Direccion
+                        </InputLabel>
+                        <OutlinedInput
+                          id='outline-adress-input'
+                          label='Direccion'
+                          name='adress'
+                          type='adress'
+                          value={values.adress}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                    </div>
+                    <div className='mt-4'>
+                      {isLoading ? (
+                        <div className='flex items-center'>
+                          <span className='loader mr-4'></span> Creando usuario
+                        </div>
+                      ) : (
+                        <button
+                          type='submit'
+                          className='bg-success text-white font-secondary p-2 w-[150px] rounded-lg'
+                        >
+                          <AddOutlined /> Crear
+                        </button>
+                      )}
+                    </div>
+                  </form>
+                )}
+              </Formik>
+            </Box>
+          </Modal>
         </div>
       </div>
     </ProtectPage>

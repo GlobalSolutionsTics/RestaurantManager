@@ -1,8 +1,8 @@
 import { URL_API_CLIENT } from "@/utils/urls";
-import { HttpMethodsEnum } from "@/enums/http.enum";
+import { HttpMethodsEnum, HttpStatusEnum } from "@/enums/http.enum";
 import { IClientResponse } from "@/pages/api/directory/controllers/client";
 
-export const listClienService = async (token: string) => {
+export const listClientService = async (token: string) => {
   try {
     const petition = await fetch(`${URL_API_CLIENT}/list`, {
       headers: {
@@ -23,6 +23,31 @@ type TCreateClient = {
   phone: number;
 };
 
+export const createClientService = async (
+  payload: TCreateClient,
+  token: any,
+) => {
+  try {
+    const headers = {
+      method: HttpMethodsEnum.POST,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    };
+    const petition = await fetch(`${URL_API_CLIENT}/create`, headers);
+    if (petition.status === HttpStatusEnum.OK) {
+      return true;
+    } else {
+      return console.log("lol");
+    }
+  } catch (e) {
+    console.log("Error al añadir el cliente: ", e);
+    return false;
+  }
+};
+/*
 export const createClientService = async (
   payload: TCreateClient,
   token: string,
@@ -48,7 +73,7 @@ export const createClientService = async (
     return false;
   }
 };
-
+*/
 export const updateClientService = async (
   payload: IClientResponse,
   token: string,
