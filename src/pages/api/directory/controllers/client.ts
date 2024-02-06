@@ -40,49 +40,45 @@ export const createClient = async (
   phone: number,
   uuidDirectory: string,
 ) => {
-  try {
-    const usersRef = doc(firestore, DB_DIRECTORY, COLLECTION);
-    const usersCollections = await getDoc(usersRef);
-    if (usersCollections.exists()) {
-      const uuid = uuidv4();
-      const usersData = usersCollections.data();
-      const usersItems: Array<IClientResponse> = usersData.data;
-      const userPayload: IClientResponse = {
-        name,
-        adress,
-        phone,
-        uuid,
-      };
-      usersItems.push(userPayload);
-      const payload = {
-        data: usersItems,
-      };
-      await updateDoc(usersRef, payload);
-      return { error: false, message: " Usuario creado" };
-    } else {
-      const userPayload: TDirectory = {
-        name: name,
-        phone: phone,
-        adress: adress,
-        uuidDirectory: uuidDirectory,
-      };
-      const payload = {
-        data: [userPayload],
-      };
-      await setDoc(usersRef, payload);
-      return {
-        error: false,
-        message: "Se creo correctamente el directorio",
-        data: [],
-      };
-    }
-  } catch (e: any) {
+  const existClient = await searchClientByClient(name);
+  if (existClient) {
+    return { error: true, message: "Usuario existente" };
+  }
+  const usersRef = doc(firestore, DB_DIRECTORY, COLLECTION);
+  const usersCollections = await getDoc(usersRef);
+  if (usersCollections.exists()) {
+    const uuid = uuidv4();
+    const usersData = usersCollections.data();
+    const usersItems: Array<IClientResponse> = usersData.data;
+    const userPayload: IClientResponse = {
+      name,
+      adress,
+      phone,
+      uuid,
+    };
+    usersItems.push(userPayload);
+    const payload = {
+      data: usersItems,
+    };
+    await updateDoc(usersRef, payload);
+    return { error: false, message: " Usuario creado" };
+  } else {
+    const userPayload: TDirectory = {
+      name: name,
+      phone: phone,
+      adress: adress,
+      uuidDirectory: uuidDirectory,
+    };
+    const payload = {
+      data: [userPayload],
+    };
+    await setDoc(usersRef, payload);
     return {
-      error: true,
-      message: "Error al creae la vinculacion en firebase",
-      data: [],
+      error: false,
+      message: "Se creo correctamente el directorio",
     };
   }
+  return { error: true, message: "No se pudo crear el usuario" };
 };
 
 export const listClient = async () => {

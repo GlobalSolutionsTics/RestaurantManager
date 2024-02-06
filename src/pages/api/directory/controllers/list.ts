@@ -4,7 +4,7 @@ import { doc, getDoc } from "firebase/firestore";
 
 const COLLECTION = "activos";
 
-export const getAllList = async () => {
+const getAllList = async () => {
   const listRef = doc(firestore, DB_DIRECTORY, COLLECTION);
   const collections = await getDoc(listRef);
   if (collections.exists()) {
@@ -14,3 +14,5 @@ export const getAllList = async () => {
     return { error: true, message: "Error al conectar con la bd", data: [] };
   }
 };
+
+export default getAllList;

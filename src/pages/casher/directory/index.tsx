@@ -159,14 +159,12 @@ const DirectoryPage = () => {
     setIsLoading(true);
     try {
       const token = sessionStorage.getItem(TOKEN_ID);
-      console.log(token);
-
       const create = await createClientService(client, token);
+      console.log(create);
       if (create) {
         setShowAddModal(false);
         showMessage("Usuario creado", "Se creó el cliente exitosamente");
         await getClientList();
-        console.log(create);
       } else {
         showMessage(
           "Ocurrió un error",
@@ -186,27 +184,7 @@ const DirectoryPage = () => {
     }
     setIsLoading(false);
   };
-  /*
-  const handleSubmitAddModal = async (user: any) => {
-    setIsLoading(true);
-    const token = sessionStorage.getItem(TOKEN_ID);
-    if (token) {
-      const create = await createClientService(user);
-      if (create) {
-        setShowAddModal(false);
-        showMessage("Usuario creado", "Se creo el usuario exitosamente");
-        await getClientList();
-      } else {
-        showMessage(
-          "Ocurrio un error",
-          "Ocurrio un error al crear el usuario",
-          "Entendido",
-          "error",
-        );
-      }
-    }
-    setIsLoading(false);
-  };*/
+
   //Edit User
   const onEditSubmit = async (client: any) => {
     setIsLoading(true);
