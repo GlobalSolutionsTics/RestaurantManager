@@ -157,10 +157,9 @@ const DirectoryPage = () => {
   //Handle function to create client
   const handleSubmitAddModal = async (client: any) => {
     setIsLoading(true);
-    try {
-      const token = sessionStorage.getItem(TOKEN_ID);
+    const token = sessionStorage.getItem(TOKEN_ID);
+    if (token) {
       const create = await createClientService(client, token);
-      console.log(create);
       if (create) {
         setShowAddModal(false);
         showMessage("Usuario creado", "Se creó el cliente exitosamente");
@@ -173,14 +172,6 @@ const DirectoryPage = () => {
           "error",
         );
       }
-    } catch (error) {
-      console.error("Error al crear el cliente:", error);
-      showMessage(
-        "Ocurrió un error",
-        "Ocurrió un error al crear el cliene",
-        "Entendido",
-        "error",
-      );
     }
     setIsLoading(false);
   };
@@ -209,6 +200,7 @@ const DirectoryPage = () => {
     }
     setIsLoading(false);
   };
+
   //Delete User
   const onDelete = async () => {
     setIsLoading(true);
@@ -281,14 +273,17 @@ const DirectoryPage = () => {
                 </button>
               </div>
               <div className='flex flex-row bg-blue p-4'>
-                <div className='font-secondary text-white font-bold basis-1/3'>
+                <div className='font-secondary text-white font-bold basis-1/4'>
                   Nombre
                 </div>
-                <div className='font-secondary text-white font-bold basis-1/3'>
+                <div className='font-secondary text-white font-bold basis-1/4'>
                   Dirección
                 </div>
-                <div className='font-secondary text-white font-bold basis-1/3'>
+                <div className='font-secondary text-white font-bold basis-1/4'>
                   Telefono
+                </div>
+                <div className='font-secondary text-white font-bold basis-1/4'>
+                  Acciones
                 </div>
               </div>
               {clientList?.length > 0 ? (

@@ -25,7 +25,7 @@ type TCreateClient = {
 
 export const createClientService = async (
   payload: TCreateClient,
-  token: any,
+  token: string,
 ) => {
   try {
     const headers = {
@@ -36,17 +36,13 @@ export const createClientService = async (
       },
       body: JSON.stringify(payload),
     };
-    console.log("URL: ", `${URL_API_CLIENT}/create`);
-    console.log("HEADERS: ", headers);
-    console.log("funciona");
     const petition = await fetch(`${URL_API_CLIENT}/create`, headers);
-    console.log("Headers", headers);
-    console.log(petition.status);
+
     if (petition.status === HttpStatusEnum.OK) {
       console.log("funciona");
       return true;
     } else {
-      console.log("no funciona");
+      console.log("La peticion falló");
       return false;
     }
   } catch (e) {

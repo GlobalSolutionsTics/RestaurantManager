@@ -5,6 +5,8 @@
 // import { getAllList } from "./controllers/list";
 // import createClient from "./controllers/create";
 
+import { NextApiRequest, NextApiResponse } from "next";
+
 // const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 //   const method = req.method;
 //   const headers = req.headers;
@@ -61,3 +63,7 @@
 // };
 
 // export default handler;
+const handler = (req: NextApiRequest, res: NextApiResponse) => {
+  res.status(200).send({ message: "Con vidas" });
+};
+export default handler;

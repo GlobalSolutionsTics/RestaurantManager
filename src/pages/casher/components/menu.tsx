@@ -7,6 +7,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback } from "react";
+import Book from "@mui/icons-material/Book";
 
 type Props = {
   basePath: string;
@@ -63,7 +64,7 @@ const MenuCasher = ({ basePath, router }: Props) => {
           <FilterFramesOutlined className='mr-4' /> Ordenes
         </MenuOption>
         <MenuOption path={basePath} href={"/casher/directory"}>
-          Directorio
+          <Book className='mr-4' /> Directorio
         </MenuOption>
         <button
           className='px-4 py-2 w-full font-secondary flex items-left justify-left tracking-widest hover:bg-aqua hover:opacity-60'
@@ -80,7 +81,7 @@ const MenuCasher = ({ basePath, router }: Props) => {
           <FilterFramesOutlined fontSize='large' />
         </MenuOption>
         <MenuOption path={basePath} href={"/casher/directory"}>
-          Directorio
+          <Book fontSize='large' />
         </MenuOption>
         <button
           className='px-4 py-2 w-full font-secondary flex items-left justify-left tracking-widest hover:bg-aqua hover:opacity-60'

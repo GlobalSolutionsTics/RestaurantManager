@@ -3,7 +3,7 @@ import { firestore } from "@firebase/config";
 import { DB_DIRECTORY } from "@models/names";
 import { v4 as uuidv4 } from "uuid";
 import { TDirectory } from "@/types/directory.types";
-import { IClientResponse } from "./client";
+import { IClientResponse, searchClientByClient } from "./client";
 
 const COLLECTION = "activos";
 const createClient = async (
@@ -12,7 +12,10 @@ const createClient = async (
   phone: number,
   uuidDirectory: string,
 ) => {
-  console.log("funciona");
+  const existClient = await searchClientByClient(name);
+  if (existClient) {
+    return { error: true, message: "Cliente existete" };
+  }
   try {
     const usersRef = doc(firestore, DB_DIRECTORY, COLLECTION);
     const usersCollections = await getDoc(usersRef);
@@ -31,7 +34,7 @@ const createClient = async (
         data: usersItems,
       };
       await updateDoc(usersRef, payload);
-      return { error: false, message: " Usuario creado" };
+      return { error: false, message: " Cliente creado" };
     } else {
       const userPayload: TDirectory = {
         name: name,
@@ -50,6 +53,7 @@ const createClient = async (
       };
     }
   } catch (e: any) {
+    console.log("Errro en firebase:", e);
     return {
       error: true,
       message: "Error al creae la vinculacion en firebase",

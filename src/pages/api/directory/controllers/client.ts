@@ -12,9 +12,9 @@ export interface IClientResponse {
 }
 
 export const ERROR_NOT_CONNECTION = "Erro no se pudo encontrar la colección";
-const USER_DELETED_MESSAGE = "Usuario eliminado exitosamente";
-const ERROR_DONT_DELETE_USER = "No se puede eliminar a este usuario";
-const USER_UPDATE_MESSAGE = "Usuario actualizado exitosamente";
+export const USER_DELETED_MESSAGE = "Usuario eliminado exitosamente";
+export const ERROR_DONT_DELETE_USER = "No se puede eliminar a este usuario";
+export const USER_UPDATE_MESSAGE = "Usuario actualizado exitosamente";
 
 export const SEED_OF_JWT = "AñOS_LUZ";
 

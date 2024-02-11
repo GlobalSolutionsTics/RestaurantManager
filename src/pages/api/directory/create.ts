@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
 import { SEED_OF_JWT } from "./controllers/client";
 import { HttpMethodsEnum } from "@/enums/http.enum";
-import { createClient } from "./controllers/client";
+import createClient from "./controllers/create.controller";
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
   const method = req.method;
@@ -20,22 +20,22 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
           });
         } else {
           const body = req.body;
-          //try {
-          const { error, message } = await createClient(
-            body.name,
-            body.phone,
-            body.adress,
-            body.uuidDirectory,
-          );
-          res.status(201).send({ error, message });
-          //} catch (e: any) {
-          //console.error("Error en createClient:", e);
-          //res.status(500).send({
-          //  error: true,
-          //  message: "Error interno del servidor al crear el cliente",
-          //  details: e.message,
-          //});
-          //}
+          try {
+            const { error, message } = await createClient(
+              body.name,
+              body.adress,
+              body.phone,
+              body.uuidDirectory,
+            );
+            res.status(200).send({ error, message });
+          } catch (e: any) {
+            console.error("Error en createClient:", e);
+            res.status(500).send({
+              error: true,
+              message: "Error interno del servidor al crear el cliente",
+              details: e.message,
+            });
+          }
         }
       });
     } else {
