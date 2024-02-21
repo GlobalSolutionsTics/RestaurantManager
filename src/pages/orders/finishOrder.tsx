@@ -19,6 +19,7 @@ import Swal from "sweetalert2";
 import { TConifg } from "@/types/configuration.types";
 import { TOKEN_ID } from "@/utils/strings";
 import { listConfigurationService } from "@/services/config";
+import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 
 const MessageComponent = withReactContent(Swal);
 
@@ -234,6 +235,7 @@ const FinishOrderPage = () => {
               label='Mesa #'
               onChange={handleChangeTable}
             >
+              <MenuItem value={DEFAULT_TABLE_LLEVAR}>PARA LLEVAR</MenuItem>
               {kitchenList.map((itm, index) => (
                 <MenuItem key={"ind-" + index} value={index + 1}>
                   {index + 1}
