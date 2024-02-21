@@ -12,6 +12,7 @@ import {
 import { IUserRedux } from "@/store/slices/user.slice";
 import { TMenuResponse, TResponseOrders } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
+import { getActualDateDB } from "@/utils/formats";
 import { TOKEN_ID } from "@/utils/strings";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
@@ -264,7 +265,10 @@ const EditOrderPage = () => {
   const init = useCallback(async () => {
     const auth = getAuth();
     await signInAnonymously(auth);
-    const connection = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+    const date = getActualDateDB();
+    const DB_RT =
+      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
+    const connection = ref(realtimeDB, DB_RT);
     return onValue(connection, (snapshot) => {
       if (snapshot.exists() && query.id !== undefined) {
         const id: any = query.id;

@@ -11,14 +11,16 @@ import { ChangeEvent, useState } from "react";
 type TEditTableCol = {
   data: TMenuResponse;
   index: number;
-  handleChange: () => void;
   categories: Array<TCatalog>;
+  key: string;
+  handleChange: (ob: any) => void;
 };
 
 const EditionTableCol = ({
   index,
   data,
   categories,
+  key,
   handleChange,
 }: TEditTableCol) => {
   const DEFAULT_NAME = data.name;
@@ -35,24 +37,28 @@ const EditionTableCol = ({
   const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setName(value);
+    handleChange({ ...data, name: value });
   };
 
   const handleChangePrice = (event: ChangeEvent<HTMLInputElement>) => {
     const value = Number(event.target.value);
     setPrice(value);
+    handleChange({ ...data, price: value });
   };
 
   const handleUniquePrice = (event: SelectChangeEvent) => {
     const value = event.target.value;
     if (value == "0") {
       setIsUnique(false);
+      handleChange({ ...data, isUniquePrice: false });
     } else {
       setIsUnique(true);
+      handleChange({ ...data, isUniquePrice: true });
     }
   };
 
   return (
-    <div className='flex flex-row' key={data.uuid}>
+    <div className='flex flex-row' key={key}>
       <div className='w-[40px] border-[1px] bg-enabled-light border-[1px] border-enabled'>
         {index + 1}
       </div>

@@ -9,16 +9,15 @@ export const createOrder = async (payload: any) => {
     const header = {
       method: HttpMethodsEnum.POST,
       body: JSON.stringify(payload),
-      "Content-Type": ContentTypeEnum.JSON,
+      headers: {
+        "Content-Type": ContentTypeEnum.JSON,
+      },
     };
     const petition = await fetch(`${URL_API_ORDER}/add`, header);
-    if (petition.status === 201) {
-      const response: any = await petition.json();
-      return response.id;
-    }
-    return false;
+    const response: any = await petition.json();
+    return { error: response.error, message: response.message };
   } catch (e: any) {
-    return false;
+    return { error: true, message: e };
   }
 };
 

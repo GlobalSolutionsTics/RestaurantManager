@@ -26,6 +26,7 @@ import { TOKEN_ID } from "@/utils/strings";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { Button } from "@mui/material";
 import { OrdersDishesStatus } from "@/enums/orders.enum";
+import { getActualDateDB } from "@/utils/formats";
 
 enum OrdersStatusEnum {
   ACTIVE = "ACTIVAS",
@@ -54,7 +55,10 @@ const HomeOrderPage = () => {
   const autheticate = useCallback(async () => {
     const auth = getAuth();
     await signInAnonymously(auth);
-    const connection = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+    const date = getActualDateDB();
+    const DB_RT =
+      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
+    const connection = ref(realtimeDB, DB_RT);
     return onValue(connection, (snapshot) => {
       const data: Array<TResponseOrders> = snapshot.val();
       if (snapshot.exists()) {
