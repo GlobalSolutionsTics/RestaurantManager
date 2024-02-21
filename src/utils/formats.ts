@@ -168,7 +168,7 @@ export const getActualDateDB = (): {
 } => {
   const date = new Date();
   const datePreprocesed = new Date(
-    date.setTime(date.getTime() + 6 * 60 * 60 * 1000),
+    date.setTime(date.getTime() - 6 * 60 * 60 * 1000),
   );
   const yyyy = datePreprocesed.getFullYear();
   let mm: number | string = datePreprocesed.getMonth() + 1; // Months start at 0!
