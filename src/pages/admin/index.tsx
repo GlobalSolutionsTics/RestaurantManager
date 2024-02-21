@@ -79,6 +79,8 @@ const IndexComp = () => {
         push("/admin/dishes");
       } else if (tipo === UsersTypesEnum.COCINERO) {
         push("/orders");
+      } else if (tipo === UsersTypesEnum.CAJERO) {
+        push("/casher/orders");
       }
     } else {
       showMessage(
