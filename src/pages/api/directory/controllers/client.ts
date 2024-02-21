@@ -67,7 +67,7 @@ export const createClient = async (
       name: name,
       phone: phone,
       adress: adress,
-      uuidDirectory: uuidDirectory,
+      uuid: uuidDirectory,
     };
     const payload = {
       data: [userPayload],
