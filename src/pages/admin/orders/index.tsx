@@ -117,15 +117,6 @@ const OrdersPage = () => {
         );
         setOrdersClosed(filtersClosed);
         setOrdersActived(filtersActived);
-
-        // Ejemplo de uso: Filtrar por la fecha "Thu Dec 28 2023"
-        const resultado = filtrarPorFecha(elements, "Thu Dec 28 2023");
-        console.log(
-          "Items Totales:",
-          elements.length,
-          " Resultado:",
-          resultado,
-        );
       }
     });
   }, []);

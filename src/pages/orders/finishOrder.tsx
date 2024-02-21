@@ -7,12 +7,17 @@ import {
 } from "@/store/slices/orders.slice";
 import { TMenuResponse } from "@/types/menu.types";
 import { Check, Edit } from "@mui/icons-material";
-import { Select, TextField, TextareaAutosize } from "@mui/material";
+import {
+  OutlinedInput,
+  Select,
+  TextField,
+  TextareaAutosize,
+} from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import { useFormik } from "formik";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
@@ -130,6 +135,7 @@ const FieldEditedOption = ({
 const FinishOrderPage = () => {
   const [loading, setLoading] = useState(false);
   const [kitchenList, setKitchen] = useState([]);
+  const [nameClient, setNameClient] = useState("");
 
   const { push } = useRouter();
   const orderStore: IOrderSlice = useSelector(
@@ -176,10 +182,20 @@ const FinishOrderPage = () => {
     dispatch(setDishesDescriptionRedux(newDish));
   };
   //Handle functions
+  const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
+    const value: string = event.target.value;
+    setNameClient(value);
+  };
+
   const handleSendOrder = async () => {
     setLoading(true);
+    const nameOrder =
+      orderStore.tableNumber === DEFAULT_TABLE_LLEVAR
+        ? nameClient
+        : orderStore.name;
+
     const payload = {
-      name: orderStore.name,
+      name: nameOrder,
       dishes: orderStore.dishes,
       tableNumber: orderStore.tableNumber,
       dishesDescription: orderStore.dishesDescription,
@@ -242,6 +258,19 @@ const FinishOrderPage = () => {
                 </MenuItem>
               ))}
             </Select>
+            {orderStore.tableNumber === DEFAULT_TABLE_LLEVAR && (
+              <>
+                <span className='font-primary text-[1.5rem] mb-2'>
+                  Nombre del cliente
+                </span>
+                <OutlinedInput
+                  id='outlined-adornment-name'
+                  label='Nombre del cliente'
+                  value={nameClient}
+                  onChange={handleChangeName}
+                />
+              </>
+            )}
             <span className='font-primary text-[1.5rem] mb-2'>
               ¿Cuantos platillos van en la orden?
             </span>

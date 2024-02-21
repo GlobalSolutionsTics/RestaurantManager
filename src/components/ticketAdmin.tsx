@@ -48,6 +48,11 @@ const TicketAdmin = ({ itm, handlePrintData }: TProps) => {
             <>Orden de la mesa {itm.tableNumber}</>
           )}
         </div>
+        {itm.tableNumber === DEFAULT_TABLE_LLEVAR && (
+          <div className='font-secondary w-full text-[0.75rem] px-2 py-2'>
+            Cliente: {itm.name}
+          </div>
+        )}
         <div className='font-secondary w-full px-2'>Platillos {itm.dishes}</div>
         {itm.dishesDescription?.map((itm) => (
           <div
