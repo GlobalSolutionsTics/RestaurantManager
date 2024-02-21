@@ -1,5 +1,6 @@
 import { TOKEN_ID } from "@/utils/strings";
 import {
+  Book,
   FilterFramesOutlined,
   KitchenOutlined,
   MiscellaneousServicesOutlined,
@@ -70,6 +71,9 @@ const MenuAdmin = ({ basePath, router }: Props) => {
         <MenuOption path={basePath} href={"/admin/users"}>
           <PeopleOutline className='mr-4' /> Usuarios
         </MenuOption>
+        <MenuOption path={basePath} href={"/admin/directory"}>
+          <Book className='mr-4' /> Directorio
+        </MenuOption>
         <MenuOption path={basePath} href={"/admin/kitchen"}>
           <KitchenOutlined className='mr-4' /> Cocinas
         </MenuOption>
@@ -98,6 +102,9 @@ const MenuAdmin = ({ basePath, router }: Props) => {
         </MenuOption>
         <MenuOption path={basePath} href={"/admin/users"}>
           <PeopleOutline fontSize='large' />
+        </MenuOption>
+        <MenuOption path={basePath} href={"/casher/directory"}>
+          <Book fontSize='large' />
         </MenuOption>
         <MenuOption path={basePath} href={"/admin/kitchen"}>
           <KitchenOutlined fontSize='large' />
