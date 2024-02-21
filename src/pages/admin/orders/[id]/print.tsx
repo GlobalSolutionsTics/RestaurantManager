@@ -138,16 +138,8 @@ const PrintOrderPage = () => {
         const auth = getAuth();
         await signInAnonymously(auth);
         const date = getActualDateDB();
-        const connection = ref(
-          realtimeDB,
-          RT_ORDER_TABLE_NAME +
-            "/" +
-            date.year +
-            "/" +
-            date.month +
-            "/" +
-            date.day,
-        );
+        const RT_DB = `${RT_ORDER_TABLE_NAME}/${date.year}/${date.month}/${date.day}`;
+        const connection = ref(realtimeDB, RT_DB);
         return onValue(connection, (snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.val();
@@ -377,6 +369,14 @@ const PrintOrderPage = () => {
                   : "MESA " + information.tableNumber}
               </td>
             </tr>
+            {information?.tableNumber === DEFAULT_TABLE_LLEVAR && (
+              <tr>
+                <td className='print-text-small'>Cliente:</td>
+                <td className='print-text-small text-right'>
+                  {information.name}
+                </td>
+              </tr>
+            )}
           </table>
           <hr className='my-2' />
           <table className='w-full'>
