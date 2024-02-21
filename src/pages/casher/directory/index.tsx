@@ -20,6 +20,7 @@ import {
   InputLabel,
   Modal,
   OutlinedInput,
+
 } from "@mui/material";
 import {
   createClientService,
@@ -338,6 +339,7 @@ const DirectoryPage = () => {
                   editFn={() => handleEdit(itm)}
                   deleteFn={() => handleDelete(itm.uuid, itm.name)}
                   printFn={() => handlePrintData(itm)}
+
                 />
               ))
             ) : (
