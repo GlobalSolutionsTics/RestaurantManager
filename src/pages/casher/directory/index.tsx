@@ -18,10 +18,9 @@ import {
   Box,
   FormControl,
   InputLabel,
-  MenuItem,
   Modal,
   OutlinedInput,
-  Select,
+
 } from "@mui/material";
 import {
   createClientService,
@@ -33,6 +32,7 @@ import { TOKEN_ID } from "@/utils/strings";
 import { Formik } from "formik";
 import { useReactToPrint } from "react-to-print";
 import PrintIcon from "@mui/icons-material/Print";
+import { TDirectory } from "@/types/directory.types";
 const MessageComponent = withReactContent(Swal);
 
 const style = {
@@ -108,7 +108,7 @@ const DirectoryPage = () => {
   const [deleteUUID, setDeleteUUID] = useState("");
   const [nameDelete, setNameDelete] = useState("");
   //Print modal controll
-  const [showModalPrint, setShowModalPrint] = useState(true);
+  const [showModalPrint, setShowModalPrint] = useState(false);
   const [dataOrderSelected, setDataOrderSelected] = useState({
     name: "",
     adress: "",
@@ -267,6 +267,10 @@ const DirectoryPage = () => {
   };
 
   const handlePrint = useReactToPrint({ content: () => componentRef.current });
+  const handlePrintData = (data: TDirectory) => {
+    setDataOrderSelected(data);
+    setShowModalPrint(true);
+  };
 
   //Area of effects to incremetace a UX
 
@@ -334,7 +338,8 @@ const DirectoryPage = () => {
                   adress={itm.adress}
                   editFn={() => handleEdit(itm)}
                   deleteFn={() => handleDelete(itm.uuid, itm.name)}
-                  printFn={handlePrint}
+                  printFn={() => handlePrintData(itm)}
+
                 />
               ))
             ) : (
