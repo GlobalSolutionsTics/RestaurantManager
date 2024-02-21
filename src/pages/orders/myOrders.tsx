@@ -22,6 +22,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { IOrderSlice } from "@/store/slices/orders.slice";
+import { getActualDateDB } from "@/utils/formats";
 
 enum OptionEnum {
   ACTIVE = "ACTIVES",
@@ -149,7 +150,10 @@ const MyOrdersPage = () => {
   const getMyOrders = useCallback(async () => {
     const auth = getAuth();
     await signInAnonymously(auth);
-    const connection = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+    const date = getActualDateDB();
+    const DB_RT =
+      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
+    const connection = ref(realtimeDB, DB_RT);
     return onValue(connection, (snapshot) => {
       const data: Array<TResponseOrders> = snapshot.val();
       if (snapshot.exists()) {

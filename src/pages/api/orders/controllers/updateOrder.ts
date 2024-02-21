@@ -1,11 +1,16 @@
 import { OrdersDishesStatus } from "@/enums/orders.enum";
 import { StatusApplicationEnum, StatusEnum } from "@/enums/states.enum";
 import { TResponseOrders } from "@/types/menu.types";
+import { getActualDateDB } from "@/utils/formats";
 import { firestore, realtimeDB } from "@firebase/config";
 import { DB_ORDERS_APPLICATION, RT_ORDER_TABLE_NAME } from "@models/names";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { child, get, ref, update } from "firebase/database";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+
+const date = getActualDateDB();
+const DB_RT =
+  RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
 
 export const updateStatusOrder = async (
   status: StatusEnum,
@@ -14,7 +19,7 @@ export const updateStatusOrder = async (
   try {
     const auth = getAuth();
     await signInAnonymously(auth);
-    const docRef = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+    const docRef = ref(realtimeDB, DB_RT);
     const getOrders = await get(child(docRef, orderUUID));
     if (getOrders.exists()) {
       if (status !== StatusEnum.ORDER_READY) {
@@ -53,7 +58,7 @@ export const acceptEditOrderService = async (
   try {
     const auth = getAuth();
     await signInAnonymously(auth);
-    const docRef = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+    const docRef = ref(realtimeDB, DB_RT);
     const getOrders = await get(child(docRef, orderUUIID));
     if (getOrders.exists()) {
       const data: Array<TResponseOrders> = getOrders.val();
@@ -124,7 +129,7 @@ export const updateDishesAndNumber = async (
   try {
     const auth = getAuth();
     await signInAnonymously(auth);
-    const docRef = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+    const docRef = ref(realtimeDB, DB_RT);
     const getOrders = await get(child(docRef, orderId));
     if (getOrders.exists()) {
       const data: Array<TResponseOrders> = getOrders.val();
@@ -165,7 +170,7 @@ export const updateInformationPayment = async (
   try {
     const auth = getAuth();
     await signInAnonymously(auth);
-    const docRef = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+    const docRef = ref(realtimeDB, DB_RT);
     const getOrders = await get(child(docRef, orderId));
     if (getOrders.exists()) {
       const data: Array<TResponseOrders> = getOrders.val();

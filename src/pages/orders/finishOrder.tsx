@@ -3,15 +3,24 @@ import {
   IOrderSlice,
   setDishesDescriptionRedux,
   setOrderIdRedux,
+  setTableOrder,
 } from "@/store/slices/orders.slice";
 import { TMenuResponse } from "@/types/menu.types";
 import { Check, Edit } from "@mui/icons-material";
-import { TextField, TextareaAutosize } from "@mui/material";
+import { Select, TextField, TextareaAutosize } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
 import { useFormik } from "formik";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+import { TConifg } from "@/types/configuration.types";
+import { TOKEN_ID } from "@/utils/strings";
+import { listConfigurationService } from "@/services/config";
+
+const MessageComponent = withReactContent(Swal);
 
 type Props = {
   name: string;
@@ -119,7 +128,7 @@ const FieldEditedOption = ({
 
 const FinishOrderPage = () => {
   const [loading, setLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState([]);
+  const [kitchenList, setKitchen] = useState([]);
 
   const { push } = useRouter();
   const orderStore: IOrderSlice = useSelector(
@@ -127,6 +136,26 @@ const FinishOrderPage = () => {
   );
   const dispatch = useDispatch();
   const userStore = useSelector((store: any) => store.user);
+
+  //Handlers
+  const handleChangeTable = (e: any) => {
+    const val = parseInt(e.target.value);
+    dispatch(setTableOrder(val));
+  };
+
+  //Area para los servicios
+  const getConfigurationInfo = async () => {
+    const token = sessionStorage.getItem(TOKEN_ID);
+    setLoading(true);
+    if (token) {
+      const petition: TConifg = await listConfigurationService(token);
+      const list: any = new Array(petition.tablesActives).fill(0);
+      setKitchen(list);
+    } else {
+      push("/admin");
+    }
+    setLoading(false);
+  };
 
   const onChangeDish = (
     name: string,
@@ -155,15 +184,27 @@ const FinishOrderPage = () => {
       dishesDescription: orderStore.dishesDescription,
       waiter: userStore.uuid,
     };
-    const create = await createOrder(payload);
-    if (create) {
-      dispatch(setOrderIdRedux(create));
+    const { error, message } = await createOrder(payload);
+    if (!error) {
+      dispatch(setOrderIdRedux(message));
       push("/orders/qrcodePage");
     } else {
-      console.log("Con fallas");
+      MessageComponent.fire({
+        icon: "error",
+        title: "Ocurrio un error",
+        text: message,
+        confirmButtonText: "Entendido",
+        showLoaderOnConfirm: false,
+        showLoaderOnDeny: false,
+      });
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    getConfigurationInfo();
+  }, []);
+
   return (
     <>
       <div className='w-full h-[100vh]'>
@@ -183,6 +224,22 @@ const FinishOrderPage = () => {
         </div>
         <div className='w-full'>
           <div className='flex flex-col flex-start mx-8 my-4'>
+            <span className='font-primary text-[1.5rem] mb-2'>
+              Mesa que está atendiendo
+            </span>
+            <Select
+              labelId='select-table-label'
+              id='select-category'
+              value={orderStore.tableNumber}
+              label='Mesa #'
+              onChange={handleChangeTable}
+            >
+              {kitchenList.map((itm, index) => (
+                <MenuItem key={"ind-" + index} value={index + 1}>
+                  {index + 1}
+                </MenuItem>
+              ))}
+            </Select>
             <span className='font-primary text-[1.5rem] mb-2'>
               ¿Cuantos platillos van en la orden?
             </span>

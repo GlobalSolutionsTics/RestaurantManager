@@ -2,7 +2,11 @@ import ProtectPage from "@/pages/admin/components/protectPage";
 import { listUserSerive } from "@/services/users";
 import { TResponseOrders } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
-import { currencyFormat, formatDateTime } from "@/utils/formats";
+import {
+  currencyFormat,
+  formatDateTime,
+  getActualDateDB,
+} from "@/utils/formats";
 import { TOKEN_ID } from "@/utils/strings";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
@@ -44,7 +48,10 @@ const NotePage = () => {
   const init = useCallback(async () => {
     const auth = getAuth();
     await signInAnonymously(auth);
-    const connection = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+    const date = getActualDateDB();
+    const DB_RT =
+      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
+    const connection = ref(realtimeDB, DB_RT);
     return onValue(connection, (snapshot) => {
       if (snapshot.exists() && query.id !== undefined) {
         const id: any = query.id;

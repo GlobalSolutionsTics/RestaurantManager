@@ -2,7 +2,12 @@ import { editPaymentInformationService } from "@/services/order";
 import { listUserSerive } from "@/services/users";
 import { TResponseOrders } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
-import { currencyFormat, formatDateTime, textToString } from "@/utils/formats";
+import {
+  currencyFormat,
+  formatDateTime,
+  getActualDateDB,
+  textToString,
+} from "@/utils/formats";
 import { TOKEN_ID } from "@/utils/strings";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
@@ -132,7 +137,17 @@ const PrintOrderPage = () => {
       if (id !== undefined) {
         const auth = getAuth();
         await signInAnonymously(auth);
-        const connection = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+        const date = getActualDateDB();
+        const connection = ref(
+          realtimeDB,
+          RT_ORDER_TABLE_NAME +
+            "/" +
+            date.year +
+            "/" +
+            date.month +
+            "/" +
+            date.day,
+        );
         return onValue(connection, (snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.val();

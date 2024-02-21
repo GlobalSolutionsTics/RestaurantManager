@@ -1,6 +1,6 @@
 import { StatusEnum } from "@/enums/states.enum";
 import { TResponseOrders } from "@/types/menu.types";
-import { currencyFormat } from "@/utils/formats";
+import { currencyFormat, getActualDateDB } from "@/utils/formats";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import {
@@ -97,7 +97,10 @@ const CheckPages = () => {
     const paramId = router.query.id;
     const auth = getAuth();
     await signInAnonymously(auth);
-    const connection = ref(realtimeDB, RT_ORDER_TABLE_NAME + "/" + paramId);
+    const date = getActualDateDB();
+    const DB_RT =
+      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
+    const connection = ref(realtimeDB, DB_RT + "/" + paramId);
     return onValue(connection, (snapshot) => {
       if (snapshot.exists()) {
         const data: TResponseOrders = snapshot.val();
