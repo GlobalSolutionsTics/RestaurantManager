@@ -5,7 +5,12 @@ import { listUserSerive } from "@/services/users";
 import { TDirectory } from "@/types/directory.types";
 import { TResponseOrders } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
-import { currencyFormat, formatDateTime, textToString } from "@/utils/formats";
+import {
+  currencyFormat,
+  formatDateTime,
+  getActualDateDB,
+  textToString,
+} from "@/utils/formats";
 import { TOKEN_ID } from "@/utils/strings";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
@@ -189,7 +194,9 @@ const PrintOrderPage = () => {
       if (id !== undefined) {
         const auth = getAuth();
         await signInAnonymously(auth);
-        const connection = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+        const date = getActualDateDB();
+        const RT_DB = `${RT_ORDER_TABLE_NAME}/${date.year}/${date.month}/${date.day}`;
+        const connection = ref(realtimeDB, RT_DB);
         return onValue(connection, (snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.val();
@@ -425,6 +432,14 @@ const PrintOrderPage = () => {
                   : "MESA " + information.tableNumber}
               </td>
             </tr>
+            {information?.tableNumber === DEFAULT_TABLE_LLEVAR && (
+              <tr>
+                <td className='print-text-small'>Cliente:</td>
+                <td className='print-text-small text-right'>
+                  {information.name}
+                </td>
+              </tr>
+            )}
           </table>
           <table className='w-full'>
             {selectedClients?.length !== 0 ? (

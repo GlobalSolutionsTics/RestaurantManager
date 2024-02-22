@@ -23,7 +23,7 @@ import MenuAdmin from "../components/menu";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import ProtectPage from "../components/protectPage";
-import { ArrowBack, Edit } from "@mui/icons-material";
+import { ArrowBack, Done, Edit, Save } from "@mui/icons-material";
 import EditionTableCol from "../../../components/editionTableCol";
 import { Tooltip } from "@mui/material";
 
@@ -60,6 +60,9 @@ const DishesAdminPage = () => {
 
   //Controlls of editing section
   const [categorySelect, setCategorySelect] = useState("");
+  //Controlls of edited column
+  const [isChangesItems, setIsChangesItems] = useState(false);
+  const [isErrorModal, setIsErrorModal] = useState(false);
 
   const router = useRouter();
 
@@ -129,9 +132,64 @@ const DishesAdminPage = () => {
 
   const handleEditingCategory = (e: SelectChangeEvent) => {
     const value = e.target.value;
+
+    setDishes([]);
+    setCategorySelect("");
+    setIsChangesItems(false);
     setCategorySelect(value);
     getDishForId(value);
   };
+
+  const handleCreateCategory = async (title: string) => {
+    const id = title.toLowerCase().replace(" ", "_");
+    const payload: TCatalog = {
+      id: id,
+      value: title,
+    };
+    const isCreated = await createCategoryService(payload);
+    if (isCreated) {
+      showMessage("Categoría creada", "Se creo exitosamente la categoría");
+      getAllCategories();
+    }
+  };
+
+  const handleBackEditSection = () => {
+    if (isChangesItems) {
+      setIsErrorModal(true);
+    } else {
+      setOpenEdit(false);
+    }
+  };
+
+  const handleErrorModalGotoEditSection = () => {
+    setOpenEdit(false);
+    setIsChangesItems(false);
+    setIsErrorModal(false);
+    setDishes([]);
+    setCategorySelect("");
+  };
+
+  const handleChangeEditCol = (obj: any) => {
+    const newItems = [...dishes];
+    const mapper = newItems.map((itm) => {
+      if (itm.uuid === obj.uuid) {
+        return obj;
+      }
+      return itm;
+    });
+    setDishes(mapper);
+    setIsChangesItems(true);
+  };
+
+  const handleSaveChanges = () => {
+    const payload = {
+      category: categorySelect,
+      dishes: dishes,
+    };
+    console.log(payload);
+  };
+
+  //Principal functions
 
   const resetNewDishForm = () => {
     setIsUniquePrice("1");
@@ -164,19 +222,6 @@ const DishesAdminPage = () => {
     }
   };
 
-  const handleCreateCategory = async (title: string) => {
-    const id = title.toLowerCase().replace(" ", "_");
-    const payload: TCatalog = {
-      id: id,
-      value: title,
-    };
-    const isCreated = await createCategoryService(payload);
-    if (isCreated) {
-      showMessage("Categoría creada", "Se creo exitosamente la categoría");
-      getAllCategories();
-    }
-  };
-
   useEffect(() => {
     getAllCategories();
   }, []);
@@ -190,18 +235,42 @@ const DishesAdminPage = () => {
         <MenuAdmin router={router} basePath={router.pathname} />
         {openEdit ? (
           <div className='flex flex-col w-full'>
-            <div className='bg-blue font-secondary text-[1.25rem] w-full p-4 flex flex-row items-center'>
-              <div className='flexx items-center justify-center mr-4'>
-                <Tooltip title='Regresar' arrow>
-                  <button
-                    onClick={() => setOpenEdit(false)}
-                    className='text-white'
-                  >
-                    <ArrowBack />
-                  </button>
-                </Tooltip>
+            <div className='bg-blue font-secondary text-[1.25rem] w-full p-4 flex justify-between'>
+              <div className='flex flex-row items-center'>
+                <div className='flex items-center justify-center mr-4'>
+                  <Tooltip title='Regresar' arrow>
+                    <button
+                      onClick={handleBackEditSection}
+                      className='text-white'
+                    >
+                      <ArrowBack />
+                    </button>
+                  </Tooltip>
+                </div>
+                <div className='text-white flex items-center'>
+                  Editar precios
+                </div>
               </div>
-              <div className='text-white'>Editar precios</div>
+              {isChangesItems && (
+                <div className='text-white text-[1.25rem]'>
+                  Tienes items sin guardar
+                </div>
+              )}
+              <div className='flex items-center justify-center mr-4'>
+                {isChangesItems ? (
+                  <Tooltip title='Guardar precios' arrow>
+                    <button onClick={handleSaveChanges} className='text-white'>
+                      <Save />
+                    </button>
+                  </Tooltip>
+                ) : (
+                  <Tooltip title='Precios guardados' arrow>
+                    <span className='text-white'>
+                      <Done />
+                    </span>
+                  </Tooltip>
+                )}
+              </div>
             </div>
             <div className='flex flex-row p-4 bg-enabled'>
               <Select
@@ -247,9 +316,10 @@ const DishesAdminPage = () => {
                   {dishes.map((itm, index) => (
                     <EditionTableCol
                       index={index}
+                      key={"key-" + index}
                       data={itm}
                       categories={categories}
-                      handleChange={() => {}}
+                      handleChange={handleChangeEditCol}
                     />
                   ))}
                 </div>
@@ -336,6 +406,35 @@ const DishesAdminPage = () => {
           </div>
         )}
       </div>
+      <Modal open={isErrorModal} onClose={() => setIsErrorModal(false)}>
+        <Box sx={style}>
+          <div className='flex flex-col items-center'>
+            <h2 className='text-[1.5rem] mb-4'>
+              ¿Estas seguro de realizar esta acción?
+            </h2>
+            <span className='text-center mb-4'>
+              Tienes platillos con cambios sin guardar, si continuas perderás
+              dichos cambios
+            </span>
+            <div className='flex w-full justify-between'>
+              <Button
+                variant='outlined'
+                className='bg-gray text-white basis-1/2 mr-4'
+                onClick={() => setIsErrorModal(false)}
+              >
+                Cancelar
+              </Button>
+              <Button
+                variant='outlined'
+                className='bg-blue text-white basis-1/2'
+                onClick={handleErrorModalGotoEditSection}
+              >
+                Aceptar
+              </Button>
+            </div>
+          </div>
+        </Box>
+      </Modal>
       <Modal open={isOpenModalDish} onClose={() => toggleModalDish()}>
         <Box sx={style}>
           <div className='flex flex-col'>

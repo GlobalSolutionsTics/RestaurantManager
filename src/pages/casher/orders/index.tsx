@@ -11,7 +11,7 @@ import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { TResponseOrders } from "@/types/menu.types";
 import { Box, Button, Modal } from "@mui/material";
 import Image from "next/image";
-import { currencyFormat, textToString } from "@/utils/formats";
+import { currencyFormat, getActualDateDB, textToString } from "@/utils/formats";
 import TicketAdmin from "../../../components/ticketAdmin";
 import { StatusEnum } from "@/enums/states.enum";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
@@ -98,7 +98,10 @@ const OrdersPage = () => {
 
   useEffect(() => {
     autheticate();
-    const connection = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+    const date = getActualDateDB();
+    const DB_RT =
+      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
+    const connection = ref(realtimeDB, DB_RT);
     return onValue(connection, (snapshot) => {
       if (snapshot.exists()) {
         const data: Array<TResponseOrders> = snapshot.val();
@@ -196,7 +199,7 @@ const OrdersPage = () => {
             <p className='font-primary font-bold text-center mb-2'>
               MARIS QUERIDA
             </p>
-            <p className='font-secondary mb-2 mb-2'>
+            <p className='font-secondary mb-2'>
               Valle del vístula esquina Valle de Oaxaca. Valle de Aragon 2da
               Secc, 57100 Nezahualcóyotl, Méx., Mexico City, Mexico
             </p>

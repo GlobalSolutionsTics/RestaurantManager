@@ -3,6 +3,7 @@ import { child, get, getDatabase, ref, set } from "firebase/database";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { StatusEnum } from "@/enums/states.enum";
+import { getActualDateDB } from "@/utils/formats";
 
 const addOrder = async (
   name: string,
@@ -18,12 +19,15 @@ const addOrder = async (
     const auth = getAuth();
     await signInAnonymously(auth);
     const dbRef = ref(getDatabase());
-    const snapshot = await get(child(dbRef, RT_ORDER_TABLE_NAME));
+    const date = getActualDateDB();
+    const DB_RT =
+      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
+    const snapshot = await get(child(dbRef, DB_RT));
     if (snapshot.exists()) {
       const data = snapshot.val();
       const array = Object.keys(data).map((el) => el);
       preId = array.length;
-      set(ref(realtimeDB, RT_ORDER_TABLE_NAME + "/" + uuid), {
+      set(ref(realtimeDB, DB_RT + "/" + uuid), {
         name: name,
         dishes: dishes,
         dishesDescription: dishesDescription,
@@ -36,7 +40,7 @@ const addOrder = async (
         updateAt: new Date().toString(),
       });
     } else {
-      set(ref(realtimeDB, RT_ORDER_TABLE_NAME + "/" + uuid), {
+      set(ref(realtimeDB, DB_RT + "/" + uuid), {
         name: name,
         dishes: dishes,
         dishesDescription: dishesDescription,

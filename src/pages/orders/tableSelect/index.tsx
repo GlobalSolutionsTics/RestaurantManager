@@ -5,11 +5,12 @@ import { setTableOrder } from "@/store/slices/orders.slice";
 import { TConifg } from "@/types/configuration.types";
 import { TResponseOrders } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
+import { getActualDateDB } from "@/utils/formats";
 import { TOKEN_ID } from "@/utils/strings";
-import { realtimeDB } from "@firebase/config";
+import * as RT from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { getAuth, signInAnonymously } from "firebase/auth";
-import { onValue, ref } from "firebase/database";
+import { child, get, getDatabase, onValue, ref } from "firebase/database";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -44,20 +45,22 @@ export default function tableSelector() {
   const init = useCallback(async () => {
     const auth = getAuth();
     await signInAnonymously(auth);
-    const connection = ref(realtimeDB, RT_ORDER_TABLE_NAME);
-    return onValue(connection, (snapshot) => {
-      if (snapshot.exists()) {
-        const data: Array<TResponseOrders> = snapshot.val();
-        const elements: Array<TResponseOrders> = Object.values(data).sort(
-          (a: any, b: any) => a.orderId - b.orderId,
-        );
-        const filters = elements.filter(
-          (itm) => itm.status !== StatusEnum.CLOSED,
-        );
-        const mapTables = filters.map((itm) => itm.tableNumber);
-        setTablesActives(mapTables);
-      }
-    });
+    const dbRef = ref(RT.realtimeDB);
+    const date = getActualDateDB();
+    const DB_RT =
+      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
+    const snapshot = await get(child(dbRef, DB_RT));
+    if (snapshot.exists()) {
+      const data: Array<TResponseOrders> = snapshot.val();
+      const elements: Array<TResponseOrders> = Object.values(data).sort(
+        (a: any, b: any) => a.orderId - b.orderId,
+      );
+      const filters = elements.filter(
+        (itm) => itm.status !== StatusEnum.CLOSED,
+      );
+      const mapTables = filters.map((itm) => itm.tableNumber);
+      setTablesActives(mapTables);
+    }
   }, []);
   useEffect(() => {
     init();

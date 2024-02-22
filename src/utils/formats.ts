@@ -160,6 +160,30 @@ export const formatDate = (date: string) => {
   return yyyy + "/" + mm + "/" + dd;
 };
 
+export const getActualDateDB = (): {
+  year: string;
+  month: string;
+  day: string;
+  fullDate: string;
+} => {
+  const date = new Date();
+  const datePreprocesed = new Date(
+    date.setTime(date.getTime() - 6 * 60 * 60 * 1000),
+  );
+  const yyyy = datePreprocesed.getFullYear();
+  let mm: number | string = datePreprocesed.getMonth() + 1; // Months start at 0!
+  let dd: number | string = datePreprocesed.getDate();
+
+  if (dd < 10) dd = "0" + dd;
+  if (mm < 10) mm = "0" + mm;
+  return {
+    year: yyyy.toString(),
+    month: mm.toString(),
+    day: dd.toString(),
+    fullDate: yyyy + "/" + mm + "/" + dd,
+  };
+};
+
 export const formatHour = (date: string) => {
   const newFromat = new Date(date).toLocaleString("es-MX");
   const separate = newFromat.split(" ");

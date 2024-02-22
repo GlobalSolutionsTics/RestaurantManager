@@ -11,7 +11,7 @@ import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { TResponseOrders } from "@/types/menu.types";
 import { Box, Button, Modal } from "@mui/material";
 import Image from "next/image";
-import { currencyFormat, textToString } from "@/utils/formats";
+import { currencyFormat, getActualDateDB, textToString } from "@/utils/formats";
 import TicketAdmin from "../../../components/ticketAdmin";
 import { StatusEnum } from "@/enums/states.enum";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
@@ -98,7 +98,11 @@ const OrdersPage = () => {
 
   useEffect(() => {
     autheticate();
-    const connection = ref(realtimeDB, RT_ORDER_TABLE_NAME);
+    const date = getActualDateDB();
+    const connection = ref(
+      realtimeDB,
+      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day,
+    );
     return onValue(connection, (snapshot) => {
       if (snapshot.exists()) {
         const data: Array<TResponseOrders> = snapshot.val();
@@ -113,10 +117,6 @@ const OrdersPage = () => {
         );
         setOrdersClosed(filtersClosed);
         setOrdersActived(filtersActived);
-
-        // Ejemplo de uso: Filtrar por la fecha "Thu Dec 28 2023"
-        const resultado = filtrarPorFecha(elements, "Thu Dec 28 2023");
-        console.log("Resultado:", resultado);
       }
     });
   }, []);

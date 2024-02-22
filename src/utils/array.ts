@@ -69,7 +69,7 @@ export const getDishesForSeles = (arr: any[]) => {
         (itm) => itm.dishId == arr[i].dishesDescription[j].uuid,
       );
       if (index === -1) {
-        const units = arr[i].dishesDescription[j].number;
+        const units = parseInt(arr[i].dishesDescription[j].number || "0");
         const _total =
           arr[i].dishesDescription[j].number *
           arr[i].dishesDescription[j].price;
@@ -92,7 +92,8 @@ export const getDishesForSeles = (arr: any[]) => {
         const _price = arr[i].dishesDescription[j].price;
         const pivot = newItm[index];
         const total = pivot.total + _total;
-        const units = pivot.units + arr[i].dishesDescription[j].number;
+        const units =
+          pivot.units + parseInt(arr[i].dishesDescription[j].number || "0");
         const uuid = arr[i].dishesDescription[j].uuid;
         const name = arr[i].dishesDescription[j].name;
         if (units !== 0) {
