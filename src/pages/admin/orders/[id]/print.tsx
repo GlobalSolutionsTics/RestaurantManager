@@ -1,13 +1,16 @@
+import { IClientResponse } from "@/pages/api/directory/controllers/client";
+import { listClientService } from "@/services/client";
 import { editPaymentInformationService } from "@/services/order";
 import { listUserSerive } from "@/services/users";
+import { TDirectory } from "@/types/directory.types";
 import { TResponseOrders } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { currencyFormat, formatDateTime, textToString } from "@/utils/formats";
 import { TOKEN_ID } from "@/utils/strings";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
-import { Edit, Print, Save } from "@mui/icons-material";
-import { Button, TextField } from "@mui/material";
+import { Book, Edit, Print, Save } from "@mui/icons-material";
+import { Box, Button, Modal, TextField } from "@mui/material";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { onValue, ref } from "firebase/database";
 import Head from "next/head";
@@ -24,11 +27,25 @@ enum EButtonActives {
   COUTERSY = "CORTESIA",
 }
 
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 800,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
 const PrintOrderPage = () => {
   const [information, setInformation] = useState<
     TResponseOrders & { creatAt: string }
   >();
   const [wainterName, setWainterName] = useState("");
+  const [clientList, setClientList] = useState<Array<IClientResponse>>([]);
+  const [selectedClients, setSelectedClient] = useState<Array<TDirectory>>([]);
 
   const [total, setTotal] = useState(0);
   const [subtotaly, setSubtotaly] = useState(0);
@@ -48,6 +65,9 @@ const PrintOrderPage = () => {
   const { query } = useRouter();
   //Print controller
   const componentRef = useRef(null);
+  //Add client controller
+  const [showAddClientModal, setShowAddClientModal] = useState(false);
+
   //Handle functions
   const handlePrint = useReactToPrint({ content: () => componentRef.current });
   const handleChangePayment = (val: EButtonActives) => {
@@ -111,6 +131,43 @@ const PrintOrderPage = () => {
     }
   };
 
+  const handleAddClient = async () => {
+    setShowAddClientModal(!showAddClientModal);
+  };
+
+  // toogle function
+  const toogleAddClientModal = () => {
+    setShowAddClientModal(!showAddClientModal);
+  };
+
+  const getClientList = async () => {
+    const token = sessionStorage.getItem(TOKEN_ID);
+    if (token) {
+      try {
+        const client = await listClientService(token);
+        setClientList(client);
+      } catch {
+        console.log("Error al obtener la información");
+      }
+    }
+  };
+
+  const handleCheckboxChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    client: TDirectory,
+  ) => {
+    if (event.target.checked) {
+      setSelectedClient([...selectedClients, client]);
+    } else {
+      setSelectedClient(
+        selectedClients.filter((selectedClient) => selectedClient !== client),
+      );
+    }
+  };
+
+  useEffect(() => {
+    getClientList();
+  }, []);
   //Initial charger
   const getWinterInformation = useCallback(async () => {
     const token = sessionStorage.getItem(TOKEN_ID);
@@ -323,6 +380,12 @@ const PrintOrderPage = () => {
               >
                 <Print /> IMPRIMIR
               </button>
+              <button
+                onClick={handleAddClient}
+                className='bg-green-600 text-white font-secondary p-2 mt-4'
+              >
+                <Book /> CLIENTE
+              </button>
             </div>
           </div>
         </div>
@@ -338,7 +401,7 @@ const PrintOrderPage = () => {
           <p className='font-primary font-bold text-center mb-2 print-title'>
             MARIS QUERIDA
           </p>
-          <p className='font-secondary mb-2 mb-2 text-center print-text'>
+          <p className='font-secondary mb-2 text-center print-text'>
             Valle del vístula esquina Valle de Oaxaca. Valle de Aragon 2da Secc,
             57100 Nezahualcóyotl, Méx., Mexico City, Mexico
           </p>
@@ -362,6 +425,32 @@ const PrintOrderPage = () => {
                   : "MESA " + information.tableNumber}
               </td>
             </tr>
+          </table>
+          <table className='w-full'>
+            {selectedClients?.length !== 0 ? (
+              selectedClients?.map((itm) => (
+                <thead className='w-full'>
+                  <tr>
+                    <td className='print-text-small'>Cliente:</td>
+                    <td className='print-text-small text-right'>{itm.name}</td>
+                  </tr>
+                  <tr>
+                    <td className='print-text-small'>Dirección:</td>
+                    <td className='print-text-small text-right'>
+                      {itm.adress}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className='print-text-small'>Telefono:</td>
+                    <td className='print-text-small text-right'>{itm.phone}</td>
+                  </tr>
+                </thead>
+              ))
+            ) : (
+              <tr>
+                <td></td>
+              </tr>
+            )}
           </table>
           <hr className='my-2' />
           <table className='w-full'>
@@ -475,6 +564,60 @@ const PrintOrderPage = () => {
             </div>
           )}
         </div>
+        <Modal open={showAddClientModal} onClose={toogleAddClientModal}>
+          <Box sx={style}>
+            <div>
+              <div className='flex felx-col bg-blue p-4'>
+                <div className='flex items-center font-secondary font-bold text-white  basis-1/4'>
+                  Nombre
+                </div>
+                <div className='flex items-center font-secondary font-bold text-white  basis-1/4'>
+                  Direccion
+                </div>
+                <div className='flex items-center font-secondary font-bold text-white  basis-1/4'>
+                  Telefono
+                </div>
+                <div className='flex items-center font-secondary font-bold text-white  basis-1/4'>
+                  Acciones
+                </div>
+              </div>
+              <div>
+                {clientList.map((itm, ind) => (
+                  <div
+                    className={`flex flex-row  ${
+                      ind % 2 === 0 ? "bg-enabled-dark" : "bg-enabled-light"
+                    } divide-x divide-slate-400`}
+                  >
+                    <div className='font-secondary basis-1/4 flex items-center p-2'>
+                      {itm.name}
+                    </div>
+                    <div className='font-secondary basis-1/4 flex items-center p-2'>
+                      {itm.adress}
+                    </div>
+                    <div className='font-secondary basis-1/4 flex items-center p-2'>
+                      {itm.phone}
+                    </div>
+                    <div className='font-secondary basis-1/4 flex justify-center p-2'>
+                      <input
+                        type='checkbox'
+                        onChange={(event) => handleCheckboxChange(event, itm)}
+                        checked={selectedClients.includes(itm)}
+                      ></input>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className='flex justify-end pt-2'>
+                <button
+                  onClick={toogleAddClientModal}
+                  className='bg-danger text-white font-secondary p-2 rounded-lg'
+                >
+                  CERRAR
+                </button>
+              </div>
+            </div>
+          </Box>
+        </Modal>
       </div>
     </>
   );
