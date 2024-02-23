@@ -72,7 +72,8 @@ const PrintOrderPage = () => {
   const componentRef = useRef(null);
   //Add client controller
   const [showAddClientModal, setShowAddClientModal] = useState(false);
-
+  const CLIENT_FILTER = (client: TDirectory) =>
+    selectedClients.filter((selectedClient) => selectedClient !== client);
   //Handle functions
   const handlePrint = useReactToPrint({ content: () => componentRef.current });
   const handleChangePayment = (val: EButtonActives) => {
@@ -87,6 +88,7 @@ const PrintOrderPage = () => {
     }
     setPayment(val);
   };
+
   const handleChangePropine = (val: ChangeEvent<HTMLInputElement>) => {
     const value = val.target.value;
     if (value !== "") {
@@ -164,9 +166,7 @@ const PrintOrderPage = () => {
     if (event.target.checked) {
       setSelectedClient([...selectedClients, client]);
     } else {
-      setSelectedClient(
-        selectedClients.filter((selectedClient) => selectedClient !== client),
-      );
+      setSelectedClient(CLIENT_FILTER(client));
     }
   };
 
@@ -442,29 +442,27 @@ const PrintOrderPage = () => {
             )}
           </table>
           <table className='w-full'>
-            {selectedClients?.length !== 0 ? (
-              selectedClients?.map((itm) => (
-                <thead className='w-full'>
-                  <tr>
-                    <td className='print-text-small'>Cliente:</td>
-                    <td className='print-text-small text-right'>{itm.name}</td>
-                  </tr>
-                  <tr>
-                    <td className='print-text-small'>Dirección:</td>
-                    <td className='print-text-small text-right'>
-                      {itm.adress}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className='print-text-small'>Telefono:</td>
-                    <td className='print-text-small text-right'>{itm.phone}</td>
-                  </tr>
-                </thead>
-              ))
-            ) : (
-              <tr>
-                <td></td>
-              </tr>
+            {selectedClients?.length !== 0 && (
+              <thead className='w-full'>
+                <tr>
+                  <td className='print-text-small'>Cliente:</td>
+                  <td className='print-text-small text-right'>
+                    {selectedClients[0].name}
+                  </td>
+                </tr>
+                <tr>
+                  <td className='print-text-small'>Dirección:</td>
+                  <td className='print-text-small text-right'>
+                    {selectedClients[0].adress}
+                  </td>
+                </tr>
+                <tr>
+                  <td className='print-text-small'>Telefono:</td>
+                  <td className='print-text-small text-right'>
+                    {selectedClients[0].phone}
+                  </td>
+                </tr>
+              </thead>
             )}
           </table>
           <hr className='my-2' />
