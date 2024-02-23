@@ -3,7 +3,7 @@ import { HttpMethodsEnum, HttpStatusEnum } from "@/enums/http.enum";
 import { DishesEnum } from "@/pages/api/menu/controller/enum/dishes.enum";
 import { TCatalog } from "@/types/catalog.types";
 import { TMenuResponse } from "@/types/menu.types";
-import { URL_API_MENU, URL_API_ORDER } from "@/utils/urls";
+import { URL_API_DISHES, URL_API_MENU, URL_API_ORDER } from "@/utils/urls";
 
 export const getCategories = async () => {
   try {
@@ -78,5 +78,31 @@ export const createOrderService = async (payload: any) => {
     }
   } catch (e) {
     console.log("Error al añadir el platillo", e);
+    return false;
+  }
+};
+
+export const updateDishesInformation = async (
+  payload: any,
+  token: string | null,
+) => {
+  try {
+    const header = {
+      method: HttpMethodsEnum.PUT,
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": ContentTypeEnum.JSON,
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const petition = await fetch(`${URL_API_DISHES}/update`, header);
+    if (petition.status === HttpStatusEnum.CREATE) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    console.log("Error al añadir el platillo", e);
+    return false;
   }
 };

@@ -51,7 +51,7 @@ const ListOptionComponent = ({
             {children}
           </button>
         ) : (
-          <div className='flex flex-row flex-start bg-white'>
+          <div className='flex flex-row flex-start bg-white' key={key}>
             <div className={`w-sm h-normal content-space bg-black`}></div>
             <input
               className={`typography-secondary-light text-[1.5rem] ml-6 text-blue-dark w-full outline-0`}
