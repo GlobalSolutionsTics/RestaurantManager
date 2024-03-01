@@ -99,6 +99,7 @@ const DishesAdminPage = () => {
     if (obtainCategories) {
       setCategories(obtainCategories);
       getAllDishes(obtainCategories);
+      console.log("purbea");
     }
   }, []);
 
