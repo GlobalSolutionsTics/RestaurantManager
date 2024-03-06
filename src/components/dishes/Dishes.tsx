@@ -20,5 +20,6 @@ const Dishes: FC<ComponentsDishes> = ({ title, isSelected, onClick }) => {
     </section>
   );
 };
+console.log("hola mundo");
 
 export default Dishes;
