@@ -15,10 +15,21 @@ const MessageComponent = withReactContent(Swal);
 
 const IndexComp = () => {
   const { push } = useRouter();
-  const [user, setUser] = useState("");
-  const [pass, setPass] = useState("");
+  const [user, setUser] = useState('');
+  const [pass, setPass] = useState('');
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === 'Enter') {
+        let buttonSubmit = document.getElementById("button-submit");
+
+        if (buttonSubmit) {
+          buttonSubmit.click();
+        } 
+      }
+    });
+  }, []);
   const handleFullscreen = useFullScreenHandle();
   //Redux controller
   const dispatch = useDispatch();
@@ -57,6 +68,7 @@ const IndexComp = () => {
 
   const handleSend = async () => {
     setLoading(true);
+
     const login = await loginService(user, pass);
     if (login) {
       const token = login.token;
@@ -154,8 +166,9 @@ const IndexComp = () => {
                   ) : (
                     <button
                       onClick={handleSend}
-                      className='rounded-full submit__btn bg-success'
+                      className='rounded-full submit__btn bg-success mt-4'
                       type='submit'
+                      id='button-submit'
                     >
                       Ingresar
                     </button>
