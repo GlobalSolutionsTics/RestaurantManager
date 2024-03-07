@@ -5,3 +5,4 @@ export const URL_API_AUTH = `${URL_BASE}/api/auth`;
 export const URL_API_CONFIG = `${URL_BASE}/api/configuration`;
 export const URL_API_FINANCE = `${URL_BASE}/api/finance`;
 export const URL_API_CLIENT = `${URL_BASE}/api/directory`;
+export const URL_API_DISHES = `${URL_BASE}/api/dishes`;

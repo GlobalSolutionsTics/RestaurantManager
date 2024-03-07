@@ -1,10 +1,13 @@
 import { TCatalog } from "@/types/catalog.types";
 import { TMenuResponse } from "@/types/menu.types";
+import { ArrowRight, Delete } from "@mui/icons-material";
 import {
+  Button,
   MenuItem,
   OutlinedInput,
   Select,
   SelectChangeEvent,
+  Tooltip,
 } from "@mui/material";
 import { ChangeEvent, useState } from "react";
 
@@ -13,7 +16,9 @@ type TEditTableCol = {
   index: number;
   categories: Array<TCatalog>;
   key: string;
+  isSelected?: boolean;
   handleChange: (ob: any) => void;
+  handleDelete: (ob: any) => void;
 };
 
 const EditionTableCol = ({
@@ -21,7 +26,9 @@ const EditionTableCol = ({
   data,
   categories,
   key,
+  isSelected,
   handleChange,
+  handleDelete,
 }: TEditTableCol) => {
   const DEFAULT_NAME = data.name;
   const DEFAULT_PRICE = data.price;
@@ -59,7 +66,12 @@ const EditionTableCol = ({
 
   return (
     <div className='flex flex-row' key={key}>
-      <div className='w-[40px] border-[1px] bg-enabled-light border-[1px] border-enabled'>
+      <div
+        className={`w-[60px] border-[1px] px-2 ${
+          isSelected ? "bg-success text-white" : "bg-enabled-light text-black"
+        } border-[1px] border-enabled flex flex-row`}
+      >
+        {isSelected && <ArrowRight />}
         {index + 1}
       </div>
       <OutlinedInput
@@ -94,7 +106,13 @@ const EditionTableCol = ({
         <MenuItem value={"0"}>No</MenuItem>
         <MenuItem value={"1"}>Si</MenuItem>
       </Select>
-      <div className='basis-1/5 border-[1px] border-enabled'></div>
+      <div className='basis-1/5 border-[1px] border-enabled'>
+        <Tooltip title={`Borrar ${name}`}>
+          <Button onClick={handleDelete}>
+            <Delete />
+          </Button>
+        </Tooltip>
+      </div>
     </div>
   );
 };

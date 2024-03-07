@@ -4,6 +4,7 @@ import {
   createDishService,
   getCategories,
   getDishService,
+  updateDishesInformation,
 } from "@/services/dishes";
 import { TCatalog } from "@/types/catalog.types";
 import { TMenuResponse } from "@/types/menu.types";
@@ -26,6 +27,7 @@ import ProtectPage from "../components/protectPage";
 import { ArrowBack, Done, Edit, Save } from "@mui/icons-material";
 import EditionTableCol from "../../../components/editionTableCol";
 import { Tooltip } from "@mui/material";
+import { TOKEN_ID } from "@/utils/strings";
 
 const style = {
   position: "absolute" as "absolute",
@@ -40,6 +42,22 @@ const style = {
 };
 
 const MessageComponent = withReactContent(Swal);
+
+type TOptionSearcher = {
+  children: any;
+  onClick: (itm: any) => void;
+};
+
+const OptionShearcher = ({ children, onClick }: TOptionSearcher) => {
+  return (
+    <div
+      className='hover:bg-blue-dark hover:text-white hover:cursor-pointer text-secondary px-4 py-2'
+      onClick={onClick}
+    >
+      {children}
+    </div>
+  );
+};
 
 const DishesAdminPage = () => {
   //List controlls
@@ -63,17 +81,43 @@ const DishesAdminPage = () => {
   //Controlls of edited column
   const [isChangesItems, setIsChangesItems] = useState(false);
   const [isErrorModal, setIsErrorModal] = useState(false);
+  //Searcher controller
+  const [searcherItems, setSearcherItems] = useState<Array<TMenuResponse>>([]);
+  const [posibleOptions, setPosibleOptions] = useState<Array<TMenuResponse>>(
+    [],
+  );
+  const [textToSearch, setTextToSearch] = useState("");
+  const [idItemSelect, setIdItemSelect] = useState("");
 
   const router = useRouter();
 
   const toggleModalDish = () => setOpenModalDish(!isOpenModalDish);
+
   //Services
   const getAllCategories = useCallback(async () => {
     const obtainCategories = await getCategories();
     if (obtainCategories) {
       setCategories(obtainCategories);
+      getAllDishes(obtainCategories);
     }
   }, []);
+
+  const getAllDishes = async (categories: TCatalog[]) => {
+    let dishesForCategory: Array<any> = [];
+    const promises = [];
+    for (let a = 0; a < categories.length; a++) {
+      const promise = await getDishService(categories[a].id);
+      promises.push(promise);
+    }
+    const responses = await Promise.all(promises);
+    if (responses) {
+      responses.map((itm) => {
+        dishesForCategory = dishesForCategory.concat(itm);
+        return itm;
+      });
+      setSearcherItems(dishesForCategory);
+    }
+  };
 
   const getDishForId = async (id: string) => {
     setLoading(true);
@@ -102,6 +146,34 @@ const DishesAdminPage = () => {
   /**
    * Handle functions
    */
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    const value: string = event.target.value;
+    if (value !== "") {
+      const options = searcherItems.filter(
+        (itm) =>
+          itm.name.toLowerCase().startsWith(value.toLowerCase()) ||
+          itm.name.toLowerCase().endsWith(value.toLowerCase()),
+      );
+      setTextToSearch(value);
+      if (options !== undefined) {
+        setPosibleOptions(options);
+      }
+    } else {
+      setTextToSearch("");
+      setPosibleOptions([]);
+    }
+  };
+
+  const handleOptionSelected = (itm: TMenuResponse) => {
+    const categoryId = itm.type;
+    setCategorySelect(categoryId);
+    setTextToSearch(itm.name);
+    setPosibleOptions([]);
+    setIdItemSelect(itm.uuid || "");
+    getDishForId(categoryId);
+    console.log(itm);
+  };
+
   const _hanldeChangeCategorieId = async (id: string, title: string) => {
     const dishesObtained = await getDishForId(id);
     if (dishesObtained) {
@@ -137,6 +209,7 @@ const DishesAdminPage = () => {
     setCategorySelect("");
     setIsChangesItems(false);
     setCategorySelect(value);
+    console.log("value:", value);
     getDishForId(value);
   };
 
@@ -181,12 +254,42 @@ const DishesAdminPage = () => {
     setIsChangesItems(true);
   };
 
-  const handleSaveChanges = () => {
+  const handleDeleteColum = (obj: any) => {
+    const idToken = obj.uuid;
+    const newItems = [...dishes];
+    const findIndex = newItems.findIndex((itm) => itm.uuid === idToken);
+    newItems.splice(findIndex, 1);
+    setDishes(newItems);
+    setIsChangesItems(true);
+  };
+
+  const handleSaveChanges = async () => {
+    const token = sessionStorage.getItem(TOKEN_ID);
     const payload = {
       category: categorySelect,
       dishes: dishes,
     };
-    console.log(payload);
+    const update = await updateDishesInformation(payload, token);
+    if (update) {
+      MessageComponent.fire({
+        icon: "success",
+        title: "Actualizado",
+        text: "Los datos se han actualizado correctamente",
+        confirmButtonText: "Aceptar",
+      });
+      setIsChangesItems(false);
+    } else {
+      MessageComponent.fire({
+        icon: "error",
+        title: "Ocurrio un error",
+        text: "No se pudo actualizar la información, intente de nuevo mas tarde | ERR: DS0001",
+        timer: 1500,
+        confirmButtonText: "Aceptar",
+        showConfirmButton: true,
+        showLoaderOnConfirm: false,
+        showLoaderOnDeny: false,
+      });
+    }
   };
 
   //Principal functions
@@ -253,7 +356,7 @@ const DishesAdminPage = () => {
               </div>
               {isChangesItems && (
                 <div className='text-white text-[1.25rem]'>
-                  Tienes items sin guardar
+                  Tienes platillos con cambios sin guardar
                 </div>
               )}
               <div className='flex items-center justify-center mr-4'>
@@ -288,15 +391,43 @@ const DishesAdminPage = () => {
                     </MenuItem>
                   ))}
               </Select>
-              <div className='w-full basis-5/6'>
-                <OutlinedInput className='h-[2rem] outline-none w-full rounded-none bg-white' />
+              <div className='w-full basis-5/6 relative'>
+                <OutlinedInput
+                  className='h-[2rem] outline-none w-full rounded-none bg-white'
+                  id='outline-input-platillo'
+                  placeholder='Buscar platillo'
+                  value={textToSearch}
+                  onChange={handleSearch}
+                />
+                {posibleOptions.length > 0 && (
+                  <div
+                    className={`w-full absolute ${
+                      posibleOptions.length >= 4
+                        ? "h-[10rem]"
+                        : posibleOptions.length === 3
+                          ? "h-[7.5rem]"
+                          : posibleOptions.length === 2
+                            ? "h-[5rem]"
+                            : "h-[2.5rem]"
+                    } bg-white overflow-y-auto z-[20] bg-white`}
+                  >
+                    {posibleOptions.map((itm, idx) => (
+                      <OptionShearcher
+                        onClick={() => handleOptionSelected(itm)}
+                        key={"id-" + idx}
+                      >
+                        {itm.type.replace("_", " ").toUpperCase()} - {itm.name}
+                      </OptionShearcher>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             <div className='text-center'>
               {categorySelect !== "" ? (
                 <div className='flex flex-col'>
                   <div className='flex flex-row w-full bg-enabled-light'>
-                    <div className='w-[40px] bg-white'></div>
+                    <div className='w-[60px] bg-white'></div>
                     <div className='basis-1/5 text-left px-4 py-2 border-[1px] border-enabled'>
                       Nombre
                     </div>
@@ -320,6 +451,8 @@ const DishesAdminPage = () => {
                       data={itm}
                       categories={categories}
                       handleChange={handleChangeEditCol}
+                      handleDelete={() => handleDeleteColum(itm)}
+                      isSelected={itm.uuid === idItemSelect}
                     />
                   ))}
                 </div>
@@ -352,7 +485,7 @@ const DishesAdminPage = () => {
                     categories.map((itm, index) => (
                       <ListOptionComponent
                         isSelected={idCategory === itm.id}
-                        key={"ind-" + index + "-" + itm}
+                        key={"ind-" + index + "-" + itm.id}
                         onClick={() =>
                           _hanldeChangeCategorieId(itm.id, itm.value)
                         }
