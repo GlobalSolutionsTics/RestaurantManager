@@ -164,7 +164,7 @@ const ApplicationAdminPage = () => {
     init();
   }, [viewSelected]);
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={"admin"}>
       <Head>
         <title>Administrador | Solicitudes de cambio</title>
       </Head>

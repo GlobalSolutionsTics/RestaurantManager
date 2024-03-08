@@ -6,7 +6,7 @@ import ProtectPage from "./components/protectPage";
 const KitchenPage = () => {
   const router = useRouter();
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={"admin"}>
       <Head>
         <title>Adminsitrador | Administrar cocinas</title>
       </Head>

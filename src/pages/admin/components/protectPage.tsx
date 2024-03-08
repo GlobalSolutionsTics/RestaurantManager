@@ -1,18 +1,32 @@
 import { IUserRedux, saveUserInRedux } from "@/store/slices/user.slice";
 import { TOKEN_ID } from "@/utils/strings";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 type TProps = {
   children: any;
   push: any;
+  requiredProfiles: string;
 };
-const ProtectPage = ({ children, push }: TProps) => {
+const ProtectPage = ({ children, push, requiredProfiles }: TProps) => {
   const dispatch = useDispatch();
+  const userStore: IUserRedux = useSelector((store: any) => store.user);
+  const userProfile = userStore.type;
+  const token = sessionStorage.getItem(TOKEN_ID);
+
+  const timeOut = setTimeout(() => {
+    if (userProfile !== "cocina") {
+      push("/admin");
+    }
+  }, 180000);
 
   const checkToken = () => {
-    const token = sessionStorage.getItem(TOKEN_ID);
-    if (!token) {
+    if (
+      !token ||
+      !userProfile ||
+      !requiredProfiles.includes(userProfile) ||
+      !timeOut
+    ) {
       push("/admin");
       return <div>Sin acceso</div>;
     }
@@ -37,6 +51,7 @@ const ProtectPage = ({ children, push }: TProps) => {
   useEffect(() => {
     checkToken();
     generateInfoToken();
+    checkToken;
   }, []);
 
   return <>{children}</>;

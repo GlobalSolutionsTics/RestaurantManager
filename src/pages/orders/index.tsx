@@ -194,7 +194,7 @@ const HomeOrderPage = () => {
   }, []);
   return (
     <FullScreen handle={handleFullscreen}>
-      <ProtectPage push={router.push}>
+      <ProtectPage push={router.push} requiredProfiles={"cocina"}>
         <Head>
           <title>Comandas activas</title>
         </Head>

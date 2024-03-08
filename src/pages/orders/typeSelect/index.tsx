@@ -168,7 +168,7 @@ export default function typeSelector() {
   }, []);
 
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={"mesero"}>
       <div className='relative overflow-x-hidden'>
         <p className='text-[2rem] bg-neutral-300 font-primary h-[120px] grid content-center px-10 w-screen'>
           Seleccione un tipo de platillo

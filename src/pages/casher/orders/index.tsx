@@ -125,7 +125,7 @@ const OrdersPage = () => {
   }, []);
 
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={"Caja"}>
       <Head>
         <title>Cajero | Ordenes</title>
       </Head>

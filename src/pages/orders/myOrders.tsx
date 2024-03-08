@@ -186,7 +186,7 @@ const MyOrdersPage = () => {
   }, [personStore]);
 
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={"mesero"}>
       <Head>
         <title>Listado Ordenes</title>
       </Head>

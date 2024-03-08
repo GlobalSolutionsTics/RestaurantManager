@@ -330,7 +330,7 @@ const DishesAdminPage = () => {
   }, []);
 
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={"admin"}>
       <Head>
         <title>Administrador | Listado de platillos</title>
       </Head>
@@ -409,7 +409,7 @@ const DishesAdminPage = () => {
                           : posibleOptions.length === 2
                             ? "h-[5rem]"
                             : "h-[2.5rem]"
-                    } bg-white overflow-y-auto z-[20] bg-white`}
+                    } bg-white overflow-y-auto z-[20]`}
                   >
                     {posibleOptions.map((itm, idx) => (
                       <OptionShearcher

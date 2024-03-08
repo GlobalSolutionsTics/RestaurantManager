@@ -93,7 +93,7 @@ const ConfigurationPage = () => {
   }, []);
 
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={"admin"}>
       <Head>
         <title>Administrador | Configurar aplicación</title>
       </Head>

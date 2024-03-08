@@ -94,7 +94,7 @@ const MenuAdmin = ({ basePath, router }: Props) => {
         <MenuOption path={basePath} href={"/admin/users"}>
           <PeopleOutline fontSize='large' />
         </MenuOption>
-        <MenuOption path={basePath} href={"/casher/directory"}>
+        <MenuOption path={basePath} href={"/admin/directory"}>
           <Book fontSize='large' />
         </MenuOption>
         <MenuOption path={basePath} href={"/admin/orders"}>
