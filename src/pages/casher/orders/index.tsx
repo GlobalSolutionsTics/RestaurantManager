@@ -15,6 +15,7 @@ import { currencyFormat, getActualDateDB, textToString } from "@/utils/formats";
 import TicketAdmin from "../../../components/ticketAdmin";
 import { StatusEnum } from "@/enums/states.enum";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
+import { CASHER } from "@/utils/users";
 
 const style = {
   position: "absolute" as "absolute",
@@ -125,7 +126,7 @@ const OrdersPage = () => {
   }, []);
 
   return (
-    <ProtectPage push={router.push} requiredProfiles={"Caja"}>
+    <ProtectPage push={router.push} requiredProfiles={CASHER}>
       <Head>
         <title>Cajero | Ordenes</title>
       </Head>

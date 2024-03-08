@@ -19,23 +19,6 @@ const USER_UPDATE_MESSAGE = "Usuario actualizado exitosamente";
 
 export const SEED_OF_JWT = "AñOS_LUZ";
 
-// const checkTokenExpiration = (token: string): boolean => {
-//   const { push } = useRouter();
-//   const decodedToken: any = jwt.verify(token, SEED_OF_JWT);
-//   const currentTime = Date.now() / 1000;
-
-//   try {
-//     if (decodedToken.exp && decodedToken.exp < currentTime) {
-//       push("/admin");
-//       return true;
-//     }
-
-//     return false;
-//   } catch (error) {
-//     return false;
-//   }
-// };
-
 export const loginUsers = async (user: string, pass: string) => {
   const usersRef = doc(firestore, DB_USERS, "activos");
   const usersCollections = await getDoc(usersRef);
@@ -56,10 +39,6 @@ export const loginUsers = async (user: string, pass: string) => {
       };
 
       const token = jwt.sign(payload, SEED_OF_JWT, { expiresIn: "3m" });
-
-      // if (checkTokenExpiration(token)) {
-      //   return false;
-      // }
 
       return { token: token, type: find.type };
     } else {

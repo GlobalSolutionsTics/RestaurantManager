@@ -30,6 +30,7 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import ProtectPage from "../components/protectPage";
 import { TOKEN_ID } from "@/utils/strings";
+import { ADMIN } from "@/utils/users";
 
 const MessageComponent = withReactContent(Swal);
 
@@ -257,7 +258,7 @@ const UsersAdministratorPage = () => {
   };
 
   return (
-    <ProtectPage push={router.push} requiredProfiles={"admin"}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN}>
       <Head>
         <title>Administrador | Usuarios</title>
       </Head>

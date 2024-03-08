@@ -14,6 +14,7 @@ import { TCatalog } from "@/types/catalog.types";
 import { TMenuResponse, TResponseOrders } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { getActualDateDB } from "@/utils/formats";
+import { CHECKS } from "@/utils/users";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { ArrowBack, DoneAll, RoomService, Send } from "@mui/icons-material";
@@ -186,7 +187,7 @@ const EditOrderPage = () => {
     obtainCategories();
   }, [query]);
   return (
-    <ProtectPage push={router.push} requiredProfiles={"mesero"}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS}>
       <Head>
         <title>Listado Ordenes</title>
       </Head>

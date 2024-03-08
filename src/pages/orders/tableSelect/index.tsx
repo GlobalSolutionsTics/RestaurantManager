@@ -7,6 +7,7 @@ import { TResponseOrders } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { getActualDateDB } from "@/utils/formats";
 import { TOKEN_ID } from "@/utils/strings";
+import { CHECKS } from "@/utils/users";
 import * as RT from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { getAuth, signInAnonymously } from "firebase/auth";
@@ -68,7 +69,7 @@ export default function tableSelector() {
   }, []);
 
   return (
-    <ProtectPage push={router.push} requiredProfiles={"mesero"}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS}>
       <div className='relative'>
         <p className='text-[2rem] bg-neutral-300 font-primary h-[120px] grid content-center px-10 w-screen'>
           ¿Que mesa atenderá?

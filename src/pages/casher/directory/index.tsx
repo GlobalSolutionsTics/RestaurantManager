@@ -32,6 +32,7 @@ import { Formik } from "formik";
 import { useReactToPrint } from "react-to-print";
 import PrintIcon from "@mui/icons-material/Print";
 import { TDirectory } from "@/types/directory.types";
+import { CASHER } from "@/utils/users";
 const MessageComponent = withReactContent(Swal);
 
 const style = {
@@ -285,7 +286,7 @@ const DirectoryPage = () => {
   };
 
   return (
-    <ProtectPage push={router.push} requiredProfiles={"caja"}>
+    <ProtectPage push={router.push} requiredProfiles={CASHER}>
       <Head>
         <title>Cajero | Directorio</title>
       </Head>
