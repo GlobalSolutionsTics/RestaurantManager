@@ -14,11 +14,14 @@ const ProtectPage = ({ children, push, requiredProfiles }: TProps) => {
   const userProfile = userStore.type;
   const token = sessionStorage.getItem(TOKEN_ID);
 
-  const timeOut = setTimeout(() => {
-    if (userProfile !== "cocina") {
-      push("/admin");
-    }
-  }, 180000);
+  const timeOut = setTimeout(
+    () => {
+      if (userProfile !== "cocina") {
+        push("/admin");
+      }
+    },
+    5 * 60 * 1000,
+  );
 
   const checkToken = () => {
     if (
