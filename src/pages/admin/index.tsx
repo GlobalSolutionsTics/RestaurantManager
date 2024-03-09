@@ -2,7 +2,7 @@ import { UsersTypesEnum } from "@/enums/users.types";
 import { loginService } from "@/services/auth";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
@@ -15,18 +15,17 @@ const MessageComponent = withReactContent(Swal);
 
 const IndexComp = () => {
   const { push } = useRouter();
-  const [user, setUser] = useState('');
-  const [pass, setPass] = useState('');
+  const [user, setUser] = useState("");
+  const [pass, setPass] = useState("");
   const [loading, setLoading] = useState(false);
+  const submitRef = useRef<any>(null);
 
   useEffect(() => {
     document.addEventListener("keydown", (e) => {
-      if (e.key === 'Enter') {
-        let buttonSubmit = document.getElementById("button-submit");
-
-        if (buttonSubmit) {
-          buttonSubmit.click();
-        } 
+      if (e.key === "Enter") {
+        if (submitRef.current !== null) {
+          submitRef.current.click();
+        }
       }
     });
   }, []);
@@ -168,6 +167,7 @@ const IndexComp = () => {
                       onClick={handleSend}
                       className='rounded-full submit__btn bg-success mt-4'
                       type='submit'
+                      ref={submitRef}
                       id='button-submit'
                     >
                       Ingresar
