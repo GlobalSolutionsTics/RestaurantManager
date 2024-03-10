@@ -178,7 +178,6 @@ const DirectoryPage = () => {
     if (token) {
       try {
         const client = await listClientService(token);
-        console.log("Lista de clientes:", client);
         setClientList(client);
       } catch (error) {
         console.error("Error al obtener la lista de clientes:", error);
