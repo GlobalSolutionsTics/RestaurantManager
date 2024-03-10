@@ -15,8 +15,9 @@ type TEditTableCol = {
   data: TMenuResponse;
   index: number;
   categories: Array<TCatalog>;
-  key: string;
+  key?: string;
   isSelected?: boolean;
+  dataTestId?: string;
   handleChange: (ob: any) => void;
   handleDelete: (ob: any) => void;
 };
@@ -27,6 +28,7 @@ const EditionTableCol = ({
   categories,
   key,
   isSelected,
+  dataTestId,
   handleChange,
   handleDelete,
 }: TEditTableCol) => {
@@ -65,7 +67,7 @@ const EditionTableCol = ({
   };
 
   return (
-    <div className='flex flex-row' key={key}>
+    <div className='flex flex-row' key={key} data-testid={dataTestId}>
       <div
         className={`w-[60px] border-[1px] px-2 ${
           isSelected ? "bg-success text-white" : "bg-enabled-light text-black"
@@ -78,6 +80,7 @@ const EditionTableCol = ({
         value={name}
         className='h-[2rem] outline-none w-full rounded-none bg-white basis-1/5'
         onChange={handleChangeName}
+        inputProps={{ "data-testid": "editcol-name" }}
       />
       <OutlinedInput
         value={price}
