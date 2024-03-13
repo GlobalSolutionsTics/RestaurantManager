@@ -197,7 +197,7 @@ const HomeOrderPage = () => {
   const token = sessionStorage.getItem(TOKEN_ID);
   return (
     <FullScreen handle={handleFullscreen}>
-      <ProtectPage push={router.push} requiredProfiles={KITCHEN} token={token!}>
+      <ProtectPage push={router.push} requiredProfiles={KITCHEN} token={token}>
         <Head>
           <title>Comandas activas</title>
         </Head>
