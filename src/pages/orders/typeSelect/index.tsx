@@ -8,6 +8,7 @@ import {
 } from "@/store/slices/orders.slice";
 import { TCatalog } from "@/types/catalog.types";
 import { TMenuResponse } from "@/types/menu.types";
+import { TOKEN_ID } from "@/utils/strings";
 import { CHECKS } from "@/utils/users";
 import { Backspace, CheckOutlined } from "@mui/icons-material";
 import { Modal } from "@mui/material";
