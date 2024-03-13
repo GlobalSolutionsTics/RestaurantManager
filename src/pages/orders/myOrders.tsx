@@ -23,8 +23,7 @@ import Head from "next/head";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { IOrderSlice } from "@/store/slices/orders.slice";
 import { getActualDateDB } from "@/utils/formats";
-import { CHECKS } from "@/utils/users";
-import { TOKEN_ID } from "@/utils/strings";
+import { CHECKS, TOKEN } from "@/utils/users";
 
 enum OptionEnum {
   ACTIVE = "ACTIVES",
@@ -186,9 +185,9 @@ const MyOrdersPage = () => {
   useEffect(() => {
     getMyOrders();
   }, [personStore]);
-  const token = sessionStorage.getItem(TOKEN_ID);
+
   return (
-    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={token!}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={TOKEN}>
       <Head>
         <title>Listado Ordenes</title>
       </Head>

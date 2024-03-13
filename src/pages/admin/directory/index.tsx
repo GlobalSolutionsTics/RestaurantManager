@@ -34,7 +34,7 @@ import { Formik } from "formik";
 import { useReactToPrint } from "react-to-print";
 import PrintIcon from "@mui/icons-material/Print";
 import { TDirectory } from "@/types/directory.types";
-import { ADMIN } from "@/utils/users";
+import { ADMIN, TOKEN } from "@/utils/users";
 const MessageComponent = withReactContent(Swal);
 
 const style = {
@@ -285,9 +285,9 @@ const DirectoryPage = () => {
     adress: "",
     phone: 0,
   };
-  const token = sessionStorage.getItem(TOKEN_ID);
+
   return (
-    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={token!}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={TOKEN}>
       <Head>
         <title>Cajero | Directorio</title>
       </Head>

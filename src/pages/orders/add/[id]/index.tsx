@@ -14,8 +14,7 @@ import { TCatalog } from "@/types/catalog.types";
 import { TMenuResponse, TResponseOrders } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { getActualDateDB } from "@/utils/formats";
-import { TOKEN_ID } from "@/utils/strings";
-import { CHECKS } from "@/utils/users";
+import { CHECKS, TOKEN } from "@/utils/users";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { ArrowBack, DoneAll, RoomService, Send } from "@mui/icons-material";
@@ -188,9 +187,8 @@ const EditOrderPage = () => {
     obtainCategories();
   }, [query]);
 
-  const token = sessionStorage.getItem(TOKEN_ID);
   return (
-    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={token!}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={TOKEN}>
       <Head>
         <title>Listado Ordenes</title>
       </Head>

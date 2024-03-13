@@ -27,7 +27,7 @@ import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { Button } from "@mui/material";
 import { OrdersDishesStatus } from "@/enums/orders.enum";
 import { getActualDateDB } from "@/utils/formats";
-import { KITCHEN } from "@/utils/users";
+import { KITCHEN, TOKEN } from "@/utils/users";
 
 enum OrdersStatusEnum {
   ACTIVE = "ACTIVAS",
@@ -194,13 +194,9 @@ const HomeOrderPage = () => {
     autheticate();
   }, []);
 
-  var token;
-  if (typeof sessionStorage !== "undefined") {
-    token = sessionStorage!.getItem(TOKEN_ID);
-  }
   return (
     <FullScreen handle={handleFullscreen}>
-      <ProtectPage push={router.push} requiredProfiles={KITCHEN} token={token}>
+      <ProtectPage push={router.push} requiredProfiles={KITCHEN} token={TOKEN}>
         <Head>
           <title>Comandas activas</title>
         </Head>

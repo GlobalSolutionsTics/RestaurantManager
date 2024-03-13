@@ -2,14 +2,12 @@ import { useRouter } from "next/router";
 import MenuAdmin from "./components/menu";
 import Head from "next/head";
 import ProtectPage from "./components/protectPage";
-import { ADMIN } from "@/utils/users";
-import { TOKEN_ID } from "@/utils/strings";
+import { ADMIN, TOKEN } from "@/utils/users";
 
 const KitchenPage = () => {
   const router = useRouter();
-  const token = sessionStorage.getItem(TOKEN_ID);
   return (
-    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={token!}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={TOKEN}>
       <Head>
         <title>Adminsitrador | Administrar cocinas</title>
       </Head>

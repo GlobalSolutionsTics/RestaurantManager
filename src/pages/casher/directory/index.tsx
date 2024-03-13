@@ -32,7 +32,7 @@ import { Formik } from "formik";
 import { useReactToPrint } from "react-to-print";
 import PrintIcon from "@mui/icons-material/Print";
 import { TDirectory } from "@/types/directory.types";
-import { CASHER } from "@/utils/users";
+import { CASHER, TOKEN } from "@/utils/users";
 const MessageComponent = withReactContent(Swal);
 
 const style = {
@@ -285,9 +285,8 @@ const DirectoryPage = () => {
     phone: 0,
   };
 
-  const token = sessionStorage.getItem(TOKEN_ID);
   return (
-    <ProtectPage push={router.push} requiredProfiles={CASHER} token={token!}>
+    <ProtectPage push={router.push} requiredProfiles={CASHER} token={TOKEN}>
       <Head>
         <title>Cajero | Directorio</title>
       </Head>

@@ -8,7 +8,7 @@ import {
   getActualDateDB,
 } from "@/utils/formats";
 import { TOKEN_ID } from "@/utils/strings";
-import { CHECKS } from "@/utils/users";
+import { CHECKS, TOKEN } from "@/utils/users";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { ArrowBack } from "@mui/icons-material";
@@ -78,9 +78,8 @@ const NotePage = () => {
     getWinterInformation();
   }, [query, information?.waiter]);
 
-  const token = sessionStorage.getItem(TOKEN_ID);
   return (
-    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={token!}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={TOKEN}>
       <div className='font-primary text-[1.5rem] p-4 flex flex-row'>
         <div className='basis-1/5'>
           <button onClick={router.back}>

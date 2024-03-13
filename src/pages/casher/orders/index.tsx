@@ -15,8 +15,7 @@ import { currencyFormat, getActualDateDB, textToString } from "@/utils/formats";
 import TicketAdmin from "../../../components/ticketAdmin";
 import { StatusEnum } from "@/enums/states.enum";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
-import { CASHER } from "@/utils/users";
-import { TOKEN_ID } from "@/utils/strings";
+import { CASHER, TOKEN } from "@/utils/users";
 
 const style = {
   position: "absolute" as "absolute",
@@ -126,9 +125,8 @@ const OrdersPage = () => {
     });
   }, []);
 
-  const token = sessionStorage.getItem(TOKEN_ID);
   return (
-    <ProtectPage push={router.push} requiredProfiles={CASHER} token={token!}>
+    <ProtectPage push={router.push} requiredProfiles={CASHER} token={TOKEN}>
       <Head>
         <title>Cajero | Ordenes</title>
       </Head>

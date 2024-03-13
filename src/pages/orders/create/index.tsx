@@ -2,7 +2,7 @@ import ProtectPage from "@/pages/admin/components/protectPage";
 import { resetComanda } from "@/store/slices/orders.slice";
 import { IUserRedux } from "@/store/slices/user.slice";
 import { TOKEN_ID } from "@/utils/strings";
-import { CHECKS } from "@/utils/users";
+import { CHECKS, TOKEN } from "@/utils/users";
 import {
   AddOutlined,
   GridView,
@@ -49,9 +49,8 @@ export default function createIndex() {
     init();
   }, []);
 
-  const token = sessionStorage.getItem(TOKEN_ID);
   return (
-    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={token!}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={TOKEN}>
       <div className='flex flex-row justify-between w-full p-4'>
         <div className='text-[1.5rem] md:text-[2rem] lg:text-[2.5rem] font-primary basis-3/4'>
           {personStore.name}

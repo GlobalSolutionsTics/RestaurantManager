@@ -28,7 +28,7 @@ import { ArrowBack, Done, Edit, Save } from "@mui/icons-material";
 import EditionTableCol from "../../../components/editionTableCol";
 import { Tooltip } from "@mui/material";
 import { TOKEN_ID } from "@/utils/strings";
-import { ADMIN } from "@/utils/users";
+import { ADMIN, TOKEN } from "@/utils/users";
 
 const style = {
   position: "absolute" as "absolute",
@@ -330,9 +330,8 @@ const DishesAdminPage = () => {
     getAllCategories();
   }, []);
 
-  const token = sessionStorage.getItem(TOKEN_ID);
   return (
-    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={token!}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={TOKEN}>
       <Head>
         <title>Administrador | Listado de platillos</title>
       </Head>
