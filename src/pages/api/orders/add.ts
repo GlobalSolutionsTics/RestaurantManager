@@ -35,12 +35,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
           .send({ error: true, message: "Error al insertar en la bd" });
       }
     } else {
-      res
-        .status(202)
-        .send({
-          error: true,
-          message: "Esta mesa ya tiene una orden, favor de verificarla",
-        });
+      res.status(202).send({
+        error: true,
+        message: "Esta mesa ya tiene una orden, favor de verificarla",
+      });
     }
   } else {
     res.status(404);

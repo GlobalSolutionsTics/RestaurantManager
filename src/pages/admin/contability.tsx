@@ -15,6 +15,7 @@ import {
   uniquesDays,
 } from "@/utils/array";
 import ProtectPage from "./components/protectPage";
+import { ADMIN, TOKEN } from "@/utils/users";
 
 type TDaysFinance = {
   day: string;
@@ -272,7 +273,7 @@ const ContabilityPage = () => {
   }, []);
 
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={TOKEN}>
       <div className='flex flex-row'>
         <MenuAdmin basePath={router.pathname} router={router} />
         <div className='w-full p-4'>

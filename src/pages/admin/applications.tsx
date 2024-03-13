@@ -12,6 +12,7 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { Button } from "@mui/material";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
+import { ADMIN, TOKEN } from "@/utils/users";
 
 type Props = {
   element: TResponseOrders;
@@ -163,8 +164,9 @@ const ApplicationAdminPage = () => {
   useEffect(() => {
     init();
   }, [viewSelected]);
+
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={TOKEN}>
       <Head>
         <title>Administrador | Solicitudes de cambio</title>
       </Head>

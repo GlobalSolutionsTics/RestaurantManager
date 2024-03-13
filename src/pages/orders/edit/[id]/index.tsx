@@ -14,6 +14,7 @@ import { TMenuResponse, TResponseOrders } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { getActualDateDB } from "@/utils/formats";
 import { TOKEN_ID } from "@/utils/strings";
+import { CHECKS, TOKEN } from "@/utils/users";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { ArrowBack, Check, Edit, RoomService, Send } from "@mui/icons-material";
@@ -288,8 +289,9 @@ const EditOrderPage = () => {
   useEffect(() => {
     init();
   }, [query]);
+
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={TOKEN}>
       <Head>
         <title>Editar ordenes</title>
       </Head>

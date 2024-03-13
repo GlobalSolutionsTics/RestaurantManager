@@ -27,6 +27,7 @@ import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { Button } from "@mui/material";
 import { OrdersDishesStatus } from "@/enums/orders.enum";
 import { getActualDateDB } from "@/utils/formats";
+import { KITCHEN, TOKEN } from "@/utils/users";
 
 enum OrdersStatusEnum {
   ACTIVE = "ACTIVAS",
@@ -192,9 +193,10 @@ const HomeOrderPage = () => {
   useEffect(() => {
     autheticate();
   }, []);
+
   return (
     <FullScreen handle={handleFullscreen}>
-      <ProtectPage push={router.push}>
+      <ProtectPage push={router.push} requiredProfiles={KITCHEN} token={TOKEN}>
         <Head>
           <title>Comandas activas</title>
         </Head>

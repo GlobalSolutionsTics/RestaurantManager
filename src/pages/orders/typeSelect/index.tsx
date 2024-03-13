@@ -8,6 +8,7 @@ import {
 } from "@/store/slices/orders.slice";
 import { TCatalog } from "@/types/catalog.types";
 import { TMenuResponse } from "@/types/menu.types";
+import { CHECKS, TOKEN } from "@/utils/users";
 import { Backspace, CheckOutlined } from "@mui/icons-material";
 import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -168,7 +169,7 @@ export default function typeSelector() {
   }, []);
 
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={TOKEN}>
       <div className='relative overflow-x-hidden'>
         <p className='text-[2rem] bg-neutral-300 font-primary h-[120px] grid content-center px-10 w-screen'>
           Seleccione un tipo de platillo

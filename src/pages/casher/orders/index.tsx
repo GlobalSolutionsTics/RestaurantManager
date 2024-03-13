@@ -15,6 +15,7 @@ import { currencyFormat, getActualDateDB, textToString } from "@/utils/formats";
 import TicketAdmin from "../../../components/ticketAdmin";
 import { StatusEnum } from "@/enums/states.enum";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
+import { CASHER, TOKEN } from "@/utils/users";
 
 const style = {
   position: "absolute" as "absolute",
@@ -125,7 +126,7 @@ const OrdersPage = () => {
   }, []);
 
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={CASHER} token={TOKEN}>
       <Head>
         <title>Cajero | Ordenes</title>
       </Head>
@@ -199,7 +200,7 @@ const OrdersPage = () => {
             <p className='font-primary font-bold text-center mb-2'>
               MARIS QUERIDA
             </p>
-            <p className='font-secondary mb-2 mb-2'>
+            <p className='font-secondary mb-2'>
               Valle del vístula esquina Valle de Oaxaca. Valle de Aragon 2da
               Secc, 57100 Nezahualcóyotl, Méx., Mexico City, Mexico
             </p>

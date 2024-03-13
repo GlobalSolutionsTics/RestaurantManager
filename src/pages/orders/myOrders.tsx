@@ -23,6 +23,7 @@ import Head from "next/head";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { IOrderSlice } from "@/store/slices/orders.slice";
 import { getActualDateDB } from "@/utils/formats";
+import { CHECKS, TOKEN } from "@/utils/users";
 
 enum OptionEnum {
   ACTIVE = "ACTIVES",
@@ -186,7 +187,7 @@ const MyOrdersPage = () => {
   }, [personStore]);
 
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={TOKEN}>
       <Head>
         <title>Listado Ordenes</title>
       </Head>

@@ -1,5 +1,13 @@
 import { TOKEN_ID } from "@/utils/strings";
 import {
+  URL_ADMIN_CONFIGURATIONS,
+  URL_ADMIN_CONTABILITY,
+  URL_ADMIN_DIRECTORY,
+  URL_ADMIN_DISHES,
+  URL_ADMIN_ORDERS,
+  URL_ADMIN_USERS,
+} from "@/utils/urls";
+import {
   Book,
   FilterFramesOutlined,
   KitchenOutlined,
@@ -62,22 +70,22 @@ const MenuAdmin = ({ basePath, router }: Props) => {
         </div>
       </div>
       <div className='hidden lg:block'>
-        <MenuOption path={basePath} href={"/admin/dishes"}>
+        <MenuOption path={basePath} href={URL_ADMIN_DISHES}>
           <SetMealOutlined className='mr-4' /> Platillos
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/users"}>
+        <MenuOption path={basePath} href={URL_ADMIN_USERS}>
           <PeopleOutline className='mr-4' /> Usuarios
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/directory"}>
+        <MenuOption path={basePath} href={URL_ADMIN_DIRECTORY}>
           <Book className='mr-4' /> Directorio
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/orders"}>
+        <MenuOption path={basePath} href={URL_ADMIN_ORDERS}>
           <FilterFramesOutlined className='mr-4' /> Ordenes
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/contability"}>
+        <MenuOption path={basePath} href={URL_ADMIN_CONTABILITY}>
           <RequestQuote className='mr-4' /> Contabilidad
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/configuration"}>
+        <MenuOption path={basePath} href={URL_ADMIN_CONFIGURATIONS}>
           <MiscellaneousServicesOutlined className='mr-4' /> Configurador
         </MenuOption>
         <button
@@ -88,22 +96,22 @@ const MenuAdmin = ({ basePath, router }: Props) => {
         </button>
       </div>
       <div className='lg:hidden'>
-        <MenuOption path={basePath} href={"/admin/dishes"}>
+        <MenuOption path={basePath} href={URL_ADMIN_DISHES}>
           <SetMealOutlined fontSize='large' />
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/users"}>
+        <MenuOption path={basePath} href={URL_ADMIN_USERS}>
           <PeopleOutline fontSize='large' />
         </MenuOption>
-        <MenuOption path={basePath} href={"/casher/directory"}>
+        <MenuOption path={basePath} href={URL_ADMIN_DIRECTORY}>
           <Book fontSize='large' />
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/orders"}>
+        <MenuOption path={basePath} href={URL_ADMIN_ORDERS}>
           <FilterFramesOutlined fontSize='large' />
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/contability"}>
+        <MenuOption path={basePath} href={URL_ADMIN_CONTABILITY}>
           <RequestQuote className='mr-4' />
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/configuration"}>
+        <MenuOption path={basePath} href={URL_ADMIN_CONFIGURATIONS}>
           <MiscellaneousServicesOutlined fontSize='large' />
         </MenuOption>
         <button

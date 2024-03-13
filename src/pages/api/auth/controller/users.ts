@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { firestore } from "@firebase/config";
 import { DB_USERS } from "@models/names";
 import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "next/router";
 export interface IUsersResponse {
   user: string;
   password: string;
@@ -21,9 +22,11 @@ export const SEED_OF_JWT = "AñOS_LUZ";
 export const loginUsers = async (user: string, pass: string) => {
   const usersRef = doc(firestore, DB_USERS, "activos");
   const usersCollections = await getDoc(usersRef);
+
   if (usersCollections.exists()) {
     const usersData = usersCollections.data();
     const users = usersData.data as Array<IUsersResponse>;
+
     const find = users.find(
       (itm) => itm.user === user && itm.password === pass,
     );
@@ -34,7 +37,9 @@ export const loginUsers = async (user: string, pass: string) => {
         type: find.type,
         uuid: find.uuid,
       };
-      const token = jwt.sign(payload, SEED_OF_JWT, { expiresIn: "96h" });
+
+      const token = jwt.sign(payload, SEED_OF_JWT, { expiresIn: "3m" });
+
       return { token: token, type: find.type };
     } else {
       return false;

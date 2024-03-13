@@ -20,7 +20,6 @@ import {
   InputLabel,
   Modal,
   OutlinedInput,
-
 } from "@mui/material";
 import {
   createClientService,
@@ -33,6 +32,7 @@ import { Formik } from "formik";
 import { useReactToPrint } from "react-to-print";
 import PrintIcon from "@mui/icons-material/Print";
 import { TDirectory } from "@/types/directory.types";
+import { CASHER, TOKEN } from "@/utils/users";
 const MessageComponent = withReactContent(Swal);
 
 const style = {
@@ -286,7 +286,7 @@ const DirectoryPage = () => {
   };
 
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={CASHER} token={TOKEN}>
       <Head>
         <title>Cajero | Directorio</title>
       </Head>
@@ -339,7 +339,6 @@ const DirectoryPage = () => {
                   editFn={() => handleEdit(itm)}
                   deleteFn={() => handleDelete(itm.uuid, itm.name)}
                   printFn={() => handlePrintData(itm)}
-
                 />
               ))
             ) : (
