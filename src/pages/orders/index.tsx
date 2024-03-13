@@ -194,7 +194,10 @@ const HomeOrderPage = () => {
     autheticate();
   }, []);
 
-  const token = sessionStorage!.getItem(TOKEN_ID);
+  var token;
+  if (typeof sessionStorage !== "undefined") {
+    token = sessionStorage!.getItem(TOKEN_ID);
+  }
   return (
     <FullScreen handle={handleFullscreen}>
       <ProtectPage push={router.push} requiredProfiles={KITCHEN} token={token}>
