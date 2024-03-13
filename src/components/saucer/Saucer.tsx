@@ -30,11 +30,13 @@ const SaucerComp: FC<SectionProps> = ({
   return (
     <section className={`${className}`}>
       <div className={`flex justify-around p-2 ${className}`}>
-        <div className={` basis-full md:basis-1/2 lg:basis-1/2 saucer__header ${className}`}>
-          <h3 className="saucer__title text">{title}</h3>
-          <p className="text-sm p-0">{description}</p>
+        <div
+          className={` basis-full md:basis-1/2 lg:basis-1/2 saucer__header ${className}`}
+        >
+          <h3 className='saucer__title text'>{title}</h3>
+          <p className='text-sm p-0'>{description}</p>
         </div>
-        <div className="saucer__content">{content}</div>
+        <div className='saucer__content'>{content}</div>
       </div>
     </section>
   );

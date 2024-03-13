@@ -285,8 +285,9 @@ const DirectoryPage = () => {
     phone: 0,
   };
 
+  const token = sessionStorage.getItem(TOKEN_ID);
   return (
-    <ProtectPage push={router.push} requiredProfiles={CASHER}>
+    <ProtectPage push={router.push} requiredProfiles={CASHER} token={token!}>
       <Head>
         <title>Cajero | Directorio</title>
       </Head>

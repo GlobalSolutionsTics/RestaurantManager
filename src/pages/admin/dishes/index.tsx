@@ -330,8 +330,9 @@ const DishesAdminPage = () => {
     getAllCategories();
   }, []);
 
+  const token = sessionStorage.getItem(TOKEN_ID);
   return (
-    <ProtectPage push={router.push} requiredProfiles={ADMIN}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={token!}>
       <Head>
         <title>Administrador | Listado de platillos</title>
       </Head>

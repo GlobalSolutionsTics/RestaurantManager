@@ -272,8 +272,9 @@ const ContabilityPage = () => {
     init();
   }, []);
 
+  const token = sessionStorage.getItem(TOKEN_ID);
   return (
-    <ProtectPage push={router.push} requiredProfiles={ADMIN}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={token!}>
       <div className='flex flex-row'>
         <MenuAdmin basePath={router.pathname} router={router} />
         <div className='w-full p-4'>

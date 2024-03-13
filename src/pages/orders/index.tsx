@@ -193,9 +193,11 @@ const HomeOrderPage = () => {
   useEffect(() => {
     autheticate();
   }, []);
+
+  const token = sessionStorage.getItem(TOKEN_ID);
   return (
     <FullScreen handle={handleFullscreen}>
-      <ProtectPage push={router.push} requiredProfiles={KITCHEN}>
+      <ProtectPage push={router.push} requiredProfiles={KITCHEN} token={token!}>
         <Head>
           <title>Comandas activas</title>
         </Head>

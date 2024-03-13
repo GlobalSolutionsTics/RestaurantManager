@@ -35,17 +35,17 @@ const SaucerTable: FC<SectionProps> = ({
   }, [jsonLdData]);
   return (
     <section className={`flex p-2 ${className}`}>
-      <div className=" flex text-white basis-full md:basis-1/2 lg:basis-1/2 saucer__header">
+      <div className=' flex text-white basis-full md:basis-1/2 lg:basis-1/2 saucer__header'>
         <div>
           <h3>{title}</h3>
-          <p className="text-sm p-0">{content}</p>
+          <p className='text-sm p-0'>{content}</p>
         </div>
-        <p className="grid text-xs p-0 items-end">{description}</p>
+        <p className='grid text-xs p-0 items-end'>{description}</p>
       </div>
-      <div className="flex justify-around justify-items-center text-white basis-full md:basis-1/2 lg:basis-1/2 saucer__header">
-        <p className="flex items-center">{row1}</p>
-        <p className="flex items-center">{row2}</p>
-        <p className="flex items-center">{row3}</p>
+      <div className='flex justify-around justify-items-center text-white basis-full md:basis-1/2 lg:basis-1/2 saucer__header'>
+        <p className='flex items-center'>{row1}</p>
+        <p className='flex items-center'>{row2}</p>
+        <p className='flex items-center'>{row3}</p>
       </div>
     </section>
   );

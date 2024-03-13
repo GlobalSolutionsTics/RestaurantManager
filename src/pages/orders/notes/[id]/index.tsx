@@ -77,8 +77,10 @@ const NotePage = () => {
     init();
     getWinterInformation();
   }, [query, information?.waiter]);
+
+  const token = sessionStorage.getItem(TOKEN_ID);
   return (
-    <ProtectPage push={router.push} requiredProfiles={CHECKS}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={token!}>
       <div className='font-primary text-[1.5rem] p-4 flex flex-row'>
         <div className='basis-1/5'>
           <button onClick={router.back}>

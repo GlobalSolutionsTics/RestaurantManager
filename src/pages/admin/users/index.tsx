@@ -257,8 +257,9 @@ const UsersAdministratorPage = () => {
     type: "",
   };
 
+  const token = sessionStorage.getItem(TOKEN_ID);
   return (
-    <ProtectPage push={router.push} requiredProfiles={ADMIN}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={token!}>
       <Head>
         <title>Administrador | Usuarios</title>
       </Head>

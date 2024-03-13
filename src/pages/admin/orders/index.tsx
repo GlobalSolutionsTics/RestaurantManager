@@ -16,6 +16,7 @@ import TicketAdmin from "../../../components/ticketAdmin";
 import { StatusEnum } from "@/enums/states.enum";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { ADMIN } from "@/utils/users";
+import { TOKEN_ID } from "@/utils/strings";
 
 const style = {
   position: "absolute" as "absolute",
@@ -122,8 +123,9 @@ const OrdersPage = () => {
     });
   }, []);
 
+  const token = sessionStorage.getItem(TOKEN_ID);
   return (
-    <ProtectPage push={router.push} requiredProfiles={ADMIN}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={token!}>
       <Head>
         <title>Administrador | Ordenes</title>
       </Head>

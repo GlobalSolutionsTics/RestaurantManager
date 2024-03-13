@@ -3,11 +3,13 @@ import MenuAdmin from "./components/menu";
 import Head from "next/head";
 import ProtectPage from "./components/protectPage";
 import { ADMIN } from "@/utils/users";
+import { TOKEN_ID } from "@/utils/strings";
 
 const KitchenPage = () => {
   const router = useRouter();
+  const token = sessionStorage.getItem(TOKEN_ID);
   return (
-    <ProtectPage push={router.push} requiredProfiles={ADMIN}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={token!}>
       <Head>
         <title>Adminsitrador | Administrar cocinas</title>
       </Head>

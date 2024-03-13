@@ -4,18 +4,18 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 type TProps = {
-  children: any;
+  children?: any;
   push: any;
   requiredProfiles: string;
+  token: any;
 };
-const ProtectPage = ({ children, push, requiredProfiles }: TProps) => {
+const ProtectPage = ({ children, push, requiredProfiles, token }: TProps) => {
   const dispatch = useDispatch();
   const userStore: IUserRedux = useSelector((store: any) => store.user);
   const userProfile = userStore.type;
-  const token = sessionStorage.getItem(TOKEN_ID);
 
   const checkToken = () => {
-    if (!token || !userProfile || !requiredProfiles.includes(userProfile)) {
+    if (!token || !userProfile || requiredProfiles.includes(userProfile)) {
       push("/admin");
       return <div>Sin acceso</div>;
     }

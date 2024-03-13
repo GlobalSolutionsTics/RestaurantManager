@@ -289,8 +289,10 @@ const EditOrderPage = () => {
   useEffect(() => {
     init();
   }, [query]);
+
+  const token = sessionStorage.getItem(TOKEN_ID);
   return (
-    <ProtectPage push={router.push} requiredProfiles={CHECKS}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={token!}>
       <Head>
         <title>Editar ordenes</title>
       </Head>
