@@ -15,7 +15,7 @@ const ProtectPage = ({ children, push, requiredProfiles, token }: TProps) => {
   const userProfile = userStore.type;
 
   const checkToken = () => {
-    if (!token || !userProfile || requiredProfiles.includes(userProfile)) {
+    if (!token || !userProfile || !requiredProfiles.includes(userProfile)) {
       push("/admin");
       return <div>Sin acceso</div>;
     }
