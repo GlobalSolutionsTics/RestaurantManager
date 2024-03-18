@@ -331,7 +331,7 @@ const DishesAdminPage = () => {
   }, []);
 
   return (
-    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={TOKEN}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN}>
       <Head>
         <title>Administrador | Listado de platillos</title>
       </Head>
