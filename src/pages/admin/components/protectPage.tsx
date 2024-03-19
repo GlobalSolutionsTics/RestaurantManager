@@ -9,6 +9,7 @@ type TProps = {
   requiredProfiles: string;
 };
 const ProtectPage = ({ children, push, requiredProfiles }: TProps) => {
+
   const dispatch = useDispatch();
   const userStore: IUserRedux = useSelector((store: any) => store.user);
   const userProfile = userStore.type;
