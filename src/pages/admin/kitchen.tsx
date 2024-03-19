@@ -7,7 +7,7 @@ import { ADMIN, TOKEN } from "@/utils/users";
 const KitchenPage = () => {
   const router = useRouter();
   return (
-    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={TOKEN}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN}>
       <Head>
         <title>Adminsitrador | Administrar cocinas</title>
       </Head>

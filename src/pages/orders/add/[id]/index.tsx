@@ -188,7 +188,7 @@ const EditOrderPage = () => {
   }, [query]);
 
   return (
-    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={TOKEN}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS}>
       <Head>
         <title>Listado Ordenes</title>
       </Head>

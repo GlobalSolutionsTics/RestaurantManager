@@ -69,7 +69,7 @@ export default function tableSelector() {
   }, []);
 
   return (
-    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={TOKEN}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS}>
       <div className='relative'>
         <p className='text-[2rem] bg-neutral-300 font-primary h-[120px] grid content-center px-10 w-screen'>
           ¿Que mesa atenderá?

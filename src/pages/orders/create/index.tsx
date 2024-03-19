@@ -50,7 +50,7 @@ export default function createIndex() {
   }, []);
 
   return (
-    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={TOKEN}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS}>
       <div className='flex flex-row justify-between w-full p-4'>
         <div className='text-[1.5rem] md:text-[2rem] lg:text-[2.5rem] font-primary basis-3/4'>
           {personStore.name}

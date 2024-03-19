@@ -287,7 +287,7 @@ const DirectoryPage = () => {
   };
 
   return (
-    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={TOKEN}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN}>
       <Head>
         <title>Cajero | Directorio</title>
       </Head>
