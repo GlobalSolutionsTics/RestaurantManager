@@ -258,7 +258,7 @@ const UsersAdministratorPage = () => {
   };
 
   return (
-    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={TOKEN}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN}>
       <Head>
         <title>Administrador | Usuarios</title>
       </Head>

@@ -61,7 +61,7 @@ const MyApplicationsPage = () => {
     init();
   }, []);
   return (
-    <ProtectPage push={router.push} requiredProfiles={CHECKS} token={TOKEN}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS}>
       <div className='font-primary text-[1.5rem] p-4 flex flex-row'>
         <div className='basis-1/6'>
           <button onClick={router.back}>

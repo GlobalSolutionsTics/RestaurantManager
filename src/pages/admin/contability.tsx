@@ -273,7 +273,7 @@ const ContabilityPage = () => {
   }, []);
 
   return (
-    <ProtectPage push={router.push} requiredProfiles={ADMIN} token={TOKEN}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN}>
       <div className='flex flex-row'>
         <MenuAdmin basePath={router.pathname} router={router} />
         <div className='w-full p-4'>

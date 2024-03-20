@@ -126,7 +126,7 @@ const OrdersPage = () => {
   }, []);
 
   return (
-    <ProtectPage push={router.push} requiredProfiles={CASHER} token={TOKEN}>
+    <ProtectPage push={router.push} requiredProfiles={CASHER}>
       <Head>
         <title>Cajero | Ordenes</title>
       </Head>
