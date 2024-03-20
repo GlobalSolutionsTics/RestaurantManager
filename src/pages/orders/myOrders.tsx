@@ -10,7 +10,6 @@ import {
   Checklist,
   Edit,
   Notes,
-  QrCode2,
   RoomService,
 } from "@mui/icons-material";
 import { getAuth, signInAnonymously } from "firebase/auth";
@@ -21,7 +20,6 @@ import ProtectPage from "../admin/components/protectPage";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
-import { IOrderSlice } from "@/store/slices/orders.slice";
 import { getActualDateDB } from "@/utils/formats";
 import { CHECKS, TOKEN } from "@/utils/users";
 
@@ -45,6 +43,8 @@ const ToggleColumn = ({ element, push }: Props) => {
       return "bg-waiting-dark text-dark";
     } else if (status === StatusEnum.ORDER_READY) {
       return "bg-success-dark text-white";
+    } else if (status === StatusEnum.EDITED) {
+      return "bg-orange-dark text-dark";
     }
 
     return "bg-danger-dark text-white";
@@ -55,6 +55,8 @@ const ToggleColumn = ({ element, push }: Props) => {
       return "bg-waiting-dark hover:bg-waiting-dark hover:text-dark";
     } else if (status === StatusEnum.ORDER_READY) {
       return "bg-success-dark text-white";
+    } else if (status === StatusEnum.EDITED) {
+      return "bg-orange-dark hover:bg-orange hover:text-dark";
     }
 
     return "bg-danger hover:bg-danger-dark text-white";
