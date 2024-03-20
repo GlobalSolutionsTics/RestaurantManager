@@ -25,3 +25,22 @@ export const loginService = async (user: string, pass: string) => {
     return false;
   }
 };
+
+export const validateTokneService = async (token: string) => {
+  try {
+    const header = {
+      headers: {
+        "Content-Type": ContentTypeEnum.JSON,
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const petition = await fetch(`${URL_API_AUTH}/validate`, header);
+    if (petition.status === 200) {
+      const { error } = await petition.json();
+      if (!error) return true;
+    }
+    return false;
+  } catch (e: any) {
+    return false;
+  }
+};

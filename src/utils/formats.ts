@@ -124,6 +124,8 @@ const centcimals = (val: number) => {
       return "ciento " + decimals(rest);
     case 5:
       return "quinientos " + decimals(rest);
+    case 7:
+      return "setecientos " + decimals(rest);
     case 9:
       return "novecientos " + decimals(rest);
     default:

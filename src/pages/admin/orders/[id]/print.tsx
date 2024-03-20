@@ -21,7 +21,14 @@ import { onValue, ref } from "firebase/database";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  use,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useReactToPrint } from "react-to-print";
 
 enum EButtonActives {
@@ -56,8 +63,9 @@ const PrintOrderPage = () => {
   const [subtotaly, setSubtotaly] = useState(0);
   const [iva, setIVA] = useState(0);
   //Form controller
-  const [propine, setPropine] = useState("");
-  const [payWith, setPayWith] = useState("");
+  const [propine, setPropine] = useState("0");
+  const [payWith, setPayWith] = useState("0");
+  const [discount, setDiscount] = useState("0");
   const [shift, setShift] = useState(0);
   const [totalWithPay, setTotalWithPay] = useState(0);
   //Button controller
@@ -74,6 +82,20 @@ const PrintOrderPage = () => {
   const [showAddClientModal, setShowAddClientModal] = useState(false);
   const CLIENT_FILTER = (client: TDirectory) =>
     selectedClients.filter((selectedClient) => selectedClient !== client);
+  //Calculate Funtion
+
+  const getTotalPlusPropine = (
+    totalAccount: number,
+    paywith: number,
+    propine: number,
+    discount: number,
+  ) => {
+    const totalToPay = totalAccount + propine;
+    const cambio = paywith + discount - totalToPay;
+    const totalConDescuento = totalAccount - discount + propine;
+    return { cambio, totalConDescuento };
+  };
+
   //Handle functions
   const handlePrint = useReactToPrint({ content: () => componentRef.current });
   const handleChangePayment = (val: EButtonActives) => {
@@ -82,7 +104,7 @@ const PrintOrderPage = () => {
       setPayWith("");
       setShift(0);
       if (propine !== "") {
-        const newVal = total + parseInt(propine);
+        const newVal = total - parseInt(discount) + parseInt(propine);
         setTotalWithPay(newVal);
       }
     }
@@ -92,25 +114,67 @@ const PrintOrderPage = () => {
   const handleChangePropine = (val: ChangeEvent<HTMLInputElement>) => {
     const value = val.target.value;
     if (value !== "") {
-      const shiftPay = parseInt(payWith) - total - parseInt(val.target.value);
-      const subtotal = parseInt(value) + total;
+      const { cambio, totalConDescuento } = getTotalPlusPropine(
+        total,
+        parseInt(payWith),
+        parseInt(value),
+        parseInt(discount),
+      );
+      console.log("values:", total, payWith, value, discount);
+      console.log("a:", cambio, totalConDescuento);
+
+      const shiftPay = cambio;
+      const subtotal = totalConDescuento;
       setShift(shiftPay);
       setPropine(value);
       setTotalWithPay(subtotal);
     } else {
-      const shiftPay = parseInt(payWith) - total;
-      const subtotal = parseInt(value) + total;
+      const shiftPay = parseInt(payWith) + parseInt(discount) - total;
+      const subtotal = parseInt(value) + total - parseInt(discount);
       setShift(shiftPay);
       setPropine(value);
       setTotalWithPay(subtotal);
     }
   };
+
+  const handleChangeDiscount = (val: ChangeEvent<HTMLInputElement>) => {
+    const value = val.target.value;
+    if (value !== "") {
+      const { cambio, totalConDescuento } = getTotalPlusPropine(
+        total,
+        parseInt(payWith),
+        parseInt(propine),
+        parseInt(value),
+      );
+
+      const shiftPay = cambio;
+      const subtotal = totalConDescuento;
+      setShift(shiftPay);
+      setDiscount(value);
+      setTotalWithPay(subtotal);
+    } else {
+      const shiftPay = parseInt(payWith) + parseInt(propine) - total;
+      const subtotal = total + parseInt(propine) - parseInt(payWith);
+      setShift(shiftPay);
+      setDiscount(value);
+      setTotalWithPay(subtotal);
+    }
+  };
+
   const handleChangePayWith = (val: ChangeEvent<HTMLInputElement>) => {
     const value = val.target.value;
     if (propine !== "") {
-      const shiftPay = parseInt(value) - total - parseInt(propine);
+      const { cambio, totalConDescuento } = getTotalPlusPropine(
+        total,
+        parseInt(value),
+        parseInt(propine),
+        parseInt(discount),
+      );
+
+      const shiftPay = cambio;
       setShift(shiftPay);
       setPayWith(value);
+      setTotalWithPay(totalConDescuento);
     } else {
       const shiftPay = parseInt(value) - total;
       setShift(shiftPay);
@@ -126,6 +190,7 @@ const PrintOrderPage = () => {
         propine: propine,
         shift: shift,
         paymentType: payment,
+        discount: discount,
       },
     };
     const save = await editPaymentInformationService(
@@ -201,6 +266,7 @@ const PrintOrderPage = () => {
           if (snapshot.exists()) {
             const data = snapshot.val();
             const select: TResponseOrders = data[id];
+            console.log("Select:", select);
             const totaly = select?.dishesDescription.reduce(
               (prev, next) => prev + next.number * next.price,
               0,
@@ -219,17 +285,30 @@ const PrintOrderPage = () => {
               setShift(select.shift);
             }
 
+            if (select.discount !== undefined) {
+              setDiscount(select.discount.toString());
+            }
+
+            console.log(
+              select.payWith !== undefined,
+              select.propine !== undefined,
+              select.shift !== undefined,
+              select.paymentType !== undefined,
+              select.discount !== undefined,
+            );
+
             if (
               select.payWith !== undefined &&
               select.propine !== undefined &&
-              select.shift !== undefined &&
-              select.pymentType !== undefined
+              select.paymentType !== undefined &&
+              select.discount !== undefined
             ) {
               const totaly =
                 parseFloat(total.toString()) +
-                parseFloat(select.propine.toString());
+                parseFloat(select.propine.toString()) -
+                parseFloat(select.discount.toString());
 
-              setPayment(select.pymentType);
+              setPayment(select.paymentType);
               setTotalWithPay(totaly);
               setIsSaved(true);
             }
@@ -359,6 +438,16 @@ const PrintOrderPage = () => {
                   disabled={isSaved}
                 />
               </div>
+              <div className='mb-2 w-full'>
+                <TextField
+                  label='Descuento'
+                  className='w-full'
+                  value={discount}
+                  onChange={handleChangeDiscount}
+                  type='number'
+                  disabled={isSaved}
+                />
+              </div>
               <TextField
                 label='Total a pagar + Propina'
                 value={currencyFormat(totalWithPay || total)}
@@ -471,8 +560,7 @@ const PrintOrderPage = () => {
               <tr>
                 <td className='font-bold print-text'>Cant.</td>
                 <td className='font-bold print-text'>Descripción</td>
-                <td className='font-bold print-text'>Importe</td>
-                <td className='font-bold no-print'>Acciones</td>
+                <td className='font-bold print-text text-left'>Importe</td>
               </tr>
             </thead>
             <tbody>
@@ -489,11 +577,8 @@ const PrintOrderPage = () => {
                     <td className={itm.number === 0 ? "no-print" : ""}>
                       {itm.name}
                     </td>
-                    <td className={itm.number === 0 ? "no-print" : ""}>
+                    <td className={itm.number === 0 ? "no-print" : "text-left"}>
                       {currencyFormat(itm.price * itm.number)}
-                    </td>
-                    <td className='no-print'>
-                      <Edit />
                     </td>
                   </tr>
                 ))
@@ -525,9 +610,6 @@ const PrintOrderPage = () => {
               </td>
             </tr>
           </table>
-          <div className='font-secondary text-[1.25rem] w-full my-2 print-text'>
-            {textToString(total)} pesos
-          </div>
           {isSaved && payment === EButtonActives.EFECTIVE && (
             <div className='flex flex-col'>
               <hr />
@@ -536,25 +618,62 @@ const PrintOrderPage = () => {
               </p>
               <hr />
               <table>
+                {discount !== "0" && discount !== "" && (
+                  <>
+                    <tr>
+                      <td className='font-bold text-left print-text-small'>
+                        (-)Descuento:
+                      </td>
+                      <td className='text-right print-text-small'>
+                        -{currencyFormat(parseInt(discount))}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className='font-bold text-left print-text-small'>
+                        Total - Desc:
+                      </td>
+                      <td className='text-right print-text-small'>
+                        {currencyFormat(total - parseInt(discount))}
+                      </td>
+                    </tr>
+                  </>
+                )}
                 <tr>
-                  <td className='font-bold text-center print-text'>
-                    MONTO PAGADO
+                  <td className='font-bold text-left print-text-small'>
+                    (+)Propina:
                   </td>
-                  <td className='font-bold text-center print-text'>PROPINA</td>
-                  <td className='font-bold text-center print-text'>CAMBIO</td>
+                  <td className='text-right print-text-small'>
+                    {currencyFormat(parseInt(propine || "0"))}
+                  </td>
                 </tr>
                 <tr>
-                  <td className='text-center print-text'>
-                    {currencyFormat(parseFloat(payWith))}
+                  <td className='font-bold text-left print-text-small'>
+                    Gran Total:
                   </td>
-                  <td className='text-center print-text'>
-                    {currencyFormat(parseInt(propine))}
+                  <td className='text-right print-text-small'>
+                    {currencyFormat(totalWithPay)}
                   </td>
-                  <td className='text-center print-text'>
+                </tr>
+                <tr>
+                  <td className='font-bold text-left print-text-small'>
+                    Pago con:
+                  </td>
+                  <td className='text-right print-text-small'>
+                    {currencyFormat(parseInt(payWith))}
+                  </td>
+                </tr>
+                <tr>
+                  <td className='font-bold text-left print-text-small'>
+                    Cambio:
+                  </td>
+                  <td className='text-right print-text-small'>
                     {currencyFormat(shift)}
                   </td>
                 </tr>
               </table>
+              <div className='font-secondary text-[1.25rem] w-full my-2 print-text'>
+                {textToString(totalWithPay)} pesos
+              </div>
             </div>
           )}
           {isSaved && payment !== EButtonActives.EFECTIVE && (
@@ -565,15 +684,46 @@ const PrintOrderPage = () => {
               </p>
               <hr />
               <table>
+                {discount !== "0" && discount !== "" && (
+                  <>
+                    <tr>
+                      <td className='font-bold text-left print-text-small'>
+                        (-)Descuento:
+                      </td>
+                      <td className='text-right print-text-small'>
+                        -{currencyFormat(parseInt(discount))}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className='font-bold text-left print-text-small'>
+                        Total - Desc:
+                      </td>
+                      <td className='text-right print-text-small'>
+                        {currencyFormat(total - parseInt(discount))}
+                      </td>
+                    </tr>
+                  </>
+                )}
                 <tr>
-                  <td className='font-bold text-center print-text'>PROPINA</td>
+                  <td className='font-bold text-left print-text-small'>
+                    (+)Propina:
+                  </td>
+                  <td className='text-right print-text-small'>
+                    {currencyFormat(parseInt(propine || "0"))}
+                  </td>
                 </tr>
                 <tr>
-                  <td className='text-center print-text'>
-                    {currencyFormat(parseInt(propine))}
+                  <td className='font-bold text-left print-text-small'>
+                    Gran Total:
+                  </td>
+                  <td className='text-right print-text-small'>
+                    {currencyFormat(totalWithPay)}
                   </td>
                 </tr>
               </table>
+              <div className='font-secondary text-[1.25rem] w-full my-2 print-text'>
+                {textToString(totalWithPay)} pesos
+              </div>
             </div>
           )}
         </div>
