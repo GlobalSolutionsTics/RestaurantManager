@@ -165,6 +165,7 @@ export const updateInformationPayment = async (
     propine: number;
     shift: number;
     paymentType: EButtonActives;
+    discount: number;
   },
 ) => {
   try {
@@ -180,6 +181,7 @@ export const updateInformationPayment = async (
         propine: paymentInformation.propine,
         shift: paymentInformation.shift,
         paymentType: paymentInformation.paymentType,
+        discount: paymentInformation.discount,
       };
       await update(child(docRef, orderId), newData);
       return { error: false, message: "Datos actualizados correctamente" };

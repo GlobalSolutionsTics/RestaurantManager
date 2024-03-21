@@ -3,9 +3,14 @@ import TypeComp from "@/components/typeSelector/TypeComponent";
 import ProtectPage from "@/pages/admin/components/protectPage";
 import { getCategories, getDishService } from "@/services/dishes";
 import {
+  setCreateDishesDescriptionRDX,
+  setCreateDishesNumberRDX,
+} from "@/store/slices/create.order.slice";
+import {
   setDishesDescriptionRedux,
   setDishesNumberRedux,
 } from "@/store/slices/orders.slice";
+import { RootRedux } from "@/store/store";
 import { TCatalog } from "@/types/catalog.types";
 import { TMenuResponse } from "@/types/menu.types";
 import { CHECKS, TOKEN } from "@/utils/users";
@@ -47,7 +52,7 @@ export default function typeSelector() {
   const [load, setLoad] = useState(true);
 
   const dispatch = useDispatch();
-  const dishStore = useSelector((store: any) => store.ordersDishes);
+  const dishStore = useSelector((store: RootRedux) => store.orderCreate);
 
   const finishOrder = () => {
     const numberOfDishes = dishesDescription.reduce((prev, itm) => {
@@ -56,8 +61,8 @@ export default function typeSelector() {
       }
       return prev;
     }, 0);
-    dispatch(setDishesNumberRedux(numberOfDishes));
-    dispatch(setDishesDescriptionRedux(dishesDescription));
+    dispatch(setCreateDishesNumberRDX(numberOfDishes));
+    dispatch(setCreateDishesDescriptionRDX(dishesDescription));
     router.push("/orders/finishOrder");
   };
 

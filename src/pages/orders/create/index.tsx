@@ -94,14 +94,6 @@ export default function createIndex() {
           </div>
           <div className='py-4 w-full'>
             <button
-              onClick={handleApplicationNavigation}
-              className='bg-neutral-400 w-full h-[80px] font-primary text-[2rem] bg-waiting-dark hover:bg-waiting hover:text-dark text-white'
-            >
-              <GridView /> Mis solicitudes
-            </button>
-          </div>
-          <div className='py-4 w-full'>
-            <button
               onClick={handleNavigation}
               className='bg-neutral-400 w-full h-[80px] font-primary text-[2rem] bg-success-dark hover:bg-success text-white'
             >

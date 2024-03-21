@@ -1,6 +1,7 @@
 import { StatusEnum } from "@/enums/states.enum";
 import ProtectPage from "@/pages/admin/components/protectPage";
 import { listConfigurationService } from "@/services/config";
+import { setCreateTableRDX } from "@/store/slices/create.order.slice";
 import { setTableOrder } from "@/store/slices/orders.slice";
 import { TConifg } from "@/types/configuration.types";
 import { TResponseOrders } from "@/types/menu.types";
@@ -24,7 +25,7 @@ export default function tableSelector() {
   const dispatch = useDispatch();
   const router = useRouter();
   const handleNavigation = (table: number) => {
-    dispatch(setTableOrder(table));
+    dispatch(setCreateTableRDX(table));
     router.push("/orders/typeSelect/");
   };
 
