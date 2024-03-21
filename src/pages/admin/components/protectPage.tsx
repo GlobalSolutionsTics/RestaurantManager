@@ -19,7 +19,6 @@ const ProtectPage = ({ children, push, requiredProfiles }: TProps) => {
   const checkToken = () => {
     const token = sessionStorage.getItem(TOKEN_ID);
     if (!token || !userProfile || !requiredProfiles.includes(userProfile)) {
-      //push("/admin");
       return <div>Sin acceso</div>;
     }
   };

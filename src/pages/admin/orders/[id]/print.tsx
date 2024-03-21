@@ -120,8 +120,6 @@ const PrintOrderPage = () => {
         parseInt(value),
         parseInt(discount),
       );
-      console.log("values:", total, payWith, value, discount);
-      console.log("a:", cambio, totalConDescuento);
 
       const shiftPay = cambio;
       const subtotal = totalConDescuento;
@@ -266,7 +264,6 @@ const PrintOrderPage = () => {
           if (snapshot.exists()) {
             const data = snapshot.val();
             const select: TResponseOrders = data[id];
-            console.log("Select:", select);
             const totaly = select?.dishesDescription.reduce(
               (prev, next) => prev + next.number * next.price,
               0,
@@ -288,14 +285,6 @@ const PrintOrderPage = () => {
             if (select.discount !== undefined) {
               setDiscount(select.discount.toString());
             }
-
-            console.log(
-              select.payWith !== undefined,
-              select.propine !== undefined,
-              select.shift !== undefined,
-              select.paymentType !== undefined,
-              select.discount !== undefined,
-            );
 
             if (
               select.payWith !== undefined &&
