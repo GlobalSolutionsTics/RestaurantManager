@@ -241,20 +241,20 @@ const InventoryPage = (ctx: any) => {
         <div className='w-full p-4 flex flex-col'>
           <div className='flex flex-row justify-between items-center'>
             <div className='flex flex-col w-full'>
-              <p className='flex flex-row font-primary text-[2rem] text-blue-dark'>
+              <p className='flex flex-row font-primary text-[2rem] !text-blue-dark'>
                 <Inventory fontSize='large' className='mr-2' />
                 Inventario de tu negocio
               </p>
-              <p className='font-secondary text-[1rem] text-steel-70'>
+              <p className='font-secondary text-[1rem] !text-steel-70'>
                 Aquí puedes meter los productos que ocupas para tu operación
                 diaria, ¡Estos los puedes usar en el modulo de recetarios!
               </p>
             </div>
           </div>
-          <div className='py-4 flex flex-row w-full'>
+          <div className='!py-4 flex flex-row w-full'>
             <div className='basis-1/2'>
               <FormControl className='w-full'>
-                <InputLabel htmlFor='input-search' className='bg-white px-2'>
+                <InputLabel htmlFor='input-search' className='!bg-white !px-2'>
                   Buscar Producto
                 </InputLabel>
                 <OutlinedInput
@@ -272,12 +272,12 @@ const InventoryPage = (ctx: any) => {
             </div>
             <div className='flex flex-row justify-end items-center basis-1/2'>
               <Button
-                className='bg-blue text-white hover:bg-blue-dark max-h-[40px] mr-4'
+                className='!bg-blue !text-white hover:!bg-blue-dark max-h-[40px] mr-4'
                 onClick={toggleCreateModal}
               >
                 Agregar <Add />
               </Button>
-              <Button className='bg-success text-white hover:bg-success-dark max-h-[40px]'>
+              <Button className='!bg-success !text-white hover:!bg-success-dark max-h-[40px]'>
                 <PlayCircleFilled className='mr-2' />
                 Iniciar día
               </Button>
@@ -314,13 +314,13 @@ const InventoryPage = (ctx: any) => {
                     <div className='flex flex-row'>
                       <Button
                         onClick={() => handleOpenEdit(itm)}
-                        className='bg-blue text-white hover:bg-blue-dark mr-4'
+                        className='!bg-blue !text-white hover:!bg-blue-dark mr-4'
                       >
                         <Edit />
                       </Button>
                       <Button
                         onClick={() => handleOpenDelete(itm)}
-                        className='bg-danger text-white hover:bg-danger-dark'
+                        className='!bg-danger !text-white hover:!bg-danger-dark'
                       >
                         <Delete />
                       </Button>
