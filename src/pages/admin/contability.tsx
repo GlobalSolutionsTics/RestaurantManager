@@ -16,6 +16,7 @@ import {
 } from "@/utils/array";
 import ProtectPage from "./components/protectPage";
 import { ADMIN, TOKEN } from "@/utils/users";
+import { RequestQuote } from "@mui/icons-material";
 
 type TDaysFinance = {
   day: string;
@@ -278,9 +279,17 @@ const ContabilityPage = () => {
         <MenuAdmin basePath={router.pathname} router={router} />
         <div className='w-full p-4'>
           <div className='flex flex-row justify-between items-center'>
-            <p className='font-primary text-[2rem]'>
-              Contabilidad de tu negocio
-            </p>
+            <div className='flex flex-col w-full'>
+              <p className='flex flex-row font-primary text-[2rem] text-blue-dark'>
+                <RequestQuote fontSize='large' className='mr-2' />
+                Contabilidad de tu negocio
+              </p>
+              <p className='font-secondary text-[1rem] text-steel-70'>
+                Aquí puedes ver la contabilidad de tu negocio, filtrar por
+                fechas y ver los empleados con mejor desempeño en un periodo de
+                tiempo
+              </p>
+            </div>
             <div className='flex flex-row'>
               <DatePicker
                 onChange={onChangeInitialDate}

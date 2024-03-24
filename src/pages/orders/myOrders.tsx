@@ -178,8 +178,13 @@ const MyOrdersPage = () => {
             itm.status === StatusEnum.ORDER_READY &&
             itm.waiter === personStore.uuid,
         );
+
+        console.log(filterElementsReady, filterElementsActive);
+
         setOrdersActive(filterElementsActive);
         setordersReady(filterElementsReady);
+      } else {
+        console.error("No existe data:", DB_RT);
       }
     });
   }, [personStore]);

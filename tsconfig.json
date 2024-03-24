@@ -15,6 +15,13 @@
     "incremental": true,
     "paths": {
       "@/*": ["./src/*", "../../../../../*", "../../../../*"],
+      "@components/*": [
+        "./src/components*",
+        "../src/components*",
+        "../../src/components*",
+        "../../../src/components*",
+        "../../../../src/components*"
+      ],
       "@firebase/*": [
         "../../../../../firebase/*",
         "../../../../firebase/*",
