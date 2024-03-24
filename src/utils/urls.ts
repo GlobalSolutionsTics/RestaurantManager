@@ -6,11 +6,14 @@ export const URL_API_CONFIG = `${URL_BASE}/api/configuration`;
 export const URL_API_FINANCE = `${URL_BASE}/api/finance`;
 export const URL_API_CLIENT = `${URL_BASE}/api/directory`;
 export const URL_API_DISHES = `${URL_BASE}/api/dishes`;
+export const URL_API_INVENTARY = `${URL_BASE}/api/inventary`;
 
 export const URL_ADMIN_DISHES = "/admin/dishes";
 export const URL_ADMIN_USERS = "/admin/users";
 export const URL_ADMIN_DIRECTORY = "/admin/directory";
 export const URL_ADMIN_ORDERS = "/admin/orders";
+export const URL_ADMIN_INVENTORY = "/admin/inventory";
+export const URL_ADMIN_RECIP_BOOK = "/admin/recipe-book";
 export const URL_ADMIN_CONTABILITY = "/admin/contability";
 export const URL_ADMIN_CONFIGURATIONS = "/admin/configuration";
 export const URL_CASHER_DIRECTORY = "/casher/directory";
