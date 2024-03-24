@@ -28,24 +28,24 @@ const ModalEditInventaryProduct = ({
     <Modal open={isOpen} onClose={onClose}>
       <div className='bg-white w-[400px] h-auto rounded-lg fixed top-[calc(50vh_-_260px)] left-[calc(50vw_-_200px)] shadow-lg p-4'>
         <p className='font-primary text-medium text-blue-dark text-center'>
-          <Edit className='mr-2' fontSize='large' />
+          <Edit className='!mr-2' fontSize='large' />
           Editar producto
         </p>
-        <form onSubmit={formik.handleSubmit} className='flex flex-col mt-2'>
+        <form onSubmit={formik.handleSubmit} className='flex flex-col !mt-2'>
           <div className='flex flex-row justify-start'>
             {formik.values.isDeleted ? (
-              <div className='flex flex-row bg-danger text-white text-sm py-1 px-2 rounded-lg'>
+              <div className='!flex !flex-row !bg-danger !text-white !text-sm !py-1 !px-2 !rounded-lg'>
                 <Delete fontSize='small' /> Borrado
               </div>
             ) : (
-              <div className='flex flex-row bg-success text-white text-sm py-1 px-2 rounded-lg'>
+              <div className='!flex !flex-row !bg-success !text-white !text-sm !py-1 !px-2 !rounded-lg'>
                 <CheckCircle fontSize='small' /> Activo
               </div>
             )}
           </div>
-          <p className='text-sm font-secondary mt-2'>ID PRODUCTO</p>
+          <p className='text-sm font-secondary !mt-2'>ID PRODUCTO</p>
           <p className='text-sm font-secondary'>{formik.values.uuid}</p>
-          <div className='flex flex-row mb-4 mt-2 font-secondary'>
+          <div className='flex flex-row !mb-4 !mt-2 font-secondary'>
             <div className='flex flex-col basis-1/2'>
               <p className='text-sm'>Fecha de creación</p>
               <p className='text-sm'>
@@ -74,7 +74,7 @@ const ModalEditInventaryProduct = ({
               onBlur={formik.handleBlur("name")}
             />
           </FormControl>
-          <FormControl className='mt-4'>
+          <FormControl className='!mt-4'>
             <InputLabel htmlFor='outline-input-cant'>
               Cantidad de producto
             </InputLabel>
@@ -89,7 +89,7 @@ const ModalEditInventaryProduct = ({
               onBlur={formik.handleBlur("cant")}
             />
           </FormControl>
-          <FormControl className='mt-4'>
+          <FormControl className='!mt-4'>
             <InputLabel htmlFor='outline-input-cant'>
               Tipo de gramaje
             </InputLabel>
@@ -124,7 +124,7 @@ const ModalEditInventaryProduct = ({
             </Select>
           </FormControl>
           <Button
-            className='mt-4 !bg-blue !text-white hover:!bg-blue-dark disabled:!bg-steel-70 disabled:!text-steel-20'
+            className='!mt-4 !bg-blue !text-white hover:!bg-blue-dark disabled:!bg-steel-70 disabled:!text-steel-20'
             type='submit'
             disabled={isLoading}
           >

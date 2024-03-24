@@ -246,7 +246,6 @@ const InventoryPage = (ctx: any) => {
                 Inventario de tu negocio
               </p>
               <p className='font-secondary text-[1rem] !text-steel-70'>
-
                 Aquí puedes meter los productos que ocupas para tu operación
                 diaria, ¡Estos los puedes usar en el modulo de recetarios!
               </p>
@@ -273,7 +272,7 @@ const InventoryPage = (ctx: any) => {
             </div>
             <div className='flex flex-row justify-end items-center basis-1/2'>
               <Button
-                className='!bg-blue !text-white hover:!bg-blue-dark max-h-[40px] mr-4'
+                className='!bg-blue !text-white hover:!bg-blue-dark !max-h-[40px] !mr-4'
                 onClick={toggleCreateModal}
               >
                 Agregar <Add />
@@ -315,7 +314,7 @@ const InventoryPage = (ctx: any) => {
                     <div className='flex flex-row'>
                       <Button
                         onClick={() => handleOpenEdit(itm)}
-                        className='!bg-blue !text-white hover:!bg-blue-dark mr-4'
+                        className='!bg-blue !text-white hover:!bg-blue-dark !mr-4'
                       >
                         <Edit />
                       </Button>

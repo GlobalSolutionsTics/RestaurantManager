@@ -32,7 +32,7 @@ const ModalDeleteInventaryProduct = ({
     <Modal open={isOpen} onClose={onClose}>
       <div className='bg-white w-[400px] h-auto rounded-lg fixed top-[calc(50vh_-_130px)] left-[calc(50vw_-_200px)] shadow-lg p-4'>
         <p className='font-primary text-medium text-blue-dark text-center'>
-          <Delete className='mr-2' fontSize='large' />
+          <Delete className='!mr-2' fontSize='large' />
           Eliminar producto
         </p>
         <p className='font-secondary text-small text-steel-70 text-left'>
@@ -44,7 +44,7 @@ const ModalDeleteInventaryProduct = ({
         <p className='font-secondary text-small text-steel-70 text-left'>
           En el siguiente input correspondiente
         </p>
-        <form onSubmit={formik.handleSubmit} className='flex flex-col mt-4'>
+        <form onSubmit={formik.handleSubmit} className='flex flex-col !mt-4'>
           <FormControl>
             <InputLabel htmlFor='outline-input-name'>
               Clave de validación
@@ -61,7 +61,7 @@ const ModalDeleteInventaryProduct = ({
             />
           </FormControl>
           <Button
-            className='mt-4 !bg-blue !text-white hover:!bg-blue-dark disabled:!bg-steel-70 disabled:!text-steel-20'
+            className='!mt-4 !bg-blue !text-white hover:!bg-blue-dark disabled:!bg-steel-70 disabled:!text-steel-20'
             type='submit'
             disabled={isLoading || formik.values.name !== nameValue}
           >

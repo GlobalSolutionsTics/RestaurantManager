@@ -27,14 +27,14 @@ const ModalCreateInventaryProduct = ({
     <Modal open={isOpen} onClose={onClose}>
       <div className='bg-white w-[400px] h-auto rounded-lg fixed top-[calc(50vh_-_230px)] left-[calc(50vw_-_200px)] shadow-lg p-4'>
         <p className='font-primary text-medium text-blue-dark text-center'>
-          <Add className='mr-2' fontSize='large' />
+          <Add className='!mr-2' fontSize='large' />
           Añadir nuevo producto
         </p>
         <p className='font-secondary text-small text-steel-70 text-left'>
           Añade un nuevo producto, podrás usarlo para las recetas o mantener de
           forma manual el inventario
         </p>
-        <form onSubmit={formik.handleSubmit} className='flex flex-col mt-6'>
+        <form onSubmit={formik.handleSubmit} className='flex flex-col !mt-6'>
           <FormControl>
             <InputLabel htmlFor='outline-input-name'>
               Nombre del producto
@@ -50,7 +50,7 @@ const ModalCreateInventaryProduct = ({
               onBlur={formik.handleBlur("name")}
             />
           </FormControl>
-          <FormControl className='mt-4'>
+          <FormControl className='!mt-4'>
             <InputLabel htmlFor='outline-input-cant'>
               Cantidad de producto
             </InputLabel>
@@ -65,7 +65,7 @@ const ModalCreateInventaryProduct = ({
               onBlur={formik.handleBlur("cant")}
             />
           </FormControl>
-          <FormControl className='mt-4'>
+          <FormControl className='!mt-4'>
             <InputLabel htmlFor='outline-input-cant'>
               Tipo de gramaje
             </InputLabel>
@@ -100,12 +100,17 @@ const ModalCreateInventaryProduct = ({
             </Select>
           </FormControl>
           <Button
-            className='mt-4 !bg-blue !text-white hover:!bg-blue-dark disabled:!bg-steel-70 disabled:!text-steel-20'
+            className='!mt-4 !bg-blue !text-white hover:!bg-blue-dark disabled:!bg-steel-70 disabled:!text-steel-20'
             type='submit'
             disabled={isLoading}
           >
-            {isLoading && <span className='loader-spin'></span>} Agregar
-            producto
+            {isLoading ? (
+              <>
+                <span className='loader-spin'></span> Agregando
+              </>
+            ) : (
+              <>Agregar producto</>
+            )}
           </Button>
         </form>
       </div>
