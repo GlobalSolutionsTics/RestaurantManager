@@ -61,7 +61,7 @@ const ModalDeleteInventaryProduct = ({
             />
           </FormControl>
           <Button
-            className='mt-4 bg-blue text-white hover:bg-blue-dark disabled:bg-steel-70 disabled:text-steel-20'
+            className='mt-4 !bg-blue !text-white hover:!bg-blue-dark disabled:!bg-steel-70 disabled:!text-steel-20'
             type='submit'
             disabled={isLoading || formik.values.name !== nameValue}
           >
