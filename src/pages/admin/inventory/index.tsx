@@ -246,6 +246,7 @@ const InventoryPage = (ctx: any) => {
                 Inventario de tu negocio
               </p>
               <p className='font-secondary text-[1rem] !text-steel-70'>
+
                 Aquí puedes meter los productos que ocupas para tu operación
                 diaria, ¡Estos los puedes usar en el modulo de recetarios!
               </p>
