@@ -1,9 +1,12 @@
+import { OrdersDishesStatus } from "@/enums/orders.enum";
+
 export type TMenuResponse = {
   name: string;
   price: number;
   isUniquePrice: boolean;
   type: string;
   uuid?: string;
+  status?: OrdersDishesStatus;
 };
 
 export type TResponseCollection = {
@@ -34,5 +37,6 @@ export type TResponseOrders = {
   payWith?: number;
   propine?: number;
   shift?: number;
-  pymentType?: EButtonActives;
+  discount?: number;
+  paymentType?: EButtonActives;
 };

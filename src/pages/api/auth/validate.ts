@@ -20,8 +20,8 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
           });
         } else {
           res.status(200).send({
-            succes: true,
-            decoded: decoded,
+            error: false,
+            message: decoded,
           });
         }
       });

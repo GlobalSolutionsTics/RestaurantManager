@@ -6,7 +6,13 @@ import {
   EditOutlined,
   MiscellaneousServicesOutlined,
 } from "@mui/icons-material";
-import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+} from "@mui/material";
 import { Formik } from "formik";
 import {
   listConfigurationService,
@@ -25,6 +31,7 @@ const ConfigurationPage = () => {
   const [configuration, setConfiguration] = useState<TConifg>({
     kitchens: 0,
     tablesActives: 0,
+    mode: "light",
   });
   const [loading, setLoading] = useState(false);
   const [loadingPrincipal, setLoadingPrincipal] = useState(false);
@@ -98,12 +105,38 @@ const ConfigurationPage = () => {
       <Head>
         <title>Administrador | Configurar aplicación</title>
       </Head>
-      <div className='flex flex-row'>
+      <div
+        className={`flex flex-row ${
+          configuration.mode === "light" ? "bg-white" : "bg-dark"
+        }`}
+      >
         <MenuAdmin basePath={router.pathname} router={router} />
-        <div className='flex flex-col w-full h-min-[100vh] p-8'>
-          <p className='font-primary text-[2rem] mb-4 text-black'>
-            <MiscellaneousServicesOutlined fontSize='large' /> Configuración
-          </p>
+        <div className='flex flex-col w-full h-min-[100vh] p-4'>
+          <div className='flex flex-col w-full mb-8'>
+            <p
+              className={`font-primary text-[2rem] ${
+                configuration.mode === "light"
+                  ? "text-blue-dark"
+                  : "text-blue-light"
+              }`}
+            >
+              <MiscellaneousServicesOutlined
+                fontSize='large'
+                className='mr-2'
+              />{" "}
+              Configuración
+            </p>
+            <p
+              className={`font-secondary text-[1rem] ${
+                configuration.mode === "light"
+                  ? "text-steel-70"
+                  : "text-steel-20"
+              }`}
+            >
+              Aquí puedes configurar el proyecto para que se adapte a tus
+              necesidades.
+            </p>
+          </div>
           {loading ? (
             <div className='flex items-center'>
               <span className='loader mr-4'></span> Cargando información de
@@ -116,7 +149,7 @@ const ConfigurationPage = () => {
             >
               {({ values, errors, handleChange, handleBlur, handleSubmit }) => (
                 <form onSubmit={handleSubmit} className='flex flex-col'>
-                  <div className='w-full flex flex-row'>
+                  <div className='w-full flex flex-row wrap'>
                     <FormControl className='basis-1/2 mr-4'>
                       <InputLabel htmlFor='outline-input-kitchen'>
                         Cocinas en activas
@@ -149,6 +182,33 @@ const ConfigurationPage = () => {
                         onBlur={handleBlur}
                       />
                     </FormControl>
+                  </div>
+                  <div className='w-full flex mt-4'>
+                    <FormControl className='basis-1/2 mr-4'>
+                      <InputLabel id='select-mode'>
+                        Tema del proyecto
+                      </InputLabel>
+                      <Select
+                        labelId='select-mode'
+                        id='select-mode'
+                        label='Tema del proyecto'
+                        name='mode'
+                        value={values.mode}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      >
+                        <MenuItem value='light'>Modo normal</MenuItem>
+                        <MenuItem value='dark'>Modo obscuro</MenuItem>
+                      </Select>
+                    </FormControl>
+                    <div className='flex flex-col basis-1/2 justify-between py-2'>
+                      <p className='font-primary text-[0.75rem] text-blue-dark'>
+                        Tipo de plan
+                      </p>
+                      <p className='font-secondary text-[1.25rem] text-steel-70'>
+                        Infinite
+                      </p>
+                    </div>
                   </div>
                   <div className='mt-4'>
                     {loadingPrincipal ? (

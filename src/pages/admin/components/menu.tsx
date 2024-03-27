@@ -4,15 +4,17 @@ import {
   URL_ADMIN_CONTABILITY,
   URL_ADMIN_DIRECTORY,
   URL_ADMIN_DISHES,
+  URL_ADMIN_INVENTORY,
   URL_ADMIN_ORDERS,
+  URL_ADMIN_RECIP_BOOK,
   URL_ADMIN_USERS,
 } from "@/utils/urls";
 import {
   Book,
   FilterFramesOutlined,
-  KitchenOutlined,
+  Inventory,
+  MenuBook,
   MiscellaneousServicesOutlined,
-  Notifications,
   PeopleOutline,
   PowerSettingsNewOutlined,
   RequestQuote,
@@ -82,6 +84,12 @@ const MenuAdmin = ({ basePath, router }: Props) => {
         <MenuOption path={basePath} href={URL_ADMIN_ORDERS}>
           <FilterFramesOutlined className='mr-4' /> Ordenes
         </MenuOption>
+        <MenuOption path={basePath} href={URL_ADMIN_INVENTORY}>
+          <Inventory className='mr-4' /> Inventario
+        </MenuOption>
+        <MenuOption path={basePath} href={URL_ADMIN_RECIP_BOOK}>
+          <MenuBook className='mr-4' /> Recetario
+        </MenuOption>
         <MenuOption path={basePath} href={URL_ADMIN_CONTABILITY}>
           <RequestQuote className='mr-4' /> Contabilidad
         </MenuOption>
@@ -108,8 +116,14 @@ const MenuAdmin = ({ basePath, router }: Props) => {
         <MenuOption path={basePath} href={URL_ADMIN_ORDERS}>
           <FilterFramesOutlined fontSize='large' />
         </MenuOption>
+        <MenuOption path={basePath} href={URL_ADMIN_INVENTORY}>
+          <Inventory fontSize='large' />
+        </MenuOption>
+        <MenuOption path={basePath} href={URL_ADMIN_RECIP_BOOK}>
+          <MenuBook fontSize='large' />
+        </MenuOption>
         <MenuOption path={basePath} href={URL_ADMIN_CONTABILITY}>
-          <RequestQuote className='mr-4' />
+          <RequestQuote fontSize='large' />
         </MenuOption>
         <MenuOption path={basePath} href={URL_ADMIN_CONFIGURATIONS}>
           <MiscellaneousServicesOutlined fontSize='large' />

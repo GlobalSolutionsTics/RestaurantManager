@@ -7,12 +7,7 @@ import {
 } from "@/store/slices/orders.slice";
 import { TMenuResponse } from "@/types/menu.types";
 import { Check, Edit } from "@mui/icons-material";
-import {
-  OutlinedInput,
-  Select,
-  TextField,
-  TextareaAutosize,
-} from "@mui/material";
+import { OutlinedInput, Select, TextField } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import { useFormik } from "formik";
 import Image from "next/image";
@@ -25,6 +20,12 @@ import { TConifg } from "@/types/configuration.types";
 import { TOKEN_ID } from "@/utils/strings";
 import { listConfigurationService } from "@/services/config";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
+import { RootRedux } from "@/store/store";
+import {
+  setCreateDishesDescriptionRDX,
+  setCreateIdOrderRDX,
+  setCreateTableRDX,
+} from "@/store/slices/create.order.slice";
 
 const MessageComponent = withReactContent(Swal);
 
@@ -138,16 +139,14 @@ const FinishOrderPage = () => {
   const [nameClient, setNameClient] = useState("");
 
   const { push } = useRouter();
-  const orderStore: IOrderSlice = useSelector(
-    (store: any) => store.ordersDishes,
-  );
+  const orderStore = useSelector((store: RootRedux) => store.orderCreate);
   const dispatch = useDispatch();
   const userStore = useSelector((store: any) => store.user);
 
   //Handlers
   const handleChangeTable = (e: any) => {
     const val = parseInt(e.target.value);
-    dispatch(setTableOrder(val));
+    dispatch(setCreateTableRDX(val));
   };
 
   //Area para los servicios
@@ -179,7 +178,7 @@ const FinishOrderPage = () => {
       }
       return itm;
     });
-    dispatch(setDishesDescriptionRedux(newDish));
+    dispatch(setCreateDishesDescriptionRDX(newDish));
   };
   //Handle functions
   const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
@@ -203,7 +202,7 @@ const FinishOrderPage = () => {
     };
     const { error, message } = await createOrder(payload);
     if (!error) {
-      dispatch(setOrderIdRedux(message));
+      dispatch(setCreateIdOrderRDX(message));
       push("/orders/qrcodePage");
     } else {
       MessageComponent.fire({
