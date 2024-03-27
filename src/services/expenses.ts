@@ -32,6 +32,7 @@ export const createCategoryService = async (payload: any) => {
     }
   } catch (e) {
     console.log("Error al añadir el platillo:", e);
+    return false;
   }
 };
 

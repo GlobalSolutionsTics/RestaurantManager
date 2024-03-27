@@ -1,17 +1,22 @@
-import { doc, getDoc } from "firebase/firestore";
-import { ExpensesEnum } from "./enum/expenses.enum";
-import { firestore } from "@firebase/config";
-import { DB_EXPENSES } from "@models/names";
-import { TResponseCollection } from "@/types/expenses.types";
+import { NextApiRequest, NextApiResponse } from "next";
+import { EDbNames } from "@/enums/db.enum";
+import FirestoreController from "../../controllers/firestore.controller";
+import { HttpStatusEnum } from "@/enums/http.enum";
 
-export const getExpenses = async (collection: ExpensesEnum) => {
-  const expensRef = doc(firestore, DB_EXPENSES, collection);
-  const expensCollection = await getDoc(expensRef);
-  if (expensCollection.exists()) {
-    const collection = expensCollection.data() as TResponseCollection;
-    const menu = collection.data;
-    return menu;
+export const getExpenses = async (
+  req: NextApiRequest,
+  res: NextApiResponse,
+) => {
+  const BD = EDbNames.DB_EXPENSES;
+  const COLLECTION = "expenses";
+  const fsController = new FirestoreController(BD, COLLECTION);
+  const data = await fsController.list();
+  if (data) {
+    res.status(HttpStatusEnum.OK).send({ error: false, data: data });
   } else {
-    return false;
+    res.status(HttpStatusEnum.SERVER_ERROR).send({
+      error: true,
+      message: "Error al obtener la lista de gastos",
+    });
   }
 };

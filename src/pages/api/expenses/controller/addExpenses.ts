@@ -1,46 +1,43 @@
+import { EDbNames } from "@/enums/db.enum";
 import { TExpenses } from "@/types/expenses.types";
-import { ExpensesEnum } from "./enum/expenses.enum";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { firestore } from "@firebase/config";
-import { DB_EXPENSES } from "@models/names";
+import { NextApiRequest, NextApiResponse } from "next";
 import { v4 as uuidv4 } from "uuid";
+import FirestoreController from "../../controllers/firestore.controller";
+import { HttpStatusEnum } from "@/enums/http.enum";
 
 export const addExpenses = async (
-  collection: ExpensesEnum,
-  expensesPayload: TExpenses,
+  req: NextApiRequest,
+  res: NextApiResponse,
 ) => {
   try {
-    const expensRef = doc(firestore, DB_EXPENSES, collection);
-    const expensCollection = await getDoc(expensRef);
+    const body: TExpenses & { type: string } = req.body;
     const uuid = uuidv4();
-    if (expensCollection.exists()) {
-      const expensData = expensCollection.data();
-      const expensItems: Array<TExpenses> = expensData.data;
-      const expensPayload: TExpenses = {
-        name: expensesPayload.name,
-        price: expensesPayload.price,
-        uuid,
-      };
-      expensItems.push(expensPayload);
-      const payload = {
-        data: expensItems,
-      };
-      await updateDoc(expensRef, payload);
-      return true;
+    const BD = EDbNames.DB_EXPENSES;
+    const COLLECTION = "expenses";
+
+    const fsController = new FirestoreController(BD, COLLECTION);
+    const payload: TExpenses = {
+      ...body,
+      uuid: uuid,
+    };
+    const created = await fsController.create(payload);
+
+    if (created) {
+      res.status(HttpStatusEnum.CREATE).send({
+        error: false,
+        message: { id: uuid },
+      });
     } else {
-      const expensPayload: TExpenses = {
-        name: expensesPayload.name,
-        price: expensesPayload.price,
-        uuid,
-      };
-      const payload = {
-        data: [expensPayload],
-      };
-      await setDoc(expensRef, payload);
-      return true;
+      res.status(HttpStatusEnum.SERVER_ERROR).send({
+        error: true,
+        message: "Error al crear el gasto",
+      });
     }
-  } catch (e) {
-    console.log("Error al añadir gasto:", e);
-    return false;
+  } catch (error) {
+    console.error("Error al procesar la solicitud:", error);
+    res.status(HttpStatusEnum.SERVER_ERROR).send({
+      error: true,
+      message: "Error en el servidor",
+    });
   }
 };
