@@ -6,6 +6,7 @@ export const URL_API_CONFIG = `${URL_BASE}/api/configuration`;
 export const URL_API_FINANCE = `${URL_BASE}/api/finance`;
 export const URL_API_CLIENT = `${URL_BASE}/api/directory`;
 export const URL_API_DISHES = `${URL_BASE}/api/dishes`;
+export const URL_API_EXPENSES = `${URL_BASE}/api/expenses`;
 
 export const URL_ADMIN_DISHES = "/admin/dishes";
 export const URL_ADMIN_USERS = "/admin/users";

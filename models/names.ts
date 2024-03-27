@@ -5,3 +5,4 @@ export const DB_CONFIGURATION = "personalized";
 export const DB_KITCHENS = "kitchens";
 export const DB_ORDERS_APPLICATION = "solicitudes_de_edicion";
 export const DB_DIRECTORY = "directory";
+export const DB_EXPENSES = "expenses";
