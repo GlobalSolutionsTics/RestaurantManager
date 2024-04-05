@@ -43,6 +43,9 @@ const IndexComp = () => {
   };
 
   //Handler functions
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+  };
   const handleUser = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const usuario = e.target.value;
@@ -117,49 +120,51 @@ const IndexComp = () => {
               <img src='./logo_con_fondo.png' alt='' className='w-44' />
             </div>
             <div className='flex flex-col'>
-              <div className='flex flex-col'>
-                <label className='name__label' htmlFor='name'>
-                  Nombre:
-                </label>
-                <input
-                  className='rounded-full name__input'
-                  placeholder='Nombre'
-                  type='text'
-                  name='name'
-                  id='user_name'
-                  value={user}
-                  onChange={handleUser}
-                />
-              </div>
-              <div className='flex flex-col'>
-                <label className='password__label' htmlFor='password'>
-                  Contraseña:
-                </label>
-                <input
-                  className='rounded-full password__input'
-                  placeholder='Contraseña'
-                  type='password'
-                  name='password'
-                  id='user_password'
-                  value={pass}
-                  onChange={handlePass}
-                />
-              </div>
-              <div className='flex flex-col mt-4'>
-                {loading ? (
-                  <div className='flex items-center'>
-                    <span className='loader mr-4'></span> Iniciando sesión
-                  </div>
-                ) : (
-                  <button
-                    onClick={handleSend}
-                    className='rounded-full submit__btn bg-success'
-                    type='submit'
-                  >
-                    Ingresar
-                  </button>
-                )}
-              </div>
+              <form onSubmit={handleSubmit}>
+                <div className='flex flex-col'>
+                  <label className='name__label' htmlFor='name'>
+                    Nombre:
+                  </label>
+                  <input
+                    className='rounded-full name__input'
+                    placeholder='Nombre'
+                    type='text'
+                    name='name'
+                    id='user_name'
+                    value={user}
+                    onChange={handleUser}
+                  />
+                </div>
+                <div className='flex flex-col'>
+                  <label className='password__label' htmlFor='password'>
+                    Contraseña:
+                  </label>
+                  <input
+                    className='rounded-full password__input'
+                    placeholder='Contraseña'
+                    type='password'
+                    name='password'
+                    id='user_password'
+                    value={pass}
+                    onChange={handlePass}
+                  />
+                </div>
+                <div className='flex flex-col mt-4'>
+                  {loading ? (
+                    <div className='flex items-center'>
+                      <span className='loader mr-4'></span> Iniciando sesión
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleSend}
+                      className='rounded-full submit__btn bg-success'
+                      type='submit'
+                    >
+                      Ingresar
+                    </button>
+                  )}
+                </div>
+              </form>
             </div>
           </div>
         </div>
