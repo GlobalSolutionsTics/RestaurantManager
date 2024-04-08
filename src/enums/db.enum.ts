@@ -7,4 +7,6 @@ export enum EDbNames {
   DB_DIRECTORY = "directory",
   DB_INVENTORY = "inventary",
   DB_INVENTORY_HISTORIC = "inventary_product_historic",
+  DB_EXPENSES_CATEGORY = "expenses_category",
+  DB_EXPENSES = "expenses",
 }
