@@ -10,6 +10,8 @@ import { OpenInFull } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { IUserRedux, saveUserInRedux } from "@/store/slices/user.slice";
 import { TOKEN_ID } from "@/utils/strings";
+import { Analytics, track } from "@vercel/analytics/react";
+import { CLIENT, ENV } from "@/utils/constants";
 
 const MessageComponent = withReactContent(Swal);
 
@@ -102,6 +104,13 @@ const IndexComp = () => {
     await handleFullscreen.enter();
   };
 
+  useEffect(() => {
+    const init = () => {
+      track("SHOW-LOGIN", { client: CLIENT, enviroment: ENV });
+    };
+    init();
+  }, []);
+
   return (
     <FullScreen handle={handleFullscreen}>
       <Head>
@@ -169,6 +178,7 @@ const IndexComp = () => {
           </div>
         </div>
       </section>
+      <Analytics />
     </FullScreen>
   );
 };
