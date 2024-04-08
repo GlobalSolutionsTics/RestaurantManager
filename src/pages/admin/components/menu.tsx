@@ -22,7 +22,8 @@ import {
 } from "@mui/icons-material";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { version as vapp } from "../../../../package.json";
 
 type Props = {
   basePath: string;
@@ -56,6 +57,7 @@ const MenuAdmin = ({ basePath, router }: Props) => {
     sessionStorage.removeItem(TOKEN_ID);
     router.push("/admin");
   }, []);
+
   return (
     <div className='h-[100vh] w-[70px] lg:w-[20%] overflow-y-auto bg-white top-0'>
       <div className='w-full h-min-[30%] bg-blue-dark'>
@@ -67,8 +69,11 @@ const MenuAdmin = ({ basePath, router }: Props) => {
             alt='Image logo'
           />
         </div>
-        <div className='text-white font-primary py-4 text-center text-[0.5rem] lg:text-[1.5rem]'>
+        <div className='text-white font-primary py-2 text-center text-[0.5rem] lg:text-[1.5rem]'>
           Administrador
+        </div>
+        <div className='text-white font-secondary text-center pb-2 text-[0.5rem] lg:text-[1rem]'>
+          v {vapp}
         </div>
       </div>
       <div className='hidden lg:block'>

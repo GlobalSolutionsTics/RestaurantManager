@@ -34,6 +34,7 @@ import { TOKEN_ID } from "@/utils/strings";
 import Head from "next/head";
 import ModalEditInventaryProduct from "@/components/admin/inventary/modalEdit.component";
 import ModalDeleteInventaryProduct from "@/components/admin/inventary/modalDelete.component";
+import ModalInitialiceDayInventary from "@/components/admin/inventary/modalInitDay.component";
 
 const MessageComponent = withReactContent(Swal);
 
@@ -70,6 +71,7 @@ const InventoryPage = (ctx: any) => {
   const [isOpenCreate, setIsOpenCreate] = useState<boolean>(false);
   const [isOpenEdit, setIsOpenEdit] = useState<boolean>(false);
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
+  const [isOpenStartInv, setIsOpenStartInv] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -230,6 +232,7 @@ const InventoryPage = (ctx: any) => {
   const toggleCreateModal = () => setIsOpenCreate(!isOpenCreate);
   const toggleDeleteModal = () => setIsOpenDelete(!isOpenDelete);
   const toggleEditModal = () => setIsOpenEdit(!isOpenEdit);
+  const toggleInventaryModal = () => setIsOpenStartInv(!isOpenStartInv);
 
   return (
     <ProtectPage push={router.push} requiredProfiles={ADMIN}>
@@ -277,9 +280,12 @@ const InventoryPage = (ctx: any) => {
               >
                 Agregar <Add />
               </Button>
-              <Button className='!bg-success !text-white hover:!bg-success-dark max-h-[40px]'>
+              <Button
+                onClick={toggleInventaryModal}
+                className='!bg-success !text-white hover:!bg-success-dark max-h-[40px]'
+              >
                 <PlayCircleFilled className='mr-2' />
-                Iniciar día
+                Iniciar operación
               </Button>
             </div>
           </div>
@@ -348,6 +354,11 @@ const InventoryPage = (ctx: any) => {
         isLoading={isLoading}
         onClose={toggleDeleteModal}
         formik={formik}
+      />
+      <ModalInitialiceDayInventary
+        isOpen={isOpenStartInv}
+        isLoading={isLoading}
+        onClose={toggleInventaryModal}
       />
     </ProtectPage>
   );
