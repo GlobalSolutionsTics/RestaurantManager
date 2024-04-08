@@ -1,20 +1,36 @@
+import { validateTokneService } from "@/services/auth";
 import { IUserRedux, saveUserInRedux } from "@/store/slices/user.slice";
 import { TOKEN_ID } from "@/utils/strings";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 type TProps = {
-  children: any;
+  children?: any;
   push: any;
+  requiredProfiles: string;
 };
-const ProtectPage = ({ children, push }: TProps) => {
+const ProtectPage = ({ children, push, requiredProfiles }: TProps) => {
+  const TIME = 5 * 60 * 1000;
+
   const dispatch = useDispatch();
+  const userStore: IUserRedux = useSelector((store: any) => store.user);
+  const userProfile = userStore.type;
 
   const checkToken = () => {
     const token = sessionStorage.getItem(TOKEN_ID);
-    if (!token) {
+    if (!token || !userProfile || !requiredProfiles.includes(userProfile)) {
       push("/admin");
       return <div>Sin acceso</div>;
+    }
+  };
+
+  const validateToken = async () => {
+    const token = sessionStorage.getItem(TOKEN_ID);
+    if (token !== null) {
+      const validateToken = await validateTokneService(token);
+      if (!validateToken) {
+        push("/admin");
+      }
     }
   };
 
@@ -37,6 +53,19 @@ const ProtectPage = ({ children, push }: TProps) => {
   useEffect(() => {
     checkToken();
     generateInfoToken();
+
+    const init = async () => {
+      await validateToken();
+    };
+
+    init();
+
+    const timeOut = setInterval(async () => {
+      if (userProfile !== "cocina") {
+        await validateToken();
+      }
+    }, TIME);
+    return () => clearInterval(timeOut);
   }, []);
 
   return <>{children}</>;

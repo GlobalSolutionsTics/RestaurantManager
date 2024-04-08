@@ -1,22 +1,22 @@
+import { resetCreateCommanda } from "@/store/slices/create.order.slice";
 import {
   IOrderSlice,
   resetComanda as resetOrderRedux,
 } from "@/store/slices/orders.slice";
+import { RootRedux } from "@/store/store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import QRCode from "react-qr-code";
 import { useDispatch, useSelector } from "react-redux";
 const QrCodePage = () => {
   const { push } = useRouter();
-  const orderStore: IOrderSlice = useSelector(
-    (store: any) => store.ordersDishes,
-  );
+  const orderStore = useSelector((store: RootRedux) => store.orderCreate);
   const dispatch = useDispatch();
 
   const url = `${process.env.NEXT_PUBLIC_URL_SERVICES}checks/${orderStore.id}`;
 
   const handleFinishOrder = () => {
-    dispatch(resetOrderRedux());
+    dispatch(resetCreateCommanda());
     push("/orders/create");
   };
 

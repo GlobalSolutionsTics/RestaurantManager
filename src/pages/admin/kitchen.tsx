@@ -2,11 +2,12 @@ import { useRouter } from "next/router";
 import MenuAdmin from "./components/menu";
 import Head from "next/head";
 import ProtectPage from "./components/protectPage";
+import { ADMIN, TOKEN } from "@/utils/users";
 
 const KitchenPage = () => {
   const router = useRouter();
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN}>
       <Head>
         <title>Adminsitrador | Administrar cocinas</title>
       </Head>

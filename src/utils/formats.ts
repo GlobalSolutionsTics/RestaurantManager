@@ -124,6 +124,8 @@ const centcimals = (val: number) => {
       return "ciento " + decimals(rest);
     case 5:
       return "quinientos " + decimals(rest);
+    case 7:
+      return "setecientos " + decimals(rest);
     case 9:
       return "novecientos " + decimals(rest);
     default:
@@ -158,6 +160,23 @@ export const formatDate = (date: string) => {
   if (dd < 10) dd = "0" + dd;
   if (mm < 10) mm = "0" + mm;
   return yyyy + "/" + mm + "/" + dd;
+};
+
+export const formattingDateTime = (date: number) => {
+  const datePreprocesed = new Date(date);
+  const yyyy = datePreprocesed.getFullYear();
+  let mm: number | string = datePreprocesed.getMonth() + 1; // Months start at 0!
+  let dd: number | string = datePreprocesed.getDate();
+
+  const hours = [
+    datePreprocesed.getHours(),
+    datePreprocesed.getMinutes(),
+    datePreprocesed.getSeconds(),
+  ].join(":");
+
+  if (dd < 10) dd = "0" + dd;
+  if (mm < 10) mm = "0" + mm;
+  return yyyy + "/" + mm + "/" + dd + " " + hours;
 };
 
 export const getActualDateDB = (): {

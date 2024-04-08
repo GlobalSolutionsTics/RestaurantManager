@@ -43,6 +43,9 @@ const IndexComp = () => {
   };
 
   //Handler functions
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+  };
   const handleUser = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const usuario = e.target.value;
@@ -116,9 +119,9 @@ const IndexComp = () => {
             <div className='flex justify-center'>
               <img src='./logo_con_fondo.png' alt='' className='w-44' />
             </div>
-            <div className='auth__form'>
-              <ul>
-                <li className='grid my-2'>
+            <div className='flex flex-col'>
+              <form onSubmit={handleSubmit}>
+                <div className='flex flex-col'>
                   <label className='name__label' htmlFor='name'>
                     Nombre:
                   </label>
@@ -131,8 +134,8 @@ const IndexComp = () => {
                     value={user}
                     onChange={handleUser}
                   />
-                </li>
-                <li className='grid my-2'>
+                </div>
+                <div className='flex flex-col'>
                   <label className='password__label' htmlFor='password'>
                     Contraseña:
                   </label>
@@ -145,8 +148,8 @@ const IndexComp = () => {
                     value={pass}
                     onChange={handlePass}
                   />
-                </li>
-                <li>
+                </div>
+                <div className='flex flex-col mt-4'>
                   {loading ? (
                     <div className='flex items-center'>
                       <span className='loader mr-4'></span> Iniciando sesión
@@ -160,8 +163,8 @@ const IndexComp = () => {
                       Ingresar
                     </button>
                   )}
-                </li>
-              </ul>
+                </div>
+              </form>
             </div>
           </div>
         </div>

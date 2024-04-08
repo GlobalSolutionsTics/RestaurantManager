@@ -16,7 +16,7 @@ const handler = async (
 ) => {
   const method = req.method;
   if (method === HttpMethodsEnum.POST) {
-    const body = JSON.parse(req.body);
+    const body = req.body;
     const payload: TMenuResponse = body.dish;
     const collection: DishesEnum = body.collection;
     if (payload && collection) {

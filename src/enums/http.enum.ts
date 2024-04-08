@@ -8,4 +8,5 @@ export enum HttpMethodsEnum {
 export enum HttpStatusEnum {
   OK = 200,
   CREATE = 201,
+  SERVER_ERROR = 500,
 }

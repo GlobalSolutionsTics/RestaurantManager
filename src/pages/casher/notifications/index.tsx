@@ -12,6 +12,7 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { Button } from "@mui/material";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
+import { CASHER, TOKEN } from "@/utils/users";
 
 type Props = {
   element: TResponseOrders;
@@ -163,8 +164,9 @@ const ApplicationAdminPage = () => {
   useEffect(() => {
     init();
   }, [viewSelected]);
+
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={CASHER}>
       <Head>
         <title>Cajero | Solicitudes de cambio</title>
       </Head>

@@ -14,7 +14,14 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": ["./src/*", "../../../../../*"],
+      "@/*": ["./src/*", "../../../../../*", "../../../../*"],
+      "@components/*": [
+        "./src/components*",
+        "../src/components*",
+        "../../src/components*",
+        "../../../src/components*",
+        "../../../../src/components*"
+      ],
       "@firebase/*": [
         "../../../../../firebase/*",
         "../../../../firebase/*",
@@ -33,6 +40,6 @@
       ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "./jest-setup.ts"],
   "exclude": ["node_modules"]
 }

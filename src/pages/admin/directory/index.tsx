@@ -34,6 +34,7 @@ import { Formik } from "formik";
 import { useReactToPrint } from "react-to-print";
 import PrintIcon from "@mui/icons-material/Print";
 import { TDirectory } from "@/types/directory.types";
+import { ADMIN, TOKEN } from "@/utils/users";
 const MessageComponent = withReactContent(Swal);
 
 const style = {
@@ -177,7 +178,6 @@ const DirectoryPage = () => {
     if (token) {
       try {
         const client = await listClientService(token);
-        console.log("Lista de clientes:", client);
         setClientList(client);
       } catch (error) {
         console.error("Error al obtener la lista de clientes:", error);
@@ -287,7 +287,7 @@ const DirectoryPage = () => {
   };
 
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN}>
       <Head>
         <title>Cajero | Directorio</title>
       </Head>
