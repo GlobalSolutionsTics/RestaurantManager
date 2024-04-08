@@ -27,6 +27,7 @@
     "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/uuid": "^9.0.6",
+    "@vercel/analytics": "^1.2.2",
     "dayjs": "^1.11.10",
     "firebase": "^10.5.0",
     "formik": "^2.4.5",
