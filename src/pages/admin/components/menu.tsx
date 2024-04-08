@@ -1,10 +1,20 @@
 import { TOKEN_ID } from "@/utils/strings";
 import {
+  URL_ADMIN_CONFIGURATIONS,
+  URL_ADMIN_CONTABILITY,
+  URL_ADMIN_DIRECTORY,
+  URL_ADMIN_DISHES,
+  URL_ADMIN_INVENTORY,
+  URL_ADMIN_ORDERS,
+  URL_ADMIN_RECIP_BOOK,
+  URL_ADMIN_USERS,
+} from "@/utils/urls";
+import {
   Book,
   FilterFramesOutlined,
-  KitchenOutlined,
+  Inventory,
+  MenuBook,
   MiscellaneousServicesOutlined,
-  Notifications,
   PeopleOutline,
   PowerSettingsNewOutlined,
   RequestQuote,
@@ -12,7 +22,8 @@ import {
 } from "@mui/icons-material";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { version as vapp } from "../../../../package.json";
 
 type Props = {
   basePath: string;
@@ -46,6 +57,7 @@ const MenuAdmin = ({ basePath, router }: Props) => {
     sessionStorage.removeItem(TOKEN_ID);
     router.push("/admin");
   }, []);
+
   return (
     <div className='h-[100vh] w-[70px] lg:w-[20%] overflow-y-auto bg-white top-0'>
       <div className='w-full h-min-[30%] bg-blue-dark'>
@@ -57,27 +69,36 @@ const MenuAdmin = ({ basePath, router }: Props) => {
             alt='Image logo'
           />
         </div>
-        <div className='text-white font-primary py-4 text-center text-[0.5rem] lg:text-[1.5rem]'>
+        <div className='text-white font-primary py-2 text-center text-[0.5rem] lg:text-[1.5rem]'>
           Administrador
+        </div>
+        <div className='text-white font-secondary text-center pb-2 text-[0.5rem] lg:text-[1rem]'>
+          v {vapp}
         </div>
       </div>
       <div className='hidden lg:block'>
-        <MenuOption path={basePath} href={"/admin/dishes"}>
+        <MenuOption path={basePath} href={URL_ADMIN_DISHES}>
           <SetMealOutlined className='mr-4' /> Platillos
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/users"}>
+        <MenuOption path={basePath} href={URL_ADMIN_USERS}>
           <PeopleOutline className='mr-4' /> Usuarios
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/directory"}>
+        <MenuOption path={basePath} href={URL_ADMIN_DIRECTORY}>
           <Book className='mr-4' /> Directorio
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/orders"}>
+        <MenuOption path={basePath} href={URL_ADMIN_ORDERS}>
           <FilterFramesOutlined className='mr-4' /> Ordenes
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/contability"}>
+        <MenuOption path={basePath} href={URL_ADMIN_INVENTORY}>
+          <Inventory className='mr-4' /> Inventario
+        </MenuOption>
+        <MenuOption path={basePath} href={URL_ADMIN_RECIP_BOOK}>
+          <MenuBook className='mr-4' /> Recetario
+        </MenuOption>
+        <MenuOption path={basePath} href={URL_ADMIN_CONTABILITY}>
           <RequestQuote className='mr-4' /> Contabilidad
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/configuration"}>
+        <MenuOption path={basePath} href={URL_ADMIN_CONFIGURATIONS}>
           <MiscellaneousServicesOutlined className='mr-4' /> Configurador
         </MenuOption>
         <button
@@ -88,22 +109,28 @@ const MenuAdmin = ({ basePath, router }: Props) => {
         </button>
       </div>
       <div className='lg:hidden'>
-        <MenuOption path={basePath} href={"/admin/dishes"}>
+        <MenuOption path={basePath} href={URL_ADMIN_DISHES}>
           <SetMealOutlined fontSize='large' />
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/users"}>
+        <MenuOption path={basePath} href={URL_ADMIN_USERS}>
           <PeopleOutline fontSize='large' />
         </MenuOption>
-        <MenuOption path={basePath} href={"/casher/directory"}>
+        <MenuOption path={basePath} href={URL_ADMIN_DIRECTORY}>
           <Book fontSize='large' />
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/orders"}>
+        <MenuOption path={basePath} href={URL_ADMIN_ORDERS}>
           <FilterFramesOutlined fontSize='large' />
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/contability"}>
-          <RequestQuote className='mr-4' />
+        <MenuOption path={basePath} href={URL_ADMIN_INVENTORY}>
+          <Inventory fontSize='large' />
         </MenuOption>
-        <MenuOption path={basePath} href={"/admin/configuration"}>
+        <MenuOption path={basePath} href={URL_ADMIN_RECIP_BOOK}>
+          <MenuBook fontSize='large' />
+        </MenuOption>
+        <MenuOption path={basePath} href={URL_ADMIN_CONTABILITY}>
+          <RequestQuote fontSize='large' />
+        </MenuOption>
+        <MenuOption path={basePath} href={URL_ADMIN_CONFIGURATIONS}>
           <MiscellaneousServicesOutlined fontSize='large' />
         </MenuOption>
         <button

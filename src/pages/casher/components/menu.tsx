@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback } from "react";
 import Book from "@mui/icons-material/Book";
+import { URL_CASHER_DIRECTORY, URL_CASHER_ORDERS } from "@/utils/urls";
 
 type Props = {
   basePath: string;
@@ -57,13 +58,10 @@ const MenuCasher = ({ basePath, router }: Props) => {
         </div>
       </div>
       <div className='hidden lg:block'>
-        <MenuOption path={basePath} href={"/casher/notifications"}>
-          <Notifications className='mr-4' /> Notificaciones
-        </MenuOption>
-        <MenuOption path={basePath} href={"/casher/orders"}>
+        <MenuOption path={basePath} href={URL_CASHER_ORDERS}>
           <FilterFramesOutlined className='mr-4' /> Ordenes
         </MenuOption>
-        <MenuOption path={basePath} href={"/casher/directory"}>
+        <MenuOption path={basePath} href={URL_CASHER_DIRECTORY}>
           <Book className='mr-4' /> Directorio
         </MenuOption>
         <button
@@ -74,13 +72,10 @@ const MenuCasher = ({ basePath, router }: Props) => {
         </button>
       </div>
       <div className='lg:hidden'>
-        <MenuOption path={basePath} href={"/casher/notifications"}>
-          <Notifications className='mr-4' />
-        </MenuOption>
-        <MenuOption path={basePath} href={"/casher/orders"}>
+        <MenuOption path={basePath} href={URL_CASHER_ORDERS}>
           <FilterFramesOutlined fontSize='large' />
         </MenuOption>
-        <MenuOption path={basePath} href={"/casher/directory"}>
+        <MenuOption path={basePath} href={URL_CASHER_DIRECTORY}>
           <Book fontSize='large' />
         </MenuOption>
         <button

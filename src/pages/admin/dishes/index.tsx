@@ -28,6 +28,7 @@ import { ArrowBack, Done, Edit, Save } from "@mui/icons-material";
 import EditionTableCol from "../../../components/editionTableCol";
 import { Tooltip } from "@mui/material";
 import { TOKEN_ID } from "@/utils/strings";
+import { ADMIN, TOKEN } from "@/utils/users";
 
 const style = {
   position: "absolute" as "absolute",
@@ -330,7 +331,7 @@ const DishesAdminPage = () => {
   }, []);
 
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={ADMIN}>
       <Head>
         <title>Administrador | Listado de platillos</title>
       </Head>
@@ -409,7 +410,7 @@ const DishesAdminPage = () => {
                           : posibleOptions.length === 2
                             ? "h-[5rem]"
                             : "h-[2.5rem]"
-                    } bg-white overflow-y-auto z-[20] bg-white`}
+                    } bg-white overflow-y-auto z-[20]`}
                   >
                     {posibleOptions.map((itm, idx) => (
                       <OptionShearcher

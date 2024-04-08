@@ -1,12 +1,14 @@
 import { StatusEnum } from "@/enums/states.enum";
 import ProtectPage from "@/pages/admin/components/protectPage";
 import { listConfigurationService } from "@/services/config";
+import { setCreateTableRDX } from "@/store/slices/create.order.slice";
 import { setTableOrder } from "@/store/slices/orders.slice";
 import { TConifg } from "@/types/configuration.types";
 import { TResponseOrders } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { getActualDateDB } from "@/utils/formats";
 import { TOKEN_ID } from "@/utils/strings";
+import { CHECKS, TOKEN } from "@/utils/users";
 import * as RT from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { getAuth, signInAnonymously } from "firebase/auth";
@@ -23,7 +25,7 @@ export default function tableSelector() {
   const dispatch = useDispatch();
   const router = useRouter();
   const handleNavigation = (table: number) => {
-    dispatch(setTableOrder(table));
+    dispatch(setCreateTableRDX(table));
     router.push("/orders/typeSelect/");
   };
 
@@ -68,7 +70,7 @@ export default function tableSelector() {
   }, []);
 
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS}>
       <div className='relative'>
         <p className='text-[2rem] bg-neutral-300 font-primary h-[120px] grid content-center px-10 w-screen'>
           ¿Que mesa atenderá?

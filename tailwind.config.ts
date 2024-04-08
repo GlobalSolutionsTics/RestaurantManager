@@ -21,6 +21,7 @@ const config: Config = {
       },
       fontSize: {
         small: "0.75rem",
+        medium: "1.5rem",
       },
       colors: {
         enabled: "#E9E9E9",
@@ -44,9 +45,11 @@ const config: Config = {
         "orange-light": "#FFD9A2",
         orange: "#FFA626",
         "orange-dark": "#D07B00",
+        "steel-20": "#CFCFCF",
+        "steel-70": "#6C6C6C",
       },
       fontFamily: {
-        primary: ["'Jost'", "Arial", "sans-serif"],
+        primary: ["'Alkatra'", "Arial", "sans-serif"],
         secondary: ["'Josefin Sans'", "Arial", "italic"],
       },
       content: {
@@ -55,5 +58,6 @@ const config: Config = {
     },
   },
   plugins: [],
+  important: true,
 };
 export default config;

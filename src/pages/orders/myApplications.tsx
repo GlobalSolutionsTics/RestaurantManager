@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getApplicationList } from "@/services/order";
 import { TOKEN_ID } from "@/utils/strings";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
+import { CHECKS, TOKEN } from "@/utils/users";
 
 type PropsColumn = {
   tableNumber: number;
@@ -60,7 +61,7 @@ const MyApplicationsPage = () => {
     init();
   }, []);
   return (
-    <ProtectPage push={router.push}>
+    <ProtectPage push={router.push} requiredProfiles={CHECKS}>
       <div className='font-primary text-[1.5rem] p-4 flex flex-row'>
         <div className='basis-1/6'>
           <button onClick={router.back}>

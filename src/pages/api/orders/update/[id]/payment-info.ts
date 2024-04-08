@@ -15,6 +15,7 @@ type TModification = {
   propine: number;
   shift: number;
   paymentType: EButtonActives;
+  discount: number;
 };
 
 type TBody = {
