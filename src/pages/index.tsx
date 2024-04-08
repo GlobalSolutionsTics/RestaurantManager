@@ -2,10 +2,12 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import Head from "next/head";
 import SectionComp from "@/components/section/Section";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SaucerComp from "@/components/saucer/Saucer";
 import SaucerTable from "@/components/saucerTable/SaucerTable";
 import Link from "next/link";
+import { Analytics, track } from "@vercel/analytics/react";
+import { CLIENT, ENV } from "@/utils/constants";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,6 +20,17 @@ export default function Home(id: string) {
       setDisplayStyle(null);
     }
   };
+
+  useEffect(() => {
+    const init = () => {
+      track("Show-menu", {
+        location: "index.tsx",
+        client: CLIENT,
+        enviroment: ENV,
+      });
+    };
+    init();
+  }, []);
 
   return (
     <>
@@ -1165,6 +1178,7 @@ export default function Home(id: string) {
           </address>
         </section>
       </footer>
+      <Analytics />
     </>
   );
 }

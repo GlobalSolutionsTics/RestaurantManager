@@ -1,10 +1,11 @@
+import { Analytics, track } from "@vercel/analytics/react";
 import { IClientResponse } from "@/pages/api/directory/controllers/client";
 import { listClientService } from "@/services/client";
 import { editPaymentInformationService } from "@/services/order";
 import { listUserSerive } from "@/services/users";
 import { TDirectory } from "@/types/directory.types";
 import { TResponseOrders } from "@/types/menu.types";
-import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
+import { CLIENT, DEFAULT_TABLE_LLEVAR, ENV } from "@/utils/constants";
 import {
   currencyFormat,
   formatDateTime,
@@ -234,6 +235,10 @@ const PrintOrderPage = () => {
   };
 
   useEffect(() => {
+    const init = () => {
+      track("SHOW-PRINT-ORDERS", { client: CLIENT, enviroment: ENV });
+    };
+    init();
     getClientList();
   }, []);
   //Initial charger
@@ -770,6 +775,7 @@ const PrintOrderPage = () => {
             </div>
           </Box>
         </Modal>
+        <Analytics />
       </div>
     </>
   );

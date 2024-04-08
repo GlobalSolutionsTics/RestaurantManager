@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useReactToPrint } from "react-to-print";
+import { Analytics, track } from "@vercel/analytics/react";
 import MenuAdmin from "../components/menu";
 import Head from "next/head";
 import ProtectPage from "../components/protectPage";
@@ -14,7 +15,7 @@ import Image from "next/image";
 import { currencyFormat, getActualDateDB, textToString } from "@/utils/formats";
 import TicketAdmin from "../../../components/ticketAdmin";
 import { StatusEnum } from "@/enums/states.enum";
-import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
+import { CLIENT, DEFAULT_TABLE_LLEVAR, ENV } from "@/utils/constants";
 import { ADMIN, TOKEN } from "@/utils/users";
 
 const style = {
@@ -98,6 +99,10 @@ const OrdersPage = () => {
   }
 
   useEffect(() => {
+    const init = () => {
+      track("SHOW-ORDERS", { client: CLIENT, enviroment: ENV });
+    };
+    init();
     autheticate();
     const date = getActualDateDB();
     const connection = ref(
@@ -246,6 +251,7 @@ const OrdersPage = () => {
           </div>
         </Box>
       </Modal>
+      <Analytics />
     </ProtectPage>
   );
 };
