@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useReactToPrint } from "react-to-print";
-import { Analytics, track } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/react";
 import MenuAdmin from "../components/menu";
 import Head from "next/head";
 import ProtectPage from "../components/protectPage";
@@ -99,10 +99,6 @@ const OrdersPage = () => {
   }
 
   useEffect(() => {
-    const init = () => {
-      track("SHOW-ORDERS", { client: CLIENT, enviroment: ENV });
-    };
-    init();
     autheticate();
     const date = getActualDateDB();
     const connection = ref(
@@ -116,10 +112,14 @@ const OrdersPage = () => {
           (a: any, b: any) => a.orderId - b.orderId,
         );
         const filtersActived = elements.filter(
-          (itm) => itm.status !== StatusEnum.CLOSED,
+          (itm) =>
+            itm.status !== StatusEnum.CLOSED &&
+            itm.status !== StatusEnum.CANCELED,
         );
         const filtersClosed = elements.filter(
-          (itm) => itm.status === StatusEnum.CLOSED,
+          (itm) =>
+            itm.status === StatusEnum.CLOSED ||
+            itm.status === StatusEnum.CANCELED,
         );
         setOrdersClosed(filtersClosed);
         setOrdersActived(filtersActived);
@@ -167,17 +167,13 @@ const OrdersPage = () => {
                 <TicketAdmin
                   key={itm.uuid}
                   itm={itm}
-                  handlePrintData={handlePrintData}
+                  onDelete={handlePrintData}
                 />
               ))}
             {orderShow === EListOrders.CLOSED &&
               ordersClosed.length > 0 &&
               ordersClosed.map((itm) => (
-                <TicketAdmin
-                  key={itm.uuid}
-                  itm={itm}
-                  handlePrintData={handlePrintData}
-                />
+                <TicketAdmin key={itm.uuid} itm={itm} />
               ))}
           </div>
         </div>

@@ -69,10 +69,13 @@ const HomeOrderPage = () => {
         const ordersActived = elements.filter(
           (itm) =>
             itm.status !== StatusEnum.CLOSED &&
-            itm.status !== StatusEnum.ORDER_READY,
+            itm.status !== StatusEnum.ORDER_READY &&
+            itm.status !== StatusEnum.CANCELED,
         );
         const ordersClose = elements.filter(
-          (itm) => itm.status === StatusEnum.CLOSED,
+          (itm) =>
+            itm.status === StatusEnum.CLOSED ||
+            itm.status === StatusEnum.CANCELED,
         );
         const ordersReady = elements.filter(
           (itm) => itm.status === StatusEnum.ORDER_READY,
@@ -152,7 +155,8 @@ const HomeOrderPage = () => {
       return "bg-waiting-dark hover:bg-waiting-dark hover:text-dark";
     } else if (
       status === StatusEnum.ORDER_READY ||
-      status === StatusEnum.CLOSED
+      status === StatusEnum.CLOSED ||
+      status === StatusEnum.CANCELED
     ) {
       return "bg-success-dark text-white hidden";
     } else if (status === StatusEnum.EDITED) {

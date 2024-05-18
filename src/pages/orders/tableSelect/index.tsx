@@ -58,7 +58,9 @@ export default function tableSelector() {
         (a: any, b: any) => a.orderId - b.orderId,
       );
       const filters = elements.filter(
-        (itm) => itm.status !== StatusEnum.CLOSED,
+        (itm) =>
+          itm.status !== StatusEnum.CLOSED &&
+          itm.status !== StatusEnum.CANCELED,
       );
       const mapTables = filters.map((itm) => itm.tableNumber);
       setTablesActives(mapTables);

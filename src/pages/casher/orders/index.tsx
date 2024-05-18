@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { useReactToPrint } from "react-to-print";
-import MenuCasher from "../components/menu";
+import { Analytics } from "@vercel/analytics/react";
+import MenuAdmin from "../components/menu";
 import Head from "next/head";
-import ProtectPage from "../../admin/components/protectPage";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { onValue, ref } from "firebase/database";
@@ -14,8 +14,9 @@ import Image from "next/image";
 import { currencyFormat, getActualDateDB, textToString } from "@/utils/formats";
 import TicketAdmin from "../../../components/ticketAdmin";
 import { StatusEnum } from "@/enums/states.enum";
-import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
-import { CASHER, TOKEN } from "@/utils/users";
+import { CLIENT, DEFAULT_TABLE_LLEVAR, ENV } from "@/utils/constants";
+import { ADMIN, TOKEN } from "@/utils/users";
+import ProtectPage from "@/pages/admin/components/protectPage";
 
 const style = {
   position: "absolute" as "absolute",
@@ -100,9 +101,10 @@ const OrdersPage = () => {
   useEffect(() => {
     autheticate();
     const date = getActualDateDB();
-    const DB_RT =
-      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
-    const connection = ref(realtimeDB, DB_RT);
+    const connection = ref(
+      realtimeDB,
+      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day,
+    );
     return onValue(connection, (snapshot) => {
       if (snapshot.exists()) {
         const data: Array<TResponseOrders> = snapshot.val();
@@ -110,28 +112,28 @@ const OrdersPage = () => {
           (a: any, b: any) => a.orderId - b.orderId,
         );
         const filtersActived = elements.filter(
-          (itm) => itm.status !== StatusEnum.CLOSED,
+          (itm) =>
+            itm.status !== StatusEnum.CLOSED &&
+            itm.status !== StatusEnum.CANCELED,
         );
         const filtersClosed = elements.filter(
-          (itm) => itm.status === StatusEnum.CLOSED,
+          (itm) =>
+            itm.status === StatusEnum.CLOSED ||
+            itm.status === StatusEnum.CANCELED,
         );
         setOrdersClosed(filtersClosed);
         setOrdersActived(filtersActived);
-
-        // Ejemplo de uso: Filtrar por la fecha "Thu Dec 28 2023"
-        const resultado = filtrarPorFecha(elements, "Thu Dec 28 2023");
-        console.log("Resultado:", resultado);
       }
     });
   }, []);
 
   return (
-    <ProtectPage push={router.push} requiredProfiles={CASHER}>
+    <ProtectPage push={router.push} requiredProfiles={"caja"}>
       <Head>
-        <title>Cajero | Ordenes</title>
+        <title>Administrador | Ordenes</title>
       </Head>
       <div className='flex flex-row'>
-        <MenuCasher router={router} basePath={router.pathname} />
+        <MenuAdmin router={router} basePath={router.pathname} />
         <div className='flex flex-col w-full h-min-[100vh] px-8 py-4'>
           <div className='flex flex-row justify-between'>
             <div className='font-primary text-[2rem] mb-4 text-black'>
@@ -165,17 +167,13 @@ const OrdersPage = () => {
                 <TicketAdmin
                   key={itm.uuid}
                   itm={itm}
-                  handlePrintData={handlePrintData}
+                  onDelete={handlePrintData}
                 />
               ))}
             {orderShow === EListOrders.CLOSED &&
               ordersClosed.length > 0 &&
               ordersClosed.map((itm) => (
-                <TicketAdmin
-                  key={itm.uuid}
-                  itm={itm}
-                  handlePrintData={handlePrintData}
-                />
+                <TicketAdmin key={itm.uuid} itm={itm} />
               ))}
           </div>
         </div>
@@ -249,6 +247,7 @@ const OrdersPage = () => {
           </div>
         </Box>
       </Modal>
+      <Analytics />
     </ProtectPage>
   );
 };

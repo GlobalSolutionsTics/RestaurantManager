@@ -5,6 +5,7 @@ export enum StatusEnum {
   ORDER_READY = "ORDEN LISTA",
   EDITED = "ORDEN EDITADA",
   CLOSED = "ORDEN CERRADA",
+  CANCELED = "ORDEN CANCELADA",
 }
 
 export enum StatusApplicationEnum {
