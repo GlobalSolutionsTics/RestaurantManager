@@ -1,4 +1,4 @@
-import { Analytics, track } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/react";
 import { IClientResponse } from "@/pages/api/directory/controllers/client";
 import { listClientService } from "@/services/client";
 import { editPaymentInformationService } from "@/services/order";
@@ -233,14 +233,6 @@ const PrintOrderPage = () => {
       setSelectedClient(CLIENT_FILTER(client));
     }
   };
-
-  useEffect(() => {
-    const init = () => {
-      track("SHOW-PRINT-ORDERS", { client: CLIENT, enviroment: ENV });
-    };
-    init();
-    getClientList();
-  }, []);
   //Initial charger
   const getWinterInformation = useCallback(async () => {
     const token = sessionStorage.getItem(TOKEN_ID);
