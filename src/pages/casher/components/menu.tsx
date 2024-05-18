@@ -56,6 +56,9 @@ const MenuCasher = ({ basePath, router }: Props) => {
         <div className='text-white font-primary py-4 text-center text-[0.5rem] lg:text-[1.5rem]'>
           Cajero
         </div>
+        <div className='text-white font-secondary text-center pb-2 text-[0.5rem] lg:text-[1rem]'>
+          v {process.env.version}
+        </div>
       </div>
       <div className='hidden lg:block'>
         <MenuOption path={basePath} href={URL_CASHER_ORDERS}>

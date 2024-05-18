@@ -6,12 +6,11 @@ import { ChangeEvent, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import { OpenInFull } from "@mui/icons-material";
+import { OpenInFull, WifiOff } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { IUserRedux, saveUserInRedux } from "@/store/slices/user.slice";
 import { TOKEN_ID } from "@/utils/strings";
-import { Analytics, track } from "@vercel/analytics/react";
-import { CLIENT, ENV } from "@/utils/constants";
+import { Analytics } from "@vercel/analytics/react";
 
 const MessageComponent = withReactContent(Swal);
 
@@ -20,6 +19,7 @@ const IndexComp = () => {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isConnected, setIsConnected] = useState(true);
 
   const handleFullscreen = useFullScreenHandle();
   //Redux controller
@@ -105,10 +105,12 @@ const IndexComp = () => {
   };
 
   useEffect(() => {
-    const init = () => {
-      track("SHOW-LOGIN", { client: CLIENT, enviroment: ENV });
-    };
-    init();
+    window.addEventListener("offline", () => {
+      setIsConnected(false);
+    });
+    window.addEventListener("online", () => {
+      setIsConnected(true);
+    });
   }, []);
 
   return (
@@ -166,13 +168,26 @@ const IndexComp = () => {
                   ) : (
                     <button
                       onClick={handleSend}
-                      className='rounded-full submit__btn bg-success'
+                      className='rounded-full submit__btn bg-success disabled:!bg-enabled-dark'
                       type='submit'
+                      disabled={!isConnected}
                     >
                       Ingresar
                     </button>
                   )}
+                  {!isConnected && (
+                    <div className='w-full border-2 border-danger-dark rounded-lg p-2 mt-4 bg-danger-light flex flex-row items-center'>
+                      <WifiOff color='warning' className='mr-4' />
+                      <p className='text-danger-dark font-primary'>
+                        Sin internet
+                      </p>
+                    </div>
+                  )}
                 </div>
+                <hr className='border-1 border-primary my-4' />
+                <p className='font-primary text-center'>
+                  V {process.env.version}
+                </p>
               </form>
             </div>
           </div>

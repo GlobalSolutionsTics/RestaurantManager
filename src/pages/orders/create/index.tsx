@@ -100,6 +100,8 @@ export default function createIndex() {
               <AddOutlined /> Nueva Orden
             </button>
           </div>
+          <hr className='border-2 my-4' />
+          <div className='text-small font-primary'>V {process.env.version}</div>
         </div>
       </div>
     </ProtectPage>

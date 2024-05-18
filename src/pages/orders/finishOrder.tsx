@@ -223,67 +223,69 @@ const FinishOrderPage = () => {
 
   return (
     <>
-      <div className='w-full h-[100vh]'>
-        <div className='bg-white top-0'>
-          <div className='relative font-normal h-[120px] grid content-center w-screen px-10 bg-neutral-300'>
-            <Image src={"/platillos/otros.jpg"} fill alt='' />
-            <div className='absolute opacity-60 bg-black top-0 bottom-0 w-full'></div>
-            <div className='absolute w-full top-0 bottom-0 flex flex-col py-4 px-6'>
-              <p className='text-[2rem] text-white font-secondary'>
-                Finalizar orden
-              </p>
-              <p className='text-[1.5rem] text-white font-primary'>
-                Numero de platillos en la orden: {orderStore.dishes}
-              </p>
+      <div className='w-full h-[100vh] flex flex-col justify-between'>
+        <div className='w-full'>
+          <div className='bg-white top-0'>
+            <div className='relative font-normal h-[120px] grid content-center w-screen px-10 bg-neutral-300'>
+              <Image src={"/platillos/otros.jpg"} fill alt='' />
+              <div className='absolute opacity-60 bg-black top-0 bottom-0 w-full'></div>
+              <div className='absolute w-full top-0 bottom-0 flex flex-col py-4 px-6'>
+                <p className='text-[2rem] text-white font-secondary'>
+                  Finalizar orden
+                </p>
+                <p className='text-[1.5rem] text-white font-primary'>
+                  Numero de platillos en la orden: {orderStore.dishes}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        <div className='w-full'>
-          <div className='flex flex-col flex-start mx-8 my-4'>
-            <span className='font-primary text-[1.5rem] mb-2'>
-              Mesa que está atendiendo
-            </span>
-            <Select
-              labelId='select-table-label'
-              id='select-category'
-              value={orderStore.tableNumber}
-              label='Mesa #'
-              onChange={handleChangeTable}
-            >
-              <MenuItem value={DEFAULT_TABLE_LLEVAR}>PARA LLEVAR</MenuItem>
-              {kitchenList.map((itm, index) => (
-                <MenuItem key={"ind-" + index} value={index + 1}>
-                  {index + 1}
-                </MenuItem>
-              ))}
-            </Select>
-            {orderStore.tableNumber === DEFAULT_TABLE_LLEVAR && (
-              <>
-                <span className='font-primary text-[1.5rem] mb-2'>
-                  Nombre del cliente
-                </span>
-                <OutlinedInput
-                  id='outlined-adornment-name'
-                  label='Nombre del cliente'
-                  value={nameClient}
-                  onChange={handleChangeName}
-                />
-              </>
-            )}
-            <span className='font-primary text-[1.5rem] mb-2'>
-              ¿Cuantos platillos van en la orden?
-            </span>
-            <div className='flex flex-col pb-4'>
-              {orderStore.dishesDescription.map((itm, index) => (
-                <FieldEditedOption
-                  key={"id-" + index}
-                  name={itm.name}
-                  dishesNumber={itm.number || 0}
-                  price={itm.price}
-                  uuid={itm.uuid || ""}
-                  onChange={onChangeDish}
-                />
-              ))}
+          <div className='w-full'>
+            <div className='flex flex-col flex-start mx-8 my-4'>
+              <span className='font-primary text-[1.5rem] mb-2'>
+                Mesa que está atendiendo
+              </span>
+              <Select
+                labelId='select-table-label'
+                id='select-category'
+                value={orderStore.tableNumber}
+                label='Mesa #'
+                onChange={handleChangeTable}
+              >
+                <MenuItem value={DEFAULT_TABLE_LLEVAR}>PARA LLEVAR</MenuItem>
+                {kitchenList.map((itm, index) => (
+                  <MenuItem key={"ind-" + index} value={index + 1}>
+                    {index + 1}
+                  </MenuItem>
+                ))}
+              </Select>
+              {orderStore.tableNumber === DEFAULT_TABLE_LLEVAR && (
+                <>
+                  <span className='font-primary text-[1.5rem] mb-2'>
+                    Nombre del cliente
+                  </span>
+                  <OutlinedInput
+                    id='outlined-adornment-name'
+                    label='Nombre del cliente'
+                    value={nameClient}
+                    onChange={handleChangeName}
+                  />
+                </>
+              )}
+              <span className='font-primary text-[1.5rem] mb-2'>
+                ¿Cuantos platillos van en la orden?
+              </span>
+              <div className='flex flex-col pb-4'>
+                {orderStore.dishesDescription.map((itm, index) => (
+                  <FieldEditedOption
+                    key={"id-" + index}
+                    name={itm.name}
+                    dishesNumber={itm.number || 0}
+                    price={itm.price}
+                    uuid={itm.uuid || ""}
+                    onChange={onChangeDish}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
