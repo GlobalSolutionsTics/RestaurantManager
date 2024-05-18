@@ -162,20 +162,12 @@ const OrdersPage = () => {
             {orderShow === EListOrders.ACTIVED &&
               ordersActive.length > 0 &&
               ordersActive.map((itm) => (
-                <TicketAdmin
-                  key={itm.uuid}
-                  itm={itm}
-                  handlePrintData={handlePrintData}
-                />
+                <TicketAdmin key={itm.uuid} itm={itm} />
               ))}
             {orderShow === EListOrders.CLOSED &&
               ordersClosed.length > 0 &&
               ordersClosed.map((itm) => (
-                <TicketAdmin
-                  key={itm.uuid}
-                  itm={itm}
-                  handlePrintData={handlePrintData}
-                />
+                <TicketAdmin key={itm.uuid} itm={itm} />
               ))}
           </div>
         </div>
