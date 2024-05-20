@@ -193,6 +193,7 @@ const IndexComp = () => {
           </div>
         </div>
       </section>
+      <Analytics />
     </FullScreen>
   );
 };
