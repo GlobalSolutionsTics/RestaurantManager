@@ -243,7 +243,6 @@ const PrintOrderPage = () => {
       );
       if (findWaint) {
         const wainter = findWaint[0];
-        console.log(wainter);
         setWainterName(wainter?.name);
       }
     }
@@ -301,8 +300,6 @@ const PrintOrderPage = () => {
             }
 
             setInformation(data[id]);
-            console.log(data);
-            console.log(id);
             setTotal(totaly);
             setSubtotaly(subTotal);
             setIVA(totaly - subTotal);
@@ -330,7 +327,6 @@ const PrintOrderPage = () => {
       </div>
     );
   }
-  //console.log(information);
 
   return (
     <>
