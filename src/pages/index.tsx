@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import Head from "next/head";
 import SectionComp from "@/components/section/Section";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SaucerComp from "@/components/saucer/Saucer";
 import SaucerTable from "@/components/saucerTable/SaucerTable";
 import Link from "next/link";
