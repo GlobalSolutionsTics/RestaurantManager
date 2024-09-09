@@ -578,18 +578,6 @@ const PrintOrderPage = () => {
           <hr className='my-2' />
           <table className='w-full'>
             <tr>
-              <td className='print-text-small'>SUBTOTAL:</td>
-              <td className='print-text-small text-right'>
-                {currencyFormat(subtotaly || 0)}
-              </td>
-            </tr>
-            <tr>
-              <td className='print-text-small'>IVA:</td>
-              <td className='print-text-small text-right'>
-                {currencyFormat(iva || 0)}
-              </td>
-            </tr>
-            <tr>
               <td className='print-text-small'>TOTAL:</td>
               <td className='print-text-small text-right'>
                 {currencyFormat(total || 0)}
