@@ -28,6 +28,7 @@ import { Button } from "@mui/material";
 import { OrdersDishesStatus } from "@/enums/orders.enum";
 import { getActualDateDB } from "@/utils/formats";
 import { KITCHEN, TOKEN } from "@/utils/users";
+import WaiterName from "@/components/waiter/WaiterName";
 
 enum OrdersStatusEnum {
   ACTIVE = "ACTIVAS",
@@ -265,6 +266,9 @@ const HomeOrderPage = () => {
                       {itm.status === StatusEnum.SEND
                         ? "PENDIENTE"
                         : itm.status}
+                    </p>
+                    <p>
+                      Mesero: <WaiterName waiterId={itm.waiter} />
                     </p>
                   </div>
                   <div className='bg-enabled rounded-b-lg flex flex-col flex-start justify-between'>
