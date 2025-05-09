@@ -1,41 +1,22 @@
 import { useRouter } from "next/router";
-import Chart from "react-google-charts";
 import { useCallback, useEffect, useState } from "react";
 import { getFinancialServices } from "@/services/finance";
 import { TOKEN_ID } from "@/utils/strings";
-import { currencyFormat } from "@/utils/formats";
-import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import {
-  TDishForSales,
-  getDishesForSeles,
-  getItemsForHours,
-  uniquesDays,
-} from "@/utils/array";
 import { ADMIN, TOKEN } from "@/utils/users";
 import { RequestQuote } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import ProtectPage from "../components/protectPage";
 import MenuAdmin from "../components/menu";
-import TableDishes from "./components/tableDishes";
-import { FinancialResponse, Order } from "./type";
-import { TableSalesForDays } from "./components/tableSalesForDay";
-import PanelStatisticsFinancial from "./components/panelStatistics";
-import { TableSalesForHour } from "./components/tableSalesForHour";
-import { TicketModalCheck } from "./components/ticketModalCheck";
-import { TicketCheck } from "./components/ticketCheck";
-import { TableSalesForDishes } from "./components/tableSalesForDishes";
-
-type TDaysFinance = {
-  day: string;
-  total: number;
-};
-
-type THoursFinance = {
-  hour: string;
-  total: number;
-};
+import TableDishes from "@ui/financial/components/tableDishes";
+import { FinancialResponse, Order } from "@ui/financial/type";
+import { TableSalesForDays } from "@ui/financial/components/tableSalesForDay";
+import PanelStatisticsFinancial from "@ui/financial/components/panelStatistics";
+import { TableSalesForHour } from "@ui/financial/components/tableSalesForHour";
+import { TicketModalCheck } from "@ui/financial/components/ticketModalCheck";
+import { TicketCheck } from "@ui/financial/components/ticketCheck";
+import { TableSalesForDishes } from "@ui/financial/components/tableSalesForDishes";
 
 const ContabilityPage = () => {
   const [listSelected, setListSelected] = useState<FinancialResponse[]>([]);

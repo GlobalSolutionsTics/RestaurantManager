@@ -1,7 +1,6 @@
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { currencyFormat } from "@/utils/formats";
 import { FinancialResponse, Order } from "../type";
-import { URL_BASE } from "@/utils/urls";
 
 type Props = {
   list: FinancialResponse[];
