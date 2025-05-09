@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { listUserSerive } from "@/services/users";
 import { TOKEN_ID } from "@/utils/strings";
 
-const WaiterName = ({ waiterId }: any) => {
+type Props = {
+  waiterId: string;
+};
+
+const WaiterName = ({ waiterId }: Props) => {
   const [waiterName, setWaiterName] = useState("");
 
   useEffect(() => {

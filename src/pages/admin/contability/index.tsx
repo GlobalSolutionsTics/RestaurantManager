@@ -17,6 +17,7 @@ import { TableSalesForHour } from "@ui/financial/components/tableSalesForHour";
 import { TicketModalCheck } from "@ui/financial/components/ticketModalCheck";
 import { TicketCheck } from "@ui/financial/components/ticketCheck";
 import { TableSalesForDishes } from "@ui/financial/components/tableSalesForDishes";
+import { TableSalesForWaiter } from "@/ui/financial/components/tableSalesForWaiter";
 
 const ContabilityPage = () => {
   const [listSelected, setListSelected] = useState<FinancialResponse[]>([]);
@@ -120,7 +121,8 @@ const ContabilityPage = () => {
             </div>
             <TableSalesForDays list={listSelected} />
           </div>
-          <div className='grid grid-cols-2 gap-4 mt-8 '>
+          <div className='grid grid-cols-3 gap-4 mt-8 '>
+            <TableSalesForWaiter list={listSelected} />
             <TableSalesForHour list={listSelected} />
             <TableSalesForDishes list={listSelected} />
           </div>

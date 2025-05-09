@@ -55,3 +55,10 @@ export type TableSalesDishes = {
   price: number;
   total: number;
 };
+
+export type TableWaiter = {
+  uuid: string;
+  name: string;
+  total: number;
+  propine: number;
+};
