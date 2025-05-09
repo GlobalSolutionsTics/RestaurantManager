@@ -1,5 +1,6 @@
 import { DbFormatDate } from "@/pages/api/finance/types";
 import { TMenuResponse } from "@/types/menu.types";
+import dayjs from "@lib/dayjs";
 
 export const currencyFormat = (val: number) => {
   const newValue = Intl.NumberFormat("es-MX", {
@@ -222,20 +223,16 @@ export const getTotalDish = (
  * @returns DbFormatDate
  */
 export const processDateFormat = (date: Date): DbFormatDate => {
-  const datePreprocesed = new Date(
-    date.setTime(date.getTime() + 6 * 60 * 60 * 1000),
-  );
-  const yyyy = datePreprocesed.getFullYear();
-  let mm: number | string = datePreprocesed.getMonth() + 1; // Months start at 0!
-  let dd: number | string = datePreprocesed.getDate();
+  const datePreprocesed = dayjs(date).tz("America/Mexico_City");
+  const yyyy = datePreprocesed.year();
+  const mm = String(datePreprocesed.month() + 1).padStart(2, "0"); // month() is 0-based
+  const dd = String(datePreprocesed.date()).padStart(2, "0");
 
-  if (dd < 10) dd = "0" + dd;
-  if (mm < 10) mm = "0" + mm;
   return {
     year: yyyy.toString(),
-    month: mm.toString(),
-    day: dd.toString(),
-    fullDate: yyyy + "/" + mm + "/" + dd,
+    month: mm,
+    day: dd,
+    fullDate: `${yyyy}/${mm}/${dd}`,
   };
 };
 

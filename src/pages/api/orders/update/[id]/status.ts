@@ -31,6 +31,7 @@ const handle = async (req: NextApiRequest, res: NextApiResponse) => {
                 });
               } else {
                 res.status(500).send({
+                  check: "si es un error",
                   error,
                   message,
                 });
