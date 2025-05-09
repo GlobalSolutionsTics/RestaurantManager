@@ -59,7 +59,7 @@ export const TableSalesForDays = ({ list }: Props) => {
   return (
     <div className='w-full'>
       <div className='w-full flex flex-row bg-enabled-dark p-2'>
-        Ventas por dia de la semana
+        Ventas por dia de la semana en el periodo
       </div>
       <div className='flex flex-col [&>*]:bg-enabled [&>*:nth-child(odd)]:!bg-blue-dark [&>*:nth-child(odd)]:!text-white overflow-y-auto max-h-[400px]'>
         {map.length > 0 &&
