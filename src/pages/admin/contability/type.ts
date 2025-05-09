@@ -2,7 +2,7 @@ type DishDescription = {
   image: string;
   isUniquePrice: boolean;
   name: string;
-  number: number;
+  number: number | string;
   price: number;
   status: string;
   type: string;

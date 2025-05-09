@@ -16,15 +16,13 @@ export const TableSalesForDishes = ({ list }: Props) => {
         itm.data.map((order) => {
           order.dishesDescription.map((dish) => {
             const index = listOfDishes.findIndex((ls) => ls.uuid === dish.uuid);
-            if (isNaN(parseInt(dish.number))) {
-              console.log("Dish with NaN:", dish);
-            }
+            const units = dish.number !== "" ? (dish.number as number) : 0;
             const body: TableSalesDishes = {
               uuid: dish.uuid,
               name: dish.name,
               price: dish.price,
-              units: parseInt(dish.number !== "" ? dish.number : 0),
-              total: dish.price * dish.number,
+              units: units,
+              total: dish.price * units,
             };
             if (index === -1) {
               listOfDishes.push(body);
