@@ -3,7 +3,7 @@ import { listUserSerive } from "@/services/users";
 import { TOKEN_ID } from "@/utils/strings";
 
 type Props = {
-  waiterId: string;
+  waiterId: any;
 };
 
 const WaiterName = ({ waiterId }: Props) => {
