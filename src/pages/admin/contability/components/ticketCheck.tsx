@@ -38,17 +38,20 @@ export const TicketCheck = ({ order }: Props) => {
           </tr>
         </thead>
         <tbody>
-          {order.dishesDescription.map((dish) => (
-            <tr
-              key={dish.uuid}
-              className={dish.number === 0 ? "!bg-danger !text-white" : ""}
-            >
-              <td>{dish.name}</td>
-              <td>{dish.number}</td>
-              <td>{currencyFormat(dish.price)}</td>
-              <td>{currencyFormat(dish.price * dish.number)}</td>
-            </tr>
-          ))}
+          {order.dishesDescription.map((dish) => {
+            const units = dish.number !== "" ? (dish.number as number) : 0;
+            return (
+              <tr
+                key={dish.uuid}
+                className={dish.number === 0 ? "!bg-danger !text-white" : ""}
+              >
+                <td>{dish.name}</td>
+                <td>{dish.number}</td>
+                <td>{currencyFormat(dish.price)}</td>
+                <td>{currencyFormat(dish.price * units)}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
       <p className='bg-blue-light p-2'>Detalles de pago</p>
