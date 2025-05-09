@@ -10,6 +10,8 @@ import {
 } from "firebase/database";
 import { generateFormatedDateForBD, processOrderForFS } from "../utils";
 import { DbFormatDate } from "../types";
+import { Order } from "@/ui/financial/type";
+import { StatusEnum } from "@/enums/states.enum";
 
 export const getAllOrdersFS = async () => {
   try {
@@ -32,10 +34,13 @@ export const getOrdersByDate = async (iniitalDate: Date, endDate: Date) => {
     const information = [];
     for (let i = 0; i < dates.length; i++) {
       const data = await getOrderForDate(dates[i], dbRef);
-      const dataProcessed = processOrderForFS(data);
+      const dataProcessed: Order[] = processOrderForFS(data);
+      const dataFilter = dataProcessed.filter(
+        (order) => order.status === StatusEnum.CLOSED,
+      );
       const info = {
         date: dates[i].fullDate,
-        data: dataProcessed,
+        data: dataFilter,
       };
       information.push(info);
     }

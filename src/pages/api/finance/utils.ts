@@ -5,6 +5,7 @@ import {
   processDateFormat,
 } from "@/utils/formats";
 import { DbFormatDate } from "./types";
+import dayjs from "@lib/dayjs";
 
 /**
  * Genera una lista de fechas a partir de la fecha inicial
@@ -13,15 +14,14 @@ import { DbFormatDate } from "./types";
  * @returns Date[]
  */
 export const generateDates = (init: Date, end: Date): Date[] => {
-  const dates = [];
-  const currentDate = new Date(init);
-  currentDate.setHours(-6, 0, 0, 0);
-  end = new Date(end);
-  end.setHours(0, 0, 0, 0);
+  const dates: Date[] = [];
 
-  while (currentDate <= end) {
-    dates.push(new Date(currentDate));
-    currentDate.setDate(currentDate.getDate() + 1);
+  let current = dayjs(init).tz("America/Mexico_City").startOf("day");
+  const final = dayjs(end).tz("America/Mexico_City").endOf("day");
+
+  while (current.isBefore(final) || current.isSame(final, "day")) {
+    dates.push(current.toDate());
+    current = current.add(1, "day");
   }
 
   return dates;
