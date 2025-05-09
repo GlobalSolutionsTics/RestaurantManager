@@ -64,7 +64,7 @@ export const getDishesForSeles = (arr: any[]) => {
   const newItm: Array<TDishForSales> = [];
 
   for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr[i].dishesDescription.length; j++) {
+    for (let j = 0; j < arr[i].dishesDescription?.length; j++) {
       const index = newItm.findIndex(
         (itm) => itm.dishId == arr[i].dishesDescription[j].uuid,
       );

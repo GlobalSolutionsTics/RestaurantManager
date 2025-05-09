@@ -1,3 +1,4 @@
+import { DbFormatDate } from "@/pages/api/finance/types";
 import { TMenuResponse } from "@/types/menu.types";
 
 export const currencyFormat = (val: number) => {
@@ -186,21 +187,7 @@ export const getActualDateDB = (): {
   fullDate: string;
 } => {
   const date = new Date();
-  const datePreprocesed = new Date(
-    date.setTime(date.getTime() - 6 * 60 * 60 * 1000),
-  );
-  const yyyy = datePreprocesed.getFullYear();
-  let mm: number | string = datePreprocesed.getMonth() + 1; // Months start at 0!
-  let dd: number | string = datePreprocesed.getDate();
-
-  if (dd < 10) dd = "0" + dd;
-  if (mm < 10) mm = "0" + mm;
-  return {
-    year: yyyy.toString(),
-    month: mm.toString(),
-    day: dd.toString(),
-    fullDate: yyyy + "/" + mm + "/" + dd,
-  };
+  return processDateFormat(date);
 };
 
 export const formatHour = (date: string) => {
@@ -227,4 +214,34 @@ export const getTotalDish = (
     return total;
   }
   return 0;
+};
+
+/**
+ * Procesa las fechas para tenerlas del tipo DbFormatDate
+ * @param date Fecha
+ * @returns DbFormatDate
+ */
+export const processDateFormat = (date: Date): DbFormatDate => {
+  const datePreprocesed = new Date(
+    date.setTime(date.getTime() + 6 * 60 * 60 * 1000),
+  );
+  const yyyy = datePreprocesed.getFullYear();
+  let mm: number | string = datePreprocesed.getMonth() + 1; // Months start at 0!
+  let dd: number | string = datePreprocesed.getDate();
+
+  if (dd < 10) dd = "0" + dd;
+  if (mm < 10) mm = "0" + mm;
+  return {
+    year: yyyy.toString(),
+    month: mm.toString(),
+    day: dd.toString(),
+    fullDate: yyyy + "/" + mm + "/" + dd,
+  };
+};
+
+export const DateISOFormat = (date: Date): Date => {
+  const datePreprocesed = new Date(
+    date.setTime(date.getTime() - 6 * 60 * 60 * 1000),
+  );
+  return datePreprocesed;
 };
