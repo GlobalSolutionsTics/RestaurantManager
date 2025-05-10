@@ -9,9 +9,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const end = body.end;
     console.log("INIT-END:", init, end);
     const initalDate = new Date(init as string);
-    initalDate.setHours(0, 0, 0, 0);
+    initalDate.setHours(6, 0, 0, 0);
     const endDate = new Date(end as string);
-    endDate.setHours(0, 0, 0, 0);
+    endDate.setHours(23, 0, 0, 0);
     console.log("INIT:", initalDate);
     console.log("FINISH:", endDate);
     const orders2 = await getOrdersByDate(initalDate, endDate);
