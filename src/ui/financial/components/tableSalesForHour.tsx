@@ -1,4 +1,4 @@
-import { currencyFormat } from "@/utils/formats";
+import { currencyFormat, getFloat } from "@/utils/formats";
 import { FinancialResponse, TableSalesHour } from "../type";
 import { useCallback, useEffect, useState } from "react";
 
@@ -17,12 +17,11 @@ export const TableSalesForHour = ({ list }: Props) => {
           const index = listOfHours.findIndex(
             (ls) => ls.hour === order.createAtHour,
           );
-          let disc = 0;
-          const discount = parseFloat(order.discount ?? 0);
-          if (!isNaN(discount)) disc = discount;
+          const discount = getFloat(order.discount);
+          const propine = getFloat(order.propine);
           const body = {
             hour: order.createAtHour,
-            total: order.total + parseFloat(order.propine ?? 0) - disc,
+            total: order.total + propine - discount,
           };
           if (index === -1) {
             listOfHours.push(body);

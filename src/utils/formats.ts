@@ -242,3 +242,10 @@ export const DateISOFormat = (date: Date): Date => {
   );
   return datePreprocesed;
 };
+
+export const getFloat = (value: any): number => {
+  let val = 0;
+  const parser = parseFloat(value ?? 0);
+  if (!isNaN(parser)) val = parser;
+  return val;
+};

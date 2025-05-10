@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { FinancialResponse, TableWaiter } from "../type";
-import { currencyFormat } from "@/utils/formats";
+import { currencyFormat, getFloat } from "@/utils/formats";
 import WaiterName from "@/components/waiter/WaiterName";
 
 type Props = {
@@ -18,14 +18,13 @@ export const TableSalesForWaiter = ({ list }: Props) => {
           const index = listOfDishes.findIndex(
             (ls) => ls.uuid === order.waiter,
           );
-          let disc = 0;
-          const discount = parseFloat(order.discount ?? 0);
-          if (!isNaN(discount)) disc = discount;
+          const discount = getFloat(order.discount);
+          const propine = getFloat(order.propine);
           const body: TableWaiter = {
             uuid: order.waiter,
             name: "",
-            propine: parseFloat(order.propine ?? 0),
-            total: order.total + parseFloat(order.propine ?? 0) - disc,
+            propine: propine,
+            total: order.total + propine - discount,
           };
           if (index === -1) {
             listOfDishes.push(body);

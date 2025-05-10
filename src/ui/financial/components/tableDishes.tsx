@@ -1,5 +1,5 @@
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
-import { currencyFormat } from "@/utils/formats";
+import { currencyFormat, getFloat } from "@/utils/formats";
 import { FinancialResponse, Order } from "../type";
 
 type Props = {
@@ -30,9 +30,8 @@ const TableDishes = ({ list, onCheck }: Props) => {
 
               <div className='[&>*]:bg-enabled [&>*:nth-child(odd)]:!bg-blue-dark [&>*:nth-child(odd)]:!text-white'>
                 {itm?.data?.map((dish) => {
-                  let disc = 0;
-                  const discount = parseFloat(dish.discount ?? 0);
-                  if (!isNaN(discount)) disc = discount;
+                  const discount = getFloat(dish.discount);
+                  const propine = getFloat(dish.propine);
                   return (
                     <div
                       className='w-full flex flex-row p-2 hover:cursor'
@@ -48,14 +47,12 @@ const TableDishes = ({ list, onCheck }: Props) => {
                         {dish.dishesDescription.length}
                       </div>
                       <div className='basis-1/6'>
-                        {currencyFormat(
-                          dish.total + parseFloat(dish.propine ?? 0) - disc,
-                        )}
+                        {currencyFormat(dish.total + propine - discount)}
                       </div>
-                      <div className='basis-1/6'>{currencyFormat(disc)}</div>
                       <div className='basis-1/6'>
-                        {currencyFormat(parseFloat(dish.propine ?? 0))}
+                        {currencyFormat(discount)}
                       </div>
+                      <div className='basis-1/6'>{currencyFormat(propine)}</div>
                     </div>
                   );
                 })}

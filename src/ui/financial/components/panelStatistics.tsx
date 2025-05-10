@@ -1,4 +1,4 @@
-import { currencyFormat } from "@/utils/formats";
+import { currencyFormat, getFloat } from "@/utils/formats";
 import { FinancialResponse } from "../type";
 import { useCallback, useEffect, useState } from "react";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
@@ -31,9 +31,10 @@ const PanelStatisticsFinancial = ({ list }: Props) => {
     list.map((itm) => {
       if (itm?.data?.length > 0) {
         itm.data.map((order) => {
-          let discount = 0;
-          const parserDiscount = parseFloat(order.discount ?? 0);
-          if (!isNaN(parserDiscount)) discount = parserDiscount;
+          const discount = getFloat(order.discount);
+          const propine = getFloat(order.propine);
+          const realTotal = order.total + propine - discount;
+
           order.tableNumber !== DEFAULT_TABLE_LLEVAR
             ? tablesAttended++
             : toTravel++;
@@ -51,14 +52,14 @@ const PanelStatisticsFinancial = ({ list }: Props) => {
           });
 
           if (order.tableNumber !== DEFAULT_TABLE_LLEVAR)
-            totalSalesAttendedInTable += order.total - discount;
+            totalSalesAttendedInTable += realTotal;
 
           if (order.tableNumber === DEFAULT_TABLE_LLEVAR)
-            totalSalesForTravel +=
-              order.total + parseFloat(order.propine ?? 0) - discount;
+            totalSalesForTravel += realTotal;
+
           totalDiscount += discount;
-          totalList += order.total + parseFloat(order.propine ?? 0) - discount;
-          totalPropineStadistic += parseFloat(order.propine ?? 0);
+          totalList += realTotal;
+          totalPropineStadistic += propine;
         });
       }
     });

@@ -1,4 +1,4 @@
-import { currencyFormat } from "@/utils/formats";
+import { currencyFormat, getFloat } from "@/utils/formats";
 import { FinancialResponse, TableSales } from "../type";
 import { useCallback, useEffect, useState } from "react";
 
@@ -37,10 +37,9 @@ export const TableSalesForDays = ({ list }: Props) => {
         const body = {
           day: itm.data?.[0]?.createAtDay,
           total: itm.data.reduce((acc, curr) => {
-            let disc = 0;
-            const discount = parseFloat(curr.discount ?? 0);
-            if (!isNaN(discount)) disc = discount;
-            return acc + (curr.total + parseFloat(curr.propine ?? 0) - disc);
+            const disc = getFloat(curr.discount);
+            const propine = getFloat(curr.propine);
+            return acc + (curr.total + propine - disc);
           }, 0),
         };
         if (index === -1) {

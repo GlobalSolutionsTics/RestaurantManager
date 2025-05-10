@@ -1,6 +1,6 @@
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { Order } from "../type";
-import { currencyFormat } from "@/utils/formats";
+import { currencyFormat, getFloat } from "@/utils/formats";
 import { Typography } from "@mui/material";
 
 type Props = {
@@ -15,6 +15,9 @@ enum EButtonActives {
 }
 export const TicketCheck = ({ order }: Props) => {
   if (!order) return <></>;
+
+  const discount = getFloat(order.discount);
+  const propine = getFloat(order.propine);
   return (
     <div className='flex flex-col'>
       <Typography variant='h3'>Detalle de la orden</Typography>
@@ -39,7 +42,7 @@ export const TicketCheck = ({ order }: Props) => {
         </thead>
         <tbody>
           {order.dishesDescription.map((dish) => {
-            const units = dish.number !== "" ? (dish.number as number) : 0;
+            const units = getFloat(dish.number);
             return (
               <tr
                 key={dish.uuid}
@@ -55,17 +58,10 @@ export const TicketCheck = ({ order }: Props) => {
         </tbody>
       </table>
       <p className='bg-blue-light p-2'>Detalles de pago</p>
-      <div>Descuento: {currencyFormat(parseFloat(order.discount ?? 0))}</div>
-      <div>Propina: {currencyFormat(parseFloat(order.propine ?? 0))}</div>
+      <div>Descuento: {currencyFormat(discount)}</div>
+      <div>Propina: {currencyFormat(propine)}</div>
       <div>Subtotal: {currencyFormat(order.total ?? 0)}</div>
-      <div>
-        Total:{" "}
-        {currencyFormat(
-          order.total +
-            parseFloat(order.propine ?? 0) -
-            parseFloat(order.discount ?? 0),
-        )}
-      </div>
+      <div>Total: {currencyFormat(order.total + propine - discount)}</div>
       {order.paymentType !== EButtonActives.DEBIT &&
         order.paymentType !== EButtonActives.CREDIT && (
           <>
