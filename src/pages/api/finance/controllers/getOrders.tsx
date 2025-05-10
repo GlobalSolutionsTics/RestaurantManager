@@ -32,6 +32,7 @@ export const getOrdersByDate = async (iniitalDate: Date, endDate: Date) => {
     await signInAnonymously(auth);
     const dbRef = ref(realtimeDB);
     const dates = generateFormatedDateForBD(iniitalDate, endDate);
+    console.log("dates:", dates);
     const information = [];
     for (let i = 0; i < dates.length; i++) {
       const data = await getOrderForDate(dates[i], dbRef);

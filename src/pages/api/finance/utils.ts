@@ -18,7 +18,8 @@ export const generateDates = (init: Date, end: Date): string[] => {
 
   let current = dayjs(init).tz("America/Mexico_City").startOf("day");
   const final = dayjs(end).tz("America/Mexico_City").endOf("day");
-
+  console.log("dates current:", current);
+  console.log("dates final:", final);
   while (current.isBefore(final) || current.isSame(final, "day")) {
     dates.push(current.format("YYYY-MM-DD")); // zona horaria segura
     current = current.add(1, "day");
@@ -32,6 +33,7 @@ export const generateFormatedDateForBD = (
   end: Date,
 ): DbFormatDate[] => {
   const dates = generateDates(init, end);
+  console.log("generateDates:", dates);
   const mapper = dates.map((date) => processDateFormatFS(date));
   return mapper;
 };
