@@ -8,18 +8,17 @@ export const getFinancialServices = async (
 ) => {
   try {
     const headers = {
-      method: HttpMethodsEnum.GET,
+      method: HttpMethodsEnum.POST,
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        init: init,
+        end: end,
+      }),
     };
-    const url = `${URL_API_FINANCE}?init=${init}&end=${end}`;
-    console.log("url:", url);
-    const petition = await fetch(
-      `${URL_API_FINANCE}?init=${init}&end=${end}`,
-      headers,
-    );
+    const petition = await fetch(URL_API_FINANCE, headers);
     if (petition.status === 200) {
       const data = await petition.json();
       return data.data;

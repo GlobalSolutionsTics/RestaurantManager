@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getAllOrdersFS, getOrdersByDate } from "./controllers/getOrders";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { init, end } = req.query;
+  const { init, end } = req.body;
 
   if (init && end) {
     const initalDate = new Date(init as string);
