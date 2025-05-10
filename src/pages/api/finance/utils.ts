@@ -16,8 +16,10 @@ import dayjs from "@lib/dayjs";
 export const generateDates = (init: Date, end: Date): string[] => {
   const dates: string[] = [];
 
-  let current = dayjs(init).tz("America/Mexico_City").startOf("day");
-  const final = dayjs(end).tz("America/Mexico_City").endOf("day");
+  let current = dayjs
+    .tz(init, "YYYY-MM-DD", "America/Mexico_City")
+    .startOf("day");
+  const final = dayjs.tz(end, "YYYY-MM-DD", "America/Mexico_City").endOf("day");
   console.log("dates current:", current);
   console.log("dates final:", final);
   while (current.isBefore(final) || current.isSame(final, "day")) {
