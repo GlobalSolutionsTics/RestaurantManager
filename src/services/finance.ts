@@ -8,7 +8,7 @@ export const getFinancialServices = async (
 ) => {
   try {
     const headers = {
-      method: HttpMethodsEnum.PUT,
+      method: HttpMethodsEnum.GET,
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
