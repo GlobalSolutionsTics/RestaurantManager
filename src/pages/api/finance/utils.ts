@@ -13,14 +13,14 @@ import dayjs from "@lib/dayjs";
  * @param end End Date
  * @returns Date[]
  */
-export const generateDates = (init: Date, end: Date): Date[] => {
-  const dates: Date[] = [];
+export const generateDates = (init: Date, end: Date): string[] => {
+  const dates: string[] = [];
 
   let current = dayjs(init).tz("America/Mexico_City").startOf("day");
   const final = dayjs(end).tz("America/Mexico_City").endOf("day");
 
   while (current.isBefore(final) || current.isSame(final, "day")) {
-    dates.push(current.toDate());
+    dates.push(current.format("YYYY-MM-DD")); // zona horaria segura
     current = current.add(1, "day");
   }
 
@@ -32,8 +32,23 @@ export const generateFormatedDateForBD = (
   end: Date,
 ): DbFormatDate[] => {
   const dates = generateDates(init, end);
-  const mapper = dates.map((date) => processDateFormat(date));
+  const mapper = dates.map((date) => processDateFormatFS(date));
   return mapper;
+};
+
+export const processDateFormatFS = (dateString: string) => {
+  const date = dayjs.tz(dateString, "YYYY-MM-DD", "America/Mexico_City");
+
+  const yyyy = date.year();
+  const mm = String(date.month() + 1).padStart(2, "0");
+  const dd = String(date.date()).padStart(2, "0");
+
+  return {
+    year: yyyy.toString(),
+    month: mm,
+    day: dd,
+    fullDate: `${yyyy}/${mm}/${dd}`,
+  };
 };
 
 export const processOrderForFS = (orders: any) => {
