@@ -11,7 +11,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const initalDate = new Date(init as string);
     initalDate.setHours(0, 0, 0, 0);
     const endDate = new Date(end as string);
-    endDate.setHours(23, 59, 59, 99);
+    endDate.setHours(0, 0, 0, 0);
+    console.log("INIT:", initalDate);
+    console.log("FINISH:", endDate);
     const orders2 = await getOrdersByDate(initalDate, endDate);
     if (orders2?.length && orders2.length > 0) {
       res.status(200).send({ data: orders2, error: false });

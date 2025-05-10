@@ -16,6 +16,7 @@ const PanelStatisticsFinancial = ({ list }: Props) => {
   const [averageTab, setAverageTab] = useState(0);
   const [averageDishesTable, setAverageDishesTable] = useState(0);
   const [salesForTravel, setSalesForTravel] = useState(0);
+  const [totalPropine, setTotalPropine] = useState(0);
 
   const getTotal = () => {
     let totalList = 0;
@@ -26,6 +27,7 @@ const PanelStatisticsFinancial = ({ list }: Props) => {
     let totalSalesForTravel = 0;
     let totalDishesAttendedInTable = 0;
     let totalSalesAttendedInTable = 0;
+    let totalPropineStadistic = 0;
     list.map((itm) => {
       if (itm?.data?.length > 0) {
         itm.data.map((order) => {
@@ -55,7 +57,8 @@ const PanelStatisticsFinancial = ({ list }: Props) => {
             totalSalesForTravel +=
               order.total + parseFloat(order.propine ?? 0) - discount;
           totalDiscount += discount;
-          totalList += order.total - discount;
+          totalList += order.total + parseFloat(order.propine ?? 0) - discount;
+          totalPropineStadistic += parseFloat(order.propine ?? 0);
         });
       }
     });
@@ -69,6 +72,7 @@ const PanelStatisticsFinancial = ({ list }: Props) => {
       Math.round(totalDishesAttendedInTable / tablesAttended),
     );
     setAverageTab(Math.floor(totalSalesAttendedInTable / tablesAttended));
+    setTotalPropine(totalPropineStadistic);
   };
 
   const init = useCallback(() => {
@@ -84,10 +88,11 @@ const PanelStatisticsFinancial = ({ list }: Props) => {
       <div className='!bg-blue-dark !text-white p-2'>
         Estadisticas del periodo
       </div>
-      <div className='bg-enabled-light grid grid-cols-2 gap-2 px-2 py-1 rounded-lg text-[0.85rem]'>
+      <div className='bg-enabled-light grid grid-cols-3 gap-3 px-2 py-1 rounded-lg text-[0.85rem]'>
         <p>Total vendido: {currencyFormat(total)}</p>
         <p>Total de descuentos aplicados: {currencyFormat(totalDiscount)}</p>
         <p>Total de platillos expedidos: {dishesAttended}</p>
+        <p>Propinas recibidas: {currencyFormat(totalPropine)}</p>
         <p>Venta promedio por mesa: {currencyFormat(averageTab)}</p>
         <p>Platillos promedio por mesa: {averageDishesTable}</p>
         <p>Mesas atendidas: {tablesAttended}</p>
