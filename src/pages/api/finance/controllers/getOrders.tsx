@@ -12,6 +12,7 @@ import { generateFormatedDateForBD, processOrderForFS } from "../utils";
 import { DbFormatDate } from "../types";
 import { Order } from "@/ui/financial/type";
 import { StatusEnum } from "@/enums/states.enum";
+import { realtimeDB } from "@firebase/config";
 
 export const getAllOrdersFS = async () => {
   try {
@@ -29,7 +30,7 @@ export const getOrdersByDate = async (iniitalDate: Date, endDate: Date) => {
   try {
     const auth = getAuth();
     await signInAnonymously(auth);
-    const dbRef = ref(getDatabase());
+    const dbRef = ref(realtimeDB);
     const dates = generateFormatedDateForBD(iniitalDate, endDate);
     const information = [];
     for (let i = 0; i < dates.length; i++) {
