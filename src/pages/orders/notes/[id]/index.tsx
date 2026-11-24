@@ -1,213 +1,226 @@
 import DinersDivisionForm from "@/components/orders/DinersDivisionForm";
-import { groupOrderDishes } from "@/utils/groupOrderDishes";
-import ProtectPage from "@/pages/admin/components/protectPage";
-import { listUserSerive } from "@/services/users";
-import { TResponseOrders } from "@/types/menu.types";
-import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
+import WaiterOrderLayout, {
+  orderPanel,
+  orderSecondaryButton,
+} from "@/components/orders/WaiterOrderLayout";
+import { useWaiterName } from "@/components/waiter/useWaiterName";
+import type { TResponseOrders } from "@/types/menu.types";
 import {
   currencyFormat,
   formatDateTime,
   getActualDateDB,
 } from "@/utils/formats";
-import { TOKEN_ID } from "@/utils/strings";
-import { CHECKS, TOKEN } from "@/utils/users";
+import { groupOrderDishes } from "@/utils/groupOrderDishes";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
-import { ArrowBack } from "@mui/icons-material";
+import { OpenInNew, QrCode2, Splitscreen } from "@mui/icons-material";
 import { getAuth, signInAnonymously } from "firebase/auth";
-import { onValue, ref } from "firebase/database";
+import { onValue, ref, type Unsubscribe } from "firebase/database";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 
-const NotePage = () => {
-  const [showDivision, setShowDivision] = useState(false);
-  const [tableNumber, setTableNumber] = useState(0);
-  const [information, setInformation] = useState<
-    TResponseOrders & { creatAt: string }
-  >();
-  const [wainterName, setWainterName] = useState("");
-  const [total, setTotal] = useState(0);
-  const [subtotal, setSubtotal] = useState(0);
-  //Router handle
-  const router = useRouter();
-  const { query } = useRouter();
-  //URL QR
-  const url = `${process.env.NEXT_PUBLIC_URL_SERVICES}checks/${query.id}`;
-  //Initial charger
-  const getWinterInformation = useCallback(async () => {
-    const token = sessionStorage.getItem(TOKEN_ID);
-    if (token !== null) {
-      const wainters = await listUserSerive(token);
-      const findWaint = wainters.filter(
-        (itm: any) => itm.uuid === information?.waiter,
-      );
-      if (findWaint) {
-        const wainter = findWaint[0];
-        setWainterName(wainter?.name);
-      }
-    }
-  }, [information?.waiter]);
+type BillOrder = TResponseOrders & { creatAt?: string };
 
-  const orderId = typeof query.id === "string" ? query.id : undefined;
+function OrderBill({ orderId }: { orderId: string }) {
+  const [information, setInformation] = useState<BillOrder | null>();
+  const [attempt, setAttempt] = useState(0);
+  const [showDivision, setShowDivision] = useState(false);
+  const [showTracking, setShowTracking] = useState(false);
+  const [trackingUrl, setTrackingUrl] = useState("");
+  const waiterName = useWaiterName(information?.waiter);
   const diners = Number(information?.diners);
   const canSplitBill = Number.isSafeInteger(diners) && diners > 1;
+  const dishes = groupOrderDishes(information?.dishesDescription).filter(
+    (dish) => dish.number > 0,
+  );
+  const total = dishes.reduce((sum, dish) => sum + dish.price * dish.number, 0);
+  const subtotal = total / 1.16;
 
   useEffect(() => {
-    if (!orderId) return;
     let active = true;
-    let unsubscribe: (() => void) | undefined;
-
-    const init = async () => {
+    let unsubscribe: Unsubscribe | undefined;
+    const fail = () => {
+      if (active) setInformation(null);
+    };
+    const subscribe = async () => {
       await signInAnonymously(getAuth());
       if (!active) return;
       const { fullDate } = getActualDateDB();
-      const connection = ref(
-        realtimeDB,
-        `${RT_ORDER_TABLE_NAME}/${fullDate}/${orderId}`,
+      unsubscribe = onValue(
+        ref(realtimeDB, `${RT_ORDER_TABLE_NAME}/${fullDate}/${orderId}`),
+        (snapshot) => {
+          if (!active) return;
+          const order: BillOrder | null = snapshot.val();
+          setInformation(order?.uuid === orderId ? order : null);
+        },
+        fail,
       );
-      unsubscribe = onValue(connection, (snapshot) => {
-        const data: (TResponseOrders & { creatAt: string }) | null =
-          snapshot.val();
-        const getTotal =
-          data?.dishesDescription?.reduce(
-            (prev, next) => prev + next.number * next.price,
-            0,
-          ) ?? 0;
-        setTotal(getTotal);
-        setSubtotal(getTotal / 1.16);
-        setInformation(data ?? undefined);
-        setTableNumber(data?.tableNumber ?? 0);
-      });
     };
-    void init().catch((error) =>
-      console.error("Error al consultar la cuenta:", error),
-    );
-
+    void subscribe().catch(fail);
     return () => {
       active = false;
       unsubscribe?.();
     };
-  }, [orderId]);
+  }, [orderId, attempt]);
 
-  useEffect(() => {
-    void getWinterInformation();
-  }, [getWinterInformation]);
+  const toggleTracking = () => {
+    if (!showTracking)
+      setTrackingUrl(
+        new URL(
+          `/checks/${encodeURIComponent(orderId)}`,
+          window.location.origin,
+        ).href,
+      );
+    setShowTracking(!showTracking);
+  };
 
   return (
-    <ProtectPage push={router.push} requiredProfiles={CHECKS}>
-      <div className='font-primary text-[1.5rem] p-4 flex flex-row'>
-        <div className='basis-1/5'>
-          <button onClick={router.back}>
-            <ArrowBack fontSize='large' />
+    <WaiterOrderLayout title='Cuenta' order={information}>
+      {information === undefined && (
+        <p className={orderPanel} role='status'>
+          Cargando cuenta…
+        </p>
+      )}
+      {information === null && (
+        <div
+          className={`${orderPanel} flex flex-wrap items-center justify-between gap-2`}
+          role='alert'
+        >
+          <p>No se pudo cargar la cuenta.</p>
+          <button
+            type='button'
+            className={orderSecondaryButton}
+            onClick={() => {
+              setInformation(undefined);
+              setAttempt((current) => current + 1);
+            }}
+          >
+            Reintentar
           </button>
         </div>
-        <div className='basis-4/5 flex items-center font-bold'>
-          Nota{" "}
-          {tableNumber === DEFAULT_TABLE_LLEVAR
-            ? "para llevar"
-            : "mesa " + tableNumber}
-        </div>
-      </div>
-      <div className='flex flex-col'>
-        <div className='flex flex-row px-4'>
-          <div className='flex flex-col w-[calc(100vw_-_150px)] mr-4'>
-            <div className='flex flex-row justify-between'>
-              <p className='text-right'>
-                {formatDateTime(information?.creatAt || "")}
-              </p>
-            </div>
-            <div className='flex flex-row justify-between'>
-              <p>Atiende:</p>
-              <p className='text-right'>{wainterName}</p>
-            </div>
-            <div className='flex flex-row justify-between'>
-              <p>Mesa:</p>
-              <p className='text-right'>
-                {tableNumber === DEFAULT_TABLE_LLEVAR
-                  ? "Para llevar"
-                  : "Mesa " + tableNumber}
-              </p>
-            </div>
-            <div className='flex flex-row justify-between'>
-              <p>Subtotal:</p>
-              <p className='text-right'>{currencyFormat(subtotal)}</p>
-            </div>
-            <div className='flex flex-row justify-between'>
-              <p>IVA:</p>
-              <p className='text-right'>{currencyFormat(total - subtotal)}</p>
-            </div>
-            <div className='flex flex-row justify-between'>
-              <p>Total:</p>
-              <p className='text-right'>{currencyFormat(total)}</p>
-            </div>
-          </div>
-          <div className='flex'>
-            <QRCode value={url} size={150} />
-          </div>
-        </div>
-        <hr className='w-full my-2' />
-        {information && information.uuid === orderId && canSplitBill && (
-          <div className='px-4 pb-2'>
-            <button
-              type='button'
-              aria-expanded={showDivision}
-              onClick={() => setShowDivision((open) => !open)}
-              className='rounded bg-blue px-4 py-2 font-secondary text-white'
-            >
-              {showDivision ? "Ocultar división" : "Dividir cuenta"}
-            </button>
-            {showDivision && (
-              <DinersDivisionForm key={orderId} order={information} />
-            )}
-          </div>
-        )}
-        <p className='text-center'>ORDENES</p>
-        <hr className='w-full my-2' />
-        <div className='w-full px-4'>
-          <table className='w-full'>
-            <thead>
-              <tr>
-                <td className='font-bold print-text'>Cant.</td>
-                <td className='font-bold print-text'>Descripción</td>
-                <td className='font-bold print-text'>Prec. Unit</td>
-                <td className='font-bold print-text'>Importe</td>
-              </tr>
-            </thead>
-            <tbody>
-              {information?.dishesDescription !== undefined ? (
-                groupOrderDishes(information.dishesDescription).map((itm) => (
-                  <tr
-                    className={`font-secondary print-text ${
-                      itm.number === 0 ? "no-print" : ""
-                    }} `}
-                    key={itm.key}
-                  >
-                    <td className={itm.number === 0 ? "no-print" : ""}>
-                      {itm.number}
-                    </td>
-                    <td className={itm.number === 0 ? "no-print" : ""}>
-                      {itm.name}
-                    </td>
-                    <td className={itm.number === 0 ? "no-print" : ""}>
-                      {currencyFormat(itm.price)}
-                    </td>
-                    <td className={itm.number === 0 ? "no-print" : ""}>
-                      {currencyFormat(itm.price * itm.number)}
-                    </td>
-                  </tr>
-                ))
+      )}
+      {information && (
+        <>
+          <div className='grid items-start gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(15rem,2fr)]'>
+            <section className={orderPanel} aria-labelledby='bill-items'>
+              <h2 id='bill-items' className='text-lg font-semibold'>
+                Platillos
+              </h2>
+              {dishes.length ? (
+                <ul className='mt-2 divide-y divide-slate-200'>
+                  {dishes.map((dish) => (
+                    <li
+                      key={dish.key}
+                      className='flex items-center justify-between gap-3 py-3'
+                    >
+                      <div className='min-w-0'>
+                        <p className='break-words font-semibold'>{dish.name}</p>
+                        <p className='text-sm text-slate-600'>
+                          {dish.number} × {currencyFormat(dish.price)}
+                        </p>
+                      </div>
+                      <p className='shrink-0 font-semibold tabular-nums'>
+                        {currencyFormat(dish.number * dish.price)}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
               ) : (
-                <tr>
-                  <td></td>
-                </tr>
+                <p className='mt-3 text-sm text-slate-600'>
+                  La orden no tiene platillos.
+                </p>
               )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </ProtectPage>
+            </section>
+            <section className={orderPanel} aria-labelledby='bill-total'>
+              <h2 id='bill-total' className='text-lg font-semibold'>
+                Resumen
+              </h2>
+              <dl className='mt-3 space-y-2 text-sm'>
+                <div className='flex justify-between gap-3'>
+                  <dt className='text-slate-600'>Atiende</dt>
+                  <dd>{waiterName || "—"}</dd>
+                </div>
+                {information.creatAt && (
+                  <div className='flex justify-between gap-3'>
+                    <dt className='text-slate-600'>Fecha</dt>
+                    <dd className='text-right'>
+                      {formatDateTime(information.creatAt)}
+                    </dd>
+                  </div>
+                )}
+                <div className='flex justify-between gap-3 border-t border-slate-200 pt-3'>
+                  <dt className='text-slate-600'>Subtotal</dt>
+                  <dd>{currencyFormat(subtotal)}</dd>
+                </div>
+                <div className='flex justify-between gap-3'>
+                  <dt className='text-slate-600'>IVA</dt>
+                  <dd>{currencyFormat(total - subtotal)}</dd>
+                </div>
+                <div className='flex justify-between gap-3 border-t border-slate-200 pt-3 text-lg font-semibold'>
+                  <dt>Total</dt>
+                  <dd>{currencyFormat(total)}</dd>
+                </div>
+              </dl>
+              <div className='mt-4 flex flex-wrap gap-2'>
+                {canSplitBill && (
+                  <button
+                    type='button'
+                    aria-expanded={showDivision}
+                    onClick={() => setShowDivision(!showDivision)}
+                    className={orderSecondaryButton}
+                  >
+                    <Splitscreen fontSize='small' />{" "}
+                    {showDivision ? "Ocultar división" : "Dividir cuenta"}
+                  </button>
+                )}
+                <button
+                  type='button'
+                  aria-expanded={showTracking}
+                  onClick={toggleTracking}
+                  className={orderSecondaryButton}
+                >
+                  <QrCode2 fontSize='small' />{" "}
+                  {showTracking ? "Ocultar QR" : "Ver QR"}
+                </button>
+              </div>
+              {showTracking && (
+                <div className='mt-4 flex flex-col items-center gap-3 rounded-xl border border-slate-200 p-4'>
+                  <QRCode
+                    value={trackingUrl}
+                    size={160}
+                    role='img'
+                    aria-label='Código QR de seguimiento'
+                  />
+                  <a
+                    href={trackingUrl}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='inline-flex items-center gap-2 text-sm font-semibold text-blue-dark underline'
+                  >
+                    Abrir seguimiento <OpenInNew fontSize='small' />
+                  </a>
+                </div>
+              )}
+            </section>
+          </div>
+          {canSplitBill && showDivision && (
+            <section className={orderPanel} aria-labelledby='bill-division'>
+              <h2 id='bill-division' className='mb-3 text-lg font-semibold'>
+                División de la cuenta
+              </h2>
+              <DinersDivisionForm order={information} />
+            </section>
+          )}
+        </>
+      )}
+    </WaiterOrderLayout>
   );
-};
+}
 
-export default NotePage;
+export default function NotePage() {
+  const { query } = useRouter();
+  return typeof query.id === "string" ? (
+    <OrderBill key={query.id} orderId={query.id} />
+  ) : null;
+}

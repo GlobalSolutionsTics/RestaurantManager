@@ -86,6 +86,13 @@ export const OrderKitchen = ({ itm, kitchenType, onClick }: Props) => {
         <p className='font-secondary text-[1rem]'>Estatus: {STATUS_TXT}</p>
       </div>
       <div className='bg-enabled rounded-b-lg flex flex-col flex-start justify-between'>
+        {itm.notes && (
+          <p className='mx-2 mt-2 whitespace-pre-wrap break-words rounded-lg bg-amber-50 p-2 text-sm text-slate-900'>
+            <strong>Notas de la orden</strong>
+            <br />
+            {itm.notes}
+          </p>
+        )}
         <OrderDishSummary
           dishes={itm.dishesDescription}
           kitchen={{ type: kitchenType }}

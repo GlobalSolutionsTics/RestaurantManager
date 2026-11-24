@@ -1,3 +1,4 @@
+import type { TCatalog } from "@/types/catalog.types";
 import type {
   DishesWithOrder,
   TOrder,
@@ -12,6 +13,8 @@ export type TMenuResponse = {
   uuid?: string;
   kitchenType?: string;
 };
+
+export type DishCatalogCategory = TCatalog & { dishes: TMenuResponse[] };
 
 export type TResponseCollection = {
   data: Array<TMenuResponse>;
@@ -31,7 +34,7 @@ enum EButtonActives {
 }
 
 export type TResponseOrders = Partial<
-  Pick<TOrder, "diners" | "dinersDivisionTotal">
+  Pick<TOrder, "diners" | "dinersDivisionTotal" | "notes">
 > & {
   name: string;
   dishes: number;

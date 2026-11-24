@@ -4,6 +4,7 @@ import { StatusEnum } from "@/enums/states.enum";
 
 export type DishesWithOrder = TMenuResponse & {
   number: number;
+  notes?: string;
   status?: OrdersDishesStatus;
   preparingKitchen?: string;
 };
@@ -25,6 +26,7 @@ export type UpdateDinersDivisionRequest = {
 export type TOrder = {
   name: string;
   diners: number;
+  notes?: string;
   dinersDivisionTotal?: DinersDivisioTotal[];
   dishes: number;
   dishesDescription: DishesWithOrder[];
@@ -44,7 +46,7 @@ type DishModification = {
 };
 
 export type AddDishesRequest = {
-  modifications: DishModification & { submissionId: string };
+  modifications: DishModification & { submissionId: string; notes?: string };
   waiter: string;
 };
 

@@ -37,6 +37,7 @@ type Order = {
   status: StatusEnum;
   dishesDescription: (typeof dish)[];
   dishAdditionIds?: Record<string, true>;
+  notes?: string;
 };
 
 const first = uuidv4();
@@ -193,4 +194,21 @@ it("does not confirm an addition before Firebase acknowledges the write", async 
   acknowledge();
   await result.response;
   expect(result.status).toHaveBeenCalledWith(200);
+});
+
+it("appends an addition note to the order once across retries", async () => {
+  orders.set(first, { ...orders.get(first)!, notes: "Sin cebolla" });
+  const modifications = {
+    orderUUID: first,
+    submissionId: uuidv4(),
+    dishesDescription: [dish],
+    notes: " Salsa aparte ",
+  };
+  await Promise.all([
+    request(add, first, modifications).response,
+    request(add, first, modifications).response,
+  ]);
+  const order = orders.get(first);
+  expect(order?.notes).toBe("Sin cebolla\nSalsa aparte");
+  expect(order?.dishesDescription[1]).not.toHaveProperty("notes");
 });

@@ -4,6 +4,7 @@ import { validate as validateUuid } from "uuid";
 import { SEED_OF_JWT } from "@/pages/api/auth/controller/users";
 import { HttpMethodsEnum } from "@/enums/http.enum";
 import type { AddDishesRequest } from "@/pages/api/types/Order/order.type";
+import { isValidDishNote } from "@/utils/orderDishNotes";
 import { addNewItem } from "../../controllers/addNewItem";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -36,10 +37,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     dishes.some(
       (dish) =>
         typeof dish?.name !== "string" ||
+        !isValidDishNote(dish.notes) ||
         !Number.isFinite(dish.price) ||
         !Number.isInteger(dish.number) ||
         (dish.number ?? 0) < 1,
     ) ||
+    !isValidDishNote(modifications.notes) ||
     !validateUuid(modifications.submissionId)
   ) {
     return res
@@ -50,12 +53,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const applied = await addNewItem(orderId, modifications);
     if (!applied) {
-      return res
-        .status(409)
-        .send({
-          error: true,
-          message: "El pedido no existe o cambió desde que se abrió",
-        });
+      return res.status(409).send({
+        error: true,
+        message: "El pedido no existe o cambió desde que se abrió",
+      });
     }
     return res
       .status(200)

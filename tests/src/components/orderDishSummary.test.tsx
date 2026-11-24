@@ -68,6 +68,7 @@ it("keeps a repeated dish from another kitchen in a separate gray row", () => {
       dishes={[
         {
           ...taco,
+          isUniquePrice: false,
           number: 2,
           kitchenType: "plancha",
           status: OrdersDishesStatus.IN_PREPARATION,
@@ -87,4 +88,22 @@ it("keeps a repeated dish from another kitchen in a separate gray row", () => {
   expect(
     screen.getByRole("row", { name: /Taco.*otra cocina.*1 0 0/ }).className,
   ).toContain("bg-slate-200");
+});
+
+it("shows distinct notes on separate kitchen rows for identical dishes", () => {
+  render(
+    <OrderDishSummary
+      kitchen={{ type: "plancha" }}
+      dishes={[
+        { ...taco, number: 1, kitchenType: "plancha", notes: "Sin cebolla" },
+        { ...taco, number: 1, kitchenType: "plancha", notes: "Salsa aparte" },
+      ]}
+    />,
+  );
+  expect(
+    screen.getByRole("row", { name: /Taco.*Sin cebolla.*1 0 0/ }),
+  ).toBeTruthy();
+  expect(
+    screen.getByRole("row", { name: /Taco.*Salsa aparte.*1 0 0/ }),
+  ).toBeTruthy();
 });

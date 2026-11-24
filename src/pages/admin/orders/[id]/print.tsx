@@ -1,12 +1,11 @@
 import { PaymentTicketComponent } from "@/components/PaymentTicketComponent";
 import { Analytics } from "@vercel/analytics/react";
-import { listUserSerive } from "@/services/users";
+import { useWaiterName } from "@/components/waiter/useWaiterName";
 import { TDirectory } from "@/types/directory.types";
-import { TOKEN_ID } from "@/utils/strings";
 import { Box, Modal } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { PaymentForm } from "@/components/admin/paymentForm";
 import { PaymentButtons } from "@/components/admin/paymentButtons";
@@ -26,10 +25,10 @@ const style = {
 };
 
 const PrintOrderPage = () => {
-  const [wainterName, setWainterName] = useState("");
   const [selectedClients, setSelectedClient] = useState<Array<TDirectory>>([]);
   const { query } = useRouter();
   const { total, information, clientList, initializer } = useOrderPrint();
+  const waiterName = useWaiterName(information?.waiter);
   const {
     handleChangePaymentInfo,
     handleSavePaymentInfo,
@@ -58,25 +57,6 @@ const PrintOrderPage = () => {
       setSelectedClient(CLIENT_FILTER(client));
     }
   };
-  //Initial charger
-  const getWinterInformation = useCallback(async () => {
-    const token = sessionStorage.getItem(TOKEN_ID);
-    if (token !== null) {
-      const wainters = await listUserSerive(token);
-      const findWaint = wainters.filter(
-        (itm: any) => itm.uuid === information?.waiter,
-      );
-      if (findWaint) {
-        const wainter = findWaint[0];
-        setWainterName(wainter?.name);
-      }
-    }
-  }, [information?.waiter]);
-
-  useEffect(() => {
-    getWinterInformation();
-  }, [query, information?.waiter, total]);
-
   const handleAddClient = async () => {
     setShowAddClientModal(!showAddClientModal);
   };
@@ -121,7 +101,7 @@ const PrintOrderPage = () => {
           ref={componentRef}
           information={information}
           total={total}
-          waiterName={wainterName}
+          waiterName={waiterName}
           selectedClients={selectedClients}
           showPaymentInfo={Boolean(SHOW_PAYMENT_INFO)}
           showDiscount={Boolean(IS_WITH_DISCOUNT)}

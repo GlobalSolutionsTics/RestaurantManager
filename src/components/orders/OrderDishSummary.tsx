@@ -16,11 +16,14 @@ export default function OrderDishSummary({
     ? dishes?.filter((dish) => !belongsToKitchen(dish, kitchen.type))
     : [];
   const rows = [
-    ...groupOrderDishes(matching).map((row) => ({
+    ...groupOrderDishes(matching, !!kitchen).map((row) => ({
       ...row,
       otherKitchen: false,
     })),
-    ...groupOrderDishes(other).map((row) => ({ ...row, otherKitchen: true })),
+    ...groupOrderDishes(other, !!kitchen).map((row) => ({
+      ...row,
+      otherKitchen: true,
+    })),
   ];
   if (!rows.length) return null;
 
@@ -57,6 +60,11 @@ export default function OrderDishSummary({
           >
             <th scope='row' className='p-2 text-left font-normal'>
               {row.name}
+              {row.notes && (
+                <p className='mt-1 whitespace-pre-wrap break-words font-semibold'>
+                  Nota: {row.notes}
+                </p>
+              )}
               {row.otherKitchen && (
                 <span className='sr-only'> (otra cocina)</span>
               )}

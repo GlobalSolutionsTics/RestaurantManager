@@ -5,9 +5,12 @@ import {
   setDishesNumber as setDishesNumberAction,
   setIdOrder as setIdOrderAction,
 } from "../reducers/orders.reducers";
-import { TMenuResponse } from "@/types/menu.types";
+import type { DishesWithOrder } from "@/pages/api/types/Order/order.type";
 
-type TDish = TMenuResponse & { number?: number; image?: string };
+type TDish = Omit<DishesWithOrder, "number"> & {
+  number?: number;
+  image?: string;
+};
 export interface IOrderSlice {
   name: string;
   tableNumber: number;
@@ -20,6 +23,8 @@ type AdditionDraft = {
   orderId: string;
   submissionId: string;
   dishes: TDish[];
+  submitted?: boolean;
+  notes?: string;
 };
 
 const INITAL_STATE: IOrderSlice & { additionDraft?: AdditionDraft } = {

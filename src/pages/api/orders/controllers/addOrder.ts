@@ -10,7 +10,7 @@ type NewOrder = Pick<
   TOrder,
   "name" | "dishes" | "tableNumber" | "dishesDescription" | "waiter"
 > &
-  Partial<Pick<TOrder, "diners">>;
+  Partial<Pick<TOrder, "diners" | "notes">>;
 
 const addOrder = async (
   order: NewOrder,

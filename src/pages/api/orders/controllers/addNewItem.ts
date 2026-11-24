@@ -1,6 +1,7 @@
 import { OrdersDishesStatus } from "@/enums/orders.enum";
 import { StatusEnum } from "@/enums/states.enum";
 import { TResponseOrders } from "@/types/menu.types";
+import { trimDishNote } from "@/utils/orderDishNotes";
 import { getActualDateDB } from "@/utils/formats";
 import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
@@ -19,8 +20,9 @@ export const addNewItem = async (
     `${RT_ORDER_TABLE_NAME}/${fullDate}/${orderId}`,
   );
   const { submissionId } = modifications;
+  const note = modifications.notes?.trim();
   const newDishes = modifications.dishesDescription.map((dish) => ({
-    ...dish,
+    ...trimDishNote(dish),
     status: OrdersDishesStatus.SENT,
   }));
   const timestamp = new Date().toString();
@@ -46,6 +48,7 @@ export const addNewItem = async (
       );
       return {
         ...order,
+        ...(note && { notes: [order.notes, note].filter(Boolean).join("\n") }),
         dishesDescription,
         dishes: dishesDescription.reduce(
           (total, dish) => total + (Number(dish.number) || 0),

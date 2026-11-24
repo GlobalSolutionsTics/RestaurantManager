@@ -6,6 +6,7 @@ import { useFinishOrder } from "@/hooks/Wainters/useFinishOrder";
 import orderCreate, {
   resetCreateCommanda,
   setCreateTableRDX,
+  setCreateDishSelection,
 } from "@/store/slices/create.order.slice";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { TOKEN_ID } from "@/utils/strings";
@@ -26,6 +27,14 @@ it("sends once per click sequence, reuses the key on retry, and resets it for a 
     reducer: { orderCreate, user: () => ({ uuid: "mesero" }) },
   });
   db.dispatch(setCreateTableRDX(DEFAULT_TABLE_LLEVAR));
+  const dish = {
+    uuid: "taco",
+    name: "Taco",
+    type: "comida",
+    price: 20,
+    isUniquePrice: true,
+  };
+  db.dispatch(setCreateDishSelection([{ ...dish, number: 2 }]));
   sessionStorage.setItem(TOKEN_ID, "token-de-prueba");
   const originalFetch = global.fetch;
   let failFirstRequest!: (reason: Error) => void;
@@ -49,6 +58,8 @@ it("sends once per click sequence, reuses the key on retry, and resets it for a 
       ),
     });
 
+    act(() => result.current.changeNotes(" Sin cebolla "));
+    act(() => result.current.changeDish(1, { price: 30 }));
     await act(async () => {
       const first = result.current.handleSendOrder();
       await result.current.handleSendOrder();
@@ -62,6 +73,15 @@ it("sends once per click sequence, reuses the key on retry, and resets it for a 
       fetchMock.mock.calls[index][1].headers["Idempotency-Key"];
     expect(sentKey(0)).toMatch(/^2026\/11\/23:/);
     expect(sentKey(1)).toBe(sentKey(0));
+    expect(JSON.parse(fetchMock.mock.calls[1][1].body).notes).toBe(
+      "Sin cebolla",
+    );
+    expect(
+      JSON.parse(fetchMock.mock.calls[1][1].body).dishesDescription,
+    ).toEqual([
+      { ...dish, number: 1 },
+      { ...dish, number: 1, price: 30 },
+    ]);
     expect(db.getState().orderCreate.id).toBe("uuid-confirmado");
 
     act(() => {

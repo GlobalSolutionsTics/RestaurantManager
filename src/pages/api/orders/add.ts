@@ -3,6 +3,7 @@ import { TOrder } from "../types/Order/order.type";
 import { v4 as uuidv4, validate as validateUuid } from "uuid";
 import addOrder from "./controllers/addOrder";
 import { OrdersDishesStatus } from "@/enums/orders.enum";
+import { isValidDishNote, trimDishNote } from "@/utils/orderDishNotes";
 import { getActualDateDB } from "@/utils/formats";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -13,7 +14,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const body: TOrder = req.body;
   if (
     !Number.isInteger(body?.tableNumber) ||
-    !Array.isArray(body.dishesDescription)
+    !isValidDishNote(body.notes) ||
+    !Array.isArray(body.dishesDescription) ||
+    body.dishesDescription.some((dish) => !dish || !isValidDishNote(dish.notes))
   ) {
     return res.status(400).send({ error: true, message: "Pedido inválido" });
   }
@@ -45,8 +48,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         tableNumber,
         waiter,
         ...(diners !== undefined && { diners }),
+        ...(body.notes?.trim() && { notes: body.notes.trim() }),
         dishesDescription: body.dishesDescription.map((dish) => ({
-          ...dish,
+          ...trimDishNote(dish),
           status: OrdersDishesStatus.SENT,
         })),
       },
@@ -58,12 +62,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (confirmed) return res.status(201).send({ error: false, message: uuid });
 
     if (date !== today) {
-      return res
-        .status(409)
-        .send({
-          error: true,
-          message: "El envío corresponde a un día anterior",
-        });
+      return res.status(409).send({
+        error: true,
+        message: "El envío corresponde a un día anterior",
+      });
     }
 
     return res.status(202).send({

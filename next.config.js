@@ -1,3 +1,5 @@
+const { PHASE_DEVELOPMENT_SERVER } = require("next/constants");
+
 /** @type {import('next').NextConfig} */
 const { version } = require("./package.json");
 const nextConfig = {
@@ -7,4 +9,7 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = (phase) => ({
+  ...nextConfig,
+  distDir: phase === PHASE_DEVELOPMENT_SERVER ? ".next-dev" : ".next",
+});
