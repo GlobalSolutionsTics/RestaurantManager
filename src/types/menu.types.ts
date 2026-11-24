@@ -1,3 +1,5 @@
+import type { TOrder } from "@/pages/api/types/Order/order.type";
+import { Payment } from "@/components/admin/paymentForm/types";
 import { OrdersDishesStatus } from "@/enums/orders.enum";
 
 export type TMenuResponse = {
@@ -26,7 +28,7 @@ enum EButtonActives {
   COUTERSY = "CORTESIA",
 }
 
-export type TResponseOrders = {
+export type TResponseOrders = Partial<Pick<TOrder, "diners" | "dinersDivisionTotal">> & {
   name: string;
   dishes: number;
   uuid: string;
@@ -39,4 +41,5 @@ export type TResponseOrders = {
   shift?: number;
   discount?: number;
   paymentType?: EButtonActives;
+  payment?: Payment;
 };

@@ -1,3 +1,5 @@
+import DinersDivisionForm from "@/components/orders/DinersDivisionForm";
+import { groupOrderDishes } from "@/utils/groupOrderDishes";
 import ProtectPage from "@/pages/admin/components/protectPage";
 import { listUserSerive } from "@/services/users";
 import { TResponseOrders } from "@/types/menu.types";
@@ -19,6 +21,7 @@ import { useCallback, useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 
 const NotePage = () => {
+  const [showDivision, setShowDivision] = useState(false);
   const [tableNumber, setTableNumber] = useState(0);
   const [information, setInformation] = useState<
     TResponseOrders & { creatAt: string }
@@ -44,39 +47,52 @@ const NotePage = () => {
         setWainterName(wainter?.name);
       }
     }
-  }, [information, query]);
+  }, [information?.waiter]);
 
-  const init = useCallback(async () => {
-    const auth = getAuth();
-    await signInAnonymously(auth);
-    const date = getActualDateDB();
-    const DB_RT =
-      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
-    const connection = ref(realtimeDB, DB_RT);
-    return onValue(connection, (snapshot) => {
-      if (snapshot.exists() && query.id !== undefined) {
-        const id: any = query.id;
-        const arrayOrders: Array<TResponseOrders & { creatAt: string }> =
-          snapshot.val();
-        const data = arrayOrders[id];
-        const getTotal = data?.dishesDescription.reduce(
-          (prev, next) => prev + next.number * next.price,
-          0,
-        );
-        const getSubtotal = getTotal / 1.16;
-
-        setTotal(getTotal);
-        setSubtotal(getSubtotal);
-        setInformation(data);
-        setTableNumber(data.tableNumber);
-      }
-    });
-  }, [query]);
+  const orderId = typeof query.id === "string" ? query.id : undefined;
+  const diners = Number(information?.diners);
+  const canSplitBill = Number.isSafeInteger(diners) && diners > 1;
 
   useEffect(() => {
-    init();
-    getWinterInformation();
-  }, [query, information?.waiter]);
+    if (!orderId) return;
+    let active = true;
+    let unsubscribe: (() => void) | undefined;
+
+    const init = async () => {
+      await signInAnonymously(getAuth());
+      if (!active) return;
+      const { fullDate } = getActualDateDB();
+      const connection = ref(
+        realtimeDB,
+        `${RT_ORDER_TABLE_NAME}/${fullDate}/${orderId}`,
+      );
+      unsubscribe = onValue(connection, (snapshot) => {
+        const data: (TResponseOrders & { creatAt: string }) | null =
+          snapshot.val();
+        const getTotal =
+          data?.dishesDescription?.reduce(
+            (prev, next) => prev + next.number * next.price,
+            0,
+          ) ?? 0;
+        setTotal(getTotal);
+        setSubtotal(getTotal / 1.16);
+        setInformation(data ?? undefined);
+        setTableNumber(data?.tableNumber ?? 0);
+      });
+    };
+    void init().catch((error) =>
+      console.error("Error al consultar la cuenta:", error),
+    );
+
+    return () => {
+      active = false;
+      unsubscribe?.();
+    };
+  }, [orderId]);
+
+  useEffect(() => {
+    void getWinterInformation();
+  }, [getWinterInformation]);
 
   return (
     <ProtectPage push={router.push} requiredProfiles={CHECKS}>
@@ -131,6 +147,21 @@ const NotePage = () => {
           </div>
         </div>
         <hr className='w-full my-2' />
+        {information && information.uuid === orderId && canSplitBill && (
+          <div className='px-4 pb-2'>
+            <button
+              type='button'
+              aria-expanded={showDivision}
+              onClick={() => setShowDivision((open) => !open)}
+              className='rounded bg-blue px-4 py-2 font-secondary text-white'
+            >
+              {showDivision ? "Ocultar división" : "Dividir cuenta"}
+            </button>
+            {showDivision && (
+              <DinersDivisionForm key={orderId} order={information} />
+            )}
+          </div>
+        )}
         <p className='text-center'>ORDENES</p>
         <hr className='w-full my-2' />
         <div className='w-full px-4'>
@@ -145,12 +176,12 @@ const NotePage = () => {
             </thead>
             <tbody>
               {information?.dishesDescription !== undefined ? (
-                information?.dishesDescription.map((itm, idx) => (
+                groupOrderDishes(information.dishesDescription).map((itm) => (
                   <tr
                     className={`font-secondary print-text ${
                       itm.number === 0 ? "no-print" : ""
                     }} `}
-                    key={itm.uuid + "-" + idx}
+                    key={itm.key}
                   >
                     <td className={itm.number === 0 ? "no-print" : ""}>
                       {itm.number}

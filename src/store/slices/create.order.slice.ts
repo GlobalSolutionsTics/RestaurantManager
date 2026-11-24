@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IOrderSlice } from "./orders.slice";
 import {
   setCreateTable as setTable,
@@ -7,7 +7,7 @@ import {
   setCreateIdOrder as setIdOrder,
 } from "../reducers/create.orders.reducers";
 
-const INITIAL_STATE: IOrderSlice = {
+const INITIAL_STATE: IOrderSlice & { submissionKey?: string } = {
   name: "",
   tableNumber: 0,
   dishes: 0,
@@ -20,6 +20,9 @@ const createOrderSlice = createSlice({
   initialState: INITIAL_STATE,
   reducers: {
     resetCreateCommanda: () => INITIAL_STATE,
+    setCreateSubmissionKeyRDX: (state, action: PayloadAction<string>) => {
+      state.submissionKey = action.payload;
+    },
     setCreateTableRDX: setTable,
     setCreateIdOrderRDX: setIdOrder,
     setCreateDishesNumberRDX: setDishesNumber,
@@ -29,6 +32,7 @@ const createOrderSlice = createSlice({
 
 export const {
   resetCreateCommanda,
+  setCreateSubmissionKeyRDX,
   setCreateTableRDX,
   setCreateIdOrderRDX,
   setCreateDishesNumberRDX,

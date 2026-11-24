@@ -1,31 +1,20 @@
 import { OrdersDishesStatus } from "@/enums/orders.enum";
 import ProtectPage from "@/pages/admin/components/protectPage";
 import { sendApplicationOrderEdit } from "@/services/order";
-import {
-  IOrderSlice,
-  resetComanda,
-  resetTableNumber,
-  setDishesDescriptionRedux,
-  setOrderIdRedux,
-  setTableOrder,
-} from "@/store/slices/orders.slice";
+import { useOrderForEditing } from "@/hooks/Orders/useOrderForEditing";
+import type { RootRedux } from "@/store/store";
 import { IUserRedux } from "@/store/slices/user.slice";
-import { TMenuResponse, TResponseOrders } from "@/types/menu.types";
+import { TMenuResponse } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
-import { getActualDateDB } from "@/utils/formats";
 import { TOKEN_ID } from "@/utils/strings";
-import { CHECKS, TOKEN } from "@/utils/users";
-import { realtimeDB } from "@firebase/config";
-import { RT_ORDER_TABLE_NAME } from "@models/names";
+import { CHECKS } from "@/utils/users";
 import { ArrowBack, Check, Edit, RoomService, Send } from "@mui/icons-material";
 import { TextField } from "@mui/material";
-import { getAuth, signInAnonymously } from "firebase/auth";
-import { onValue, ref } from "firebase/database";
 import { useFormik } from "formik";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -43,9 +32,14 @@ type Props = {
   name: string;
   dishesNumber: number;
   price: number;
-  uuid: string;
+  index: number;
   status: string;
-  onChange: (a: any, b: any, c: any, d: any) => void;
+  onChange: (
+    name: string,
+    quantity: number,
+    price: number,
+    index: number,
+  ) => void;
   onOpen?: (val: any) => void;
 };
 
@@ -53,7 +47,7 @@ const FieldEditedOption = ({
   name,
   dishesNumber,
   price,
-  uuid,
+  index,
   status,
   onChange,
   onOpen,
@@ -86,7 +80,7 @@ const FieldEditedOption = ({
   const handleChangeEdit = () => {
     const values = formik.values;
     toggleEdit();
-    return onChange(values.name, values.dishesNumber, values.price, uuid);
+    return onChange(values.name, values.dishesNumber, values.price, index);
   };
 
   return (
@@ -163,132 +157,68 @@ const FieldEditedOption = ({
   );
 };
 
-const EditOrderPage = () => {
-  const [tableNumber, setTableNumber] = useState(0);
-  const [dishesDescription, setDishesDescription] =
-    useState<TDishesDescription>([]);
-  const [dishState, setDishState] = useState("");
-  const [loading, setLoading] = useState(false);
-  //Router handle
+const OrderForm = ({ orderId }: { orderId: string }) => {
   const router = useRouter();
-  const { query } = useRouter();
-  //Redux
-  const dishStore: IOrderSlice = useSelector((itm: any) => itm.ordersDishes);
-  const userStore: IUserRedux = useSelector((store: any) => store.user);
-  //Dispatchers
-  const dispatch = useDispatch();
-
-  //Sendersd
-  const showMessage = (
-    title: string,
-    description: string,
-    okText?: string,
-    icon?: "error" | "success",
-  ) => {
-    MessageComponent.fire({
-      icon: icon || "success",
-      title: title,
-      text: description,
-      timer: 1500,
-      confirmButtonText: okText,
-      showConfirmButton: false,
-      showLoaderOnConfirm: false,
-      showLoaderOnDeny: false,
-    });
-  };
-
-  //Handlers
-  const sendOrder = async () => {
-    setLoading(true);
-    const token = sessionStorage.getItem(TOKEN_ID);
-    const payload: any = {
-      modifications: {
-        dishesDescription: dishStore.dishesDescription,
-        dishes: dishStore.dishes,
-        name: dishStore.name,
-        tableNumber: dishStore.tableNumber,
-        orderUUID: dishStore.id,
-      },
-      waiter: userStore.uuid,
-    };
-    if (
-      query.id &&
-      token &&
-      payload.modifications.dishesDescription.length > 0
-    ) {
-      const id: string = query.id as string;
-      const response = await sendApplicationOrderEdit(token, id, payload);
-      if (response) {
-        dispatch(resetComanda());
-        dispatch(resetTableNumber());
-        MessageComponent.fire({
-          icon: "success",
-          title: "Orden modifcada",
-          text: "Se envio la modificación correctamente ",
-          confirmButtonText: "Finalizar",
-          showConfirmButton: true,
-          showLoaderOnConfirm: false,
-          showLoaderOnDeny: false,
-          preConfirm: () => router.push(`/orders/myOrders`),
-        });
-      } else {
-        showMessage(
-          "Ocurrio un error",
-          "Error al actualizar la orden, intenta de nuevo",
-          "Entendido",
-          "error",
-        );
-      }
-    }
-    setLoading(false);
-  };
+  const order = useOrderForEditing(orderId);
+  const sending = useRef(false);
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [editedDishes, setEditedDishes] = useState<TDishesDescription>();
+  const userStore: IUserRedux = useSelector((store: RootRedux) => store.user);
+  const dishes = editedDishes ?? order?.dishesDescription ?? [];
+  const tableNumber = order?.tableNumber;
 
   const onChangeDish = (
     name: string,
-    dishNumber: number,
+    number: number,
     price: number,
-    uuid: string,
+    index: number,
   ) => {
-    const dishesDesc: Array<TMenuResponse> = dishesDescription;
-
-    const newDish = dishesDesc.map((itm) => {
-      if (itm.uuid === uuid) {
-        return { ...itm, name: name, price: price, number: dishNumber };
-      }
-      return itm;
-    });
-
-    setDishesDescription(newDish);
-    dispatch(setDishesDescriptionRedux(newDish));
+    setEditedDishes(
+      dishes.map((dish, position) =>
+        position === index ? { ...dish, name, price, number } : dish,
+      ),
+    );
   };
 
-  //Initial charger
-  const init = useCallback(async () => {
-    const auth = getAuth();
-    await signInAnonymously(auth);
-    const date = getActualDateDB();
-    const DB_RT =
-      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
-    const connection = ref(realtimeDB, DB_RT);
-    return onValue(connection, (snapshot) => {
-      if (snapshot.exists() && query.id !== undefined) {
-        const id: any = query.id;
-        const arrayOrders: Array<TResponseOrders> = snapshot.val();
-        const data = arrayOrders[id];
+  const sendOrder = async () => {
+    const token = sessionStorage.getItem(TOKEN_ID);
+    if (!order || !token || !dishes.length || sending.current || sent) return;
 
-        dispatch(setTableOrder(data.tableNumber));
-        dispatch(setOrderIdRedux(data.uuid));
-        dispatch(setDishesDescriptionRedux(data.dishesDescription));
-        setDishState(data.status);
-        setTableNumber(data.tableNumber);
-        setDishesDescription(data.dishesDescription);
+    sending.current = true;
+    setLoading(true);
+    try {
+      const response = await sendApplicationOrderEdit(token, orderId, {
+        modifications: {
+          dishesDescription: dishes,
+          orderUUID: orderId,
+          originalDishes: order.dishesDescription,
+        },
+        waiter: userStore.uuid,
+      });
+
+      if (response) {
+        setSent(true);
+
+        void MessageComponent.fire({
+          icon: "success",
+          title: "Orden modificada",
+          confirmButtonText: "Finalizar",
+          preConfirm: () => router.push("/orders/myOrders"),
+        });
+      } else {
+        void MessageComponent.fire({
+          icon: "error",
+          title: "No se pudo actualizar la orden",
+          text: "Revisa el pedido actualizado antes de volver a editarlo.",
+          confirmButtonText: "Entendido",
+        });
       }
-    });
-  }, [query]);
-
-  useEffect(() => {
-    init();
-  }, [query]);
+    } finally {
+      sending.current = false;
+      setLoading(false);
+    }
+  };
 
   return (
     <ProtectPage push={router.push} requiredProfiles={CHECKS}>
@@ -309,15 +239,15 @@ const EditOrderPage = () => {
         </div>
         <div className='!text-[0.75rem] !font-bold basis-2/5'>
           <p className='text-center'>Estatus:</p>
-          <p className='text-center'>{dishState}</p>
+          <p className='text-center'>{order?.status}</p>
         </div>
       </div>
       <div className='mb-[3rem]'>
         <div className='flex flex-col bg-enabled'>
-          {dishesDescription.map((itm, idx) => (
+          {dishes.map((itm, idx) => (
             <FieldEditedOption
               key={itm.uuid + "-" + idx}
-              uuid={itm.uuid || ""}
+              index={idx}
               name={itm.name}
               price={itm.price}
               dishesNumber={itm.number || 0}
@@ -335,7 +265,7 @@ const EditOrderPage = () => {
         <button
           className='w-full flex fixed bottom-0 z-20 bg-success text-white text-[1.5rem] itmes-center justify-center flex font-secondary py-2'
           onClick={sendOrder}
-          disabled={loading}
+          disabled={!order || !dishes.length || sent}
         >
           <Send className='mr-6' /> Mandar solicitud
         </button>
@@ -344,4 +274,9 @@ const EditOrderPage = () => {
   );
 };
 
-export default EditOrderPage;
+export default function OrderPage() {
+  const { query } = useRouter();
+  return typeof query.id === "string" ? (
+    <OrderForm key={query.id} orderId={query.id} />
+  ) : null;
+}

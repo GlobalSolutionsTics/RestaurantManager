@@ -1,23 +1,49 @@
+import { Payment } from "@/components/admin/paymentForm/types";
 import { ContentTypeEnum } from "@/enums/contentType.enum";
 import { HttpMethodsEnum } from "@/enums/http.enum";
 import { StatusEnum } from "@/enums/states.enum";
-import { UOrderReq } from "@/pages/api/types/Order/order.type";
+import type { AddDishesRequest, EditDishesRequest, UpdateDinersDivisionRequest } from "@/pages/api/types/Order/order.type";
 import { URL_API_ORDER } from "@/utils/urls";
 
-export const createOrder = async (payload: any) => {
+export const createOrder = async (payload: any, submissionKey?: string) => {
   try {
     const header = {
       method: HttpMethodsEnum.POST,
       body: JSON.stringify(payload),
       headers: {
         "Content-Type": ContentTypeEnum.JSON,
+        ...(submissionKey && { "Idempotency-Key": submissionKey }),
       },
     };
     const petition = await fetch(`${URL_API_ORDER}/add`, header);
     const response: any = await petition.json();
     return { error: response.error, message: response.message };
-  } catch (e: any) {
-    return { error: true, message: e };
+  } catch {
+    return {
+      error: true,
+      message: "No se pudo confirmar el pedido. Intenta de nuevo.",
+    };
+  }
+};
+
+export const updateDinersDivisionService = async (
+  token: string,
+  orderId: string,
+  division: UpdateDinersDivisionRequest,
+): Promise<{ error: boolean; message: string }> => {
+  try {
+    const response = await fetch(`${URL_API_ORDER}/update/${orderId}/diners-division`, {
+      method: HttpMethodsEnum.PUT,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": ContentTypeEnum.JSON,
+      },
+      body: JSON.stringify(division),
+    });
+    const result = await response.json();
+    return { error: !response.ok || result.error, message: result.message };
+  } catch {
+    return { error: true, message: "No se pudo guardar la división. Intenta de nuevo." };
   }
 };
 
@@ -54,7 +80,7 @@ export const updateOrderService = async (
 export const sendApplicationOrderAdd = async (
   token: string,
   uuid: string,
-  payload: UOrderReq,
+  payload: AddDishesRequest,
 ) => {
   try {
     const headers = {
@@ -65,9 +91,7 @@ export const sendApplicationOrderAdd = async (
       },
       body: JSON.stringify({
         modifications: payload.modifications,
-        tableNumber: payload.tableNumber,
         waiter: payload.waiter,
-        status: payload.status,
       }),
     };
     const petition = await fetch(
@@ -89,7 +113,7 @@ export const sendApplicationOrderAdd = async (
 export const sendApplicationOrderEdit = async (
   token: string,
   uuid: string,
-  payload: UOrderReq,
+  payload: EditDishesRequest,
 ) => {
   try {
     const headers = {
@@ -100,9 +124,7 @@ export const sendApplicationOrderEdit = async (
       },
       body: JSON.stringify({
         modifications: payload.modifications,
-        tableNumber: payload.tableNumber,
         waiter: payload.waiter,
-        status: payload.status,
       }),
     };
     const petition = await fetch(
@@ -186,6 +208,38 @@ export const editPaymentInformationService = async (
     };
     const petition = await fetch(
       `${URL_API_ORDER}/update/${uuid}/payment-info`,
+      headers,
+    );
+    const response = await petition.json();
+    if (response.error) {
+      return false;
+    } else {
+      return true;
+    }
+  } catch (e: any) {
+    console.error("Error al actualizar la configuracion");
+    return false;
+  }
+};
+
+export const editPaymentInformationServiceV2 = async (
+  token: string,
+  uuid: string,
+  payment: Payment,
+) => {
+  try {
+    const headers = {
+      method: HttpMethodsEnum.PUT,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        payment,
+      }),
+    };
+    const petition = await fetch(
+      `${URL_API_ORDER}/update/${uuid}/v2/payment-info`,
       headers,
     );
     const response = await petition.json();

@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   setTable as setTableNumber,
   setDishesDescription as setDishesDescAction,
@@ -16,7 +16,13 @@ export interface IOrderSlice {
   id?: string;
 }
 
-const INITAL_STATE: IOrderSlice = {
+type AdditionDraft = {
+  orderId: string;
+  submissionId: string;
+  dishes: TDish[];
+};
+
+const INITAL_STATE: IOrderSlice & { additionDraft?: AdditionDraft } = {
   name: "",
   tableNumber: 0,
   dishes: 0,
@@ -30,6 +36,14 @@ const ordersSlice = createSlice({
   reducers: {
     resetComanda: () => INITAL_STATE,
     resetTableNumber: () => ({ ...INITAL_STATE, tableNumber: 0 }),
+    setAdditionDraft: (state, action: PayloadAction<AdditionDraft>) => {
+      state.additionDraft = action.payload;
+    },
+    clearAdditionDraft: (state, action: PayloadAction<string>) => {
+      if (state.additionDraft?.submissionId === action.payload) {
+        delete state.additionDraft;
+      }
+    },
     setTableOrder: setTableNumber,
     setDishesDescriptionRedux: setDishesDescAction,
     setDishesNumberRedux: setDishesNumberAction,
@@ -39,6 +53,8 @@ const ordersSlice = createSlice({
 
 export const {
   resetComanda,
+  setAdditionDraft,
+  clearAdditionDraft,
   setTableOrder,
   setDishesDescriptionRedux,
   setDishesNumberRedux,

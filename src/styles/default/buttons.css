@@ -1,0 +1,19 @@
+.button-primary {
+  @apply rounded-lg bg-gradient-to-r from-emerald-500 via-green-500 to-lime-500
+    px-5 py-2.5 font-semibold text-white
+    shadow-[0_0_15px_rgba(34,197,94,0.55)]
+    transition-all duration-300
+    hover:scale-105 hover:shadow-[0_0_25px_rgba(34,197,94,0.8)]
+    active:scale-95
+    focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2;
+}
+
+.button-secondary {
+  @apply rounded-lg bg-gradient-to-r from-red-600 via-rose-500 to-red-400
+    px-5 py-2.5 font-semibold text-white
+    shadow-[0_0_15px_rgba(239,68,68,0.55)]
+    transition-all duration-300
+    hover:scale-105 hover:shadow-[0_0_25px_rgba(239,68,68,0.85)]
+    active:scale-95
+    focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2;
+}

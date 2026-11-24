@@ -1,3 +1,4 @@
+import { Payment } from "@/components/admin/paymentForm/types";
 import { OrdersDishesStatus } from "@/enums/orders.enum";
 import { StatusApplicationEnum, StatusEnum } from "@/enums/states.enum";
 import { TResponseOrders } from "@/types/menu.types";
@@ -5,12 +6,13 @@ import { getActualDateDB } from "@/utils/formats";
 import { firestore, realtimeDB } from "@firebase/config";
 import { DB_ORDERS_APPLICATION, RT_ORDER_TABLE_NAME } from "@models/names";
 import { getAuth, signInAnonymously } from "firebase/auth";
-import { child, get, ref, update } from "firebase/database";
+import { child, get, ref, runTransaction, update } from "firebase/database";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { isDeepStrictEqual } from "node:util";
+import type { EditDishesRequest } from "../../types/Order/order.type";
 
-const date = getActualDateDB();
-const DB_RT =
-  RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
+const dailyOrdersPath = () =>
+  `${RT_ORDER_TABLE_NAME}/${getActualDateDB().fullDate}`;
 
 export const updateStatusOrder = async (
   status: StatusEnum,
@@ -19,28 +21,31 @@ export const updateStatusOrder = async (
   try {
     const auth = getAuth();
     await signInAnonymously(auth);
-    const docRef = ref(realtimeDB, DB_RT);
-    const getOrders = await get(child(docRef, orderUUID));
-    if (getOrders.exists()) {
-      if (status !== StatusEnum.ORDER_READY) {
-        const data: TResponseOrders = getOrders.val();
-        const newData = { ...data, status };
-        await update(child(docRef, orderUUID), newData);
-        return { error: false, message: "Datos actualizados correctamente" };
-      } else {
-        const data: TResponseOrders = getOrders.val();
-        const newDishes = data.dishesDescription.map((itm) => ({
-          ...itm,
-          status: OrdersDishesStatus.READY,
-        }));
-        const newData = { ...data, status, dishesDescription: newDishes };
+    const orderRef = ref(realtimeDB, `${dailyOrdersPath()}/${orderUUID}`);
+    const result = await runTransaction(
+      orderRef,
+      (order: TResponseOrders | null) => {
+        if (!order || order.uuid !== orderUUID) return order;
+        if (status !== StatusEnum.ORDER_READY) return { ...order, status };
+        return {
+          ...order,
+          status,
+          dishesDescription: (order.dishesDescription ?? []).map((dish) => ({
+            ...dish,
+            status: OrdersDishesStatus.READY,
+          })),
+        };
+      },
+      { applyLocally: false },
+    );
+    if (result.committed && result.snapshot.child("uuid").val() === orderUUID) {
+      if (status === StatusEnum.ORDER_READY) {
         await changeStatusRequestEditionForOrderId(
           StatusApplicationEnum.CLOSE,
           orderUUID,
         );
-        await update(child(docRef, orderUUID), newData);
-        return { error: false, message: "Datos actualizados correctamente" };
       }
+      return { error: false, message: "Datos actualizados correctamente" };
     }
 
     return { error: true, message: "Error al actualizar el estatus" };
@@ -58,12 +63,10 @@ export const acceptEditOrderService = async (
   try {
     const auth = getAuth();
     await signInAnonymously(auth);
-    const docRef = ref(realtimeDB, DB_RT);
+    const docRef = ref(realtimeDB, dailyOrdersPath());
     const getOrders = await get(child(docRef, orderUUIID));
     if (getOrders.exists()) {
-      const data: Array<TResponseOrders> = getOrders.val();
       const newData = {
-        ...data,
         dishes: payload.dishes,
         dishesDescription: payload.dishesDescription,
         status: StatusEnum.EDITED,
@@ -124,30 +127,54 @@ export const changeStatusRequestEditionForOrderId = async (
 
 export const updateDishesAndNumber = async (
   orderId: string,
-  dishesDescription: Array<any>,
+  { originalDishes, dishesDescription }: EditDishesRequest["modifications"],
 ) => {
-  try {
-    const auth = getAuth();
-    await signInAnonymously(auth);
-    const docRef = ref(realtimeDB, DB_RT);
-    const getOrders = await get(child(docRef, orderId));
-    if (getOrders.exists()) {
-      const data: Array<TResponseOrders> = getOrders.val();
-      const newData = {
-        ...data,
-        dishes: dishesDescription.length,
-        dishesDescription: dishesDescription,
-        status: StatusEnum.EDITED,
-      };
-      await update(child(docRef, orderId), newData);
-      return { error: false, message: "Datos actualizados correctamente" };
-    }
+  await signInAnonymously(getAuth());
+  const orderRef = ref(realtimeDB, `${dailyOrdersPath()}/${orderId}`);
+  const timestamp = new Date().toString();
+  let applied = false;
 
-    return { error: true, message: "Error al actualizar el estatus" };
-  } catch (e) {
-    console.log("Error:", e);
-    return { error: true, message: "Error en los servicios de google" };
-  }
+  const result = await runTransaction(
+    orderRef,
+    (order: TResponseOrders | null) => {
+      applied = false;
+      if (!order || order.uuid !== orderId) return order;
+
+      const currentDishes = order.dishesDescription ?? [];
+      // Apply field edits to their original lines and keep dish identity and status.
+      const editedDishes = originalDishes.map((dish, index) => {
+        if (dish.status !== OrdersDishesStatus.ACTIVE) return dish;
+        const { name, number, price } = dishesDescription[index];
+        return { ...dish, name, number, price };
+      });
+      if (isDeepStrictEqual(currentDishes, editedDishes)) {
+        applied = true;
+        return order;
+      }
+      if (
+        order.status === StatusEnum.CLOSED ||
+        order.status === StatusEnum.CANCELED ||
+        !isDeepStrictEqual(currentDishes, originalDishes)
+      )
+        return order;
+
+      applied = true;
+      return {
+        ...order,
+        dishesDescription: editedDishes,
+        dishes: editedDishes.reduce(
+          (total, dish) => total + (Number(dish.number) || 0),
+          0,
+        ),
+        status: StatusEnum.EDITED,
+        updateAt: timestamp,
+      };
+    },
+    { applyLocally: false },
+  );
+
+  if (!result.committed) throw new Error("La transacción no se confirmó");
+  return applied;
 };
 
 enum EButtonActives {
@@ -171,17 +198,39 @@ export const updateInformationPayment = async (
   try {
     const auth = getAuth();
     await signInAnonymously(auth);
-    const docRef = ref(realtimeDB, DB_RT);
+    const docRef = ref(realtimeDB, dailyOrdersPath());
     const getOrders = await get(child(docRef, orderId));
     if (getOrders.exists()) {
-      const data: Array<TResponseOrders> = getOrders.val();
       const newData = {
-        ...data,
         payWith: paymentInformation.payWith,
         propine: paymentInformation.propine,
         shift: paymentInformation.shift,
         paymentType: paymentInformation.paymentType,
         discount: paymentInformation.discount,
+      };
+      await update(child(docRef, orderId), newData);
+      return { error: false, message: "Datos actualizados correctamente" };
+    }
+
+    return { error: true, message: "Error al actualizar el estatus" };
+  } catch (e) {
+    console.log("Error:", e);
+    return { error: true, message: "Error en los servicios de google" };
+  }
+};
+
+export const updateInformationPaymentV2 = async (
+  orderId: string,
+  payment: Payment,
+) => {
+  try {
+    const auth = getAuth();
+    await signInAnonymously(auth);
+    const docRef = ref(realtimeDB, dailyOrdersPath());
+    const getOrders = await get(child(docRef, orderId));
+    if (getOrders.exists()) {
+      const newData = {
+        payment,
       };
       await update(child(docRef, orderId), newData);
       return { error: false, message: "Datos actualizados correctamente" };

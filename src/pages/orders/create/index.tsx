@@ -1,4 +1,5 @@
 import ProtectPage from "@/pages/admin/components/protectPage";
+import { resetCreateCommanda } from "@/store/slices/create.order.slice";
 import { resetComanda } from "@/store/slices/orders.slice";
 import { IUserRedux } from "@/store/slices/user.slice";
 import { TOKEN_ID } from "@/utils/strings";
@@ -25,6 +26,7 @@ export default function createIndex() {
   };
 
   const handleNavigation = () => {
+    dispatch(resetCreateCommanda());
     router.push("/orders/tableSelect");
   };
 

@@ -4,15 +4,10 @@ import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import {
   Check,
-  CheckCircle,
   Checklist,
   Close,
-  HourglassFull,
-  KeyboardArrowRight,
-  Notifications,
   OpenInFull,
   PowerSettingsNew,
-  Timer,
 } from "@mui/icons-material";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { onValue, ref } from "firebase/database";
@@ -23,18 +18,12 @@ import { StatusEnum } from "@/enums/states.enum";
 import Head from "next/head";
 import { updateOrderService } from "@/services/order";
 import { TOKEN_ID } from "@/utils/strings";
-import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { Button } from "@mui/material";
-import { OrdersDishesStatus } from "@/enums/orders.enum";
 import { getActualDateDB } from "@/utils/formats";
-import { KITCHEN, TOKEN } from "@/utils/users";
-import WaiterName from "@/components/waiter/WaiterName";
+import { KITCHEN } from "@/utils/users";
+import { OrderKitchen } from "@/components/OrderKitchen";
 
-enum OrdersStatusEnum {
-  ACTIVE = "ACTIVAS",
-  READY = "LISTAS",
-  CLOSE = "CERRADAS",
-}
+import { OrdersStatusEnum } from "@/components/OrderKitchen/type";
 
 const HomeOrderPage = () => {
   const [orderView, setOrderView] = useState<OrdersStatusEnum>(
@@ -46,7 +35,6 @@ const HomeOrderPage = () => {
   );
   const [ordersClose, setOrdersClose] = useState<Array<TResponseOrders>>([]);
   const [ordersReady, setOrdersReady] = useState<Array<TResponseOrders>>([]);
-  const [loading, setLoading] = useState(false);
 
   //router controller
   const router = useRouter();
@@ -128,73 +116,14 @@ const HomeOrderPage = () => {
     if (nextStatus !== null) {
       const token = sessionStorage.getItem(TOKEN_ID);
       if (token) {
-        setLoading(true);
         const update = await updateOrderService(token, order.uuid, nextStatus);
         if (!update) {
           console.error("Error al hacer el update");
         }
-        setLoading(false);
       }
     }
   };
 
-  //Color controller
-  const getColorForHeader = (status: string) => {
-    if (status === StatusEnum.IN_PROGRESS) {
-      return "bg-waiting-dark text-dark";
-    } else if (status === StatusEnum.ORDER_READY) {
-      return "bg-success-dark text-white";
-    } else if (status === StatusEnum.EDITED) {
-      return "bg-orange-dark text-dark";
-    }
-
-    return "bg-danger-dark text-white";
-  };
-
-  const getColorButton = (status: string) => {
-    if (status === StatusEnum.IN_PROGRESS) {
-      return "bg-waiting-dark hover:bg-waiting-dark hover:text-dark";
-    } else if (
-      status === StatusEnum.ORDER_READY ||
-      status === StatusEnum.CLOSED ||
-      status === StatusEnum.CANCELED
-    ) {
-      return "bg-success-dark text-white hidden";
-    } else if (status === StatusEnum.EDITED) {
-      return "bg-orange-dark hover:bg-orange hover:text-dark";
-    }
-
-    return "bg-danger hover:bg-danger-dark text-white";
-  };
-
-  //Icon and text controller
-  const getIconHeader = (status: string) => {
-    if (status === StatusEnum.IN_PROGRESS) {
-      return <HourglassFull className='animate-spin' />;
-    } else if (status === StatusEnum.ORDER_READY) {
-      return <CheckCircle />;
-    }
-
-    return <Timer className='animate-pulse' />;
-  };
-
-  const getIconButton = (status: string) => {
-    if (status === StatusEnum.IN_PROGRESS) {
-      return (
-        <>
-          <Notifications /> Terminar Orden
-        </>
-      );
-    }
-
-    return (
-      <>
-        <KeyboardArrowRight /> Iniciar Orden
-      </>
-    );
-  };
-
-  //Carga inicial
   useEffect(() => {
     autheticate();
   }, []);
@@ -251,89 +180,11 @@ const HomeOrderPage = () => {
           <div className='bg-black h-auto min-h-[calc(100vh_-_3.5rem)] p-6 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4 overflow-y-auto overflow-x-hidden'>
             {orders.length > 0 &&
               orders.map((itm) => (
-                <div key={itm.uuid} className='rounded-lg mb-4'>
-                  <div
-                    className={`transition ease-in-out delay-150 ${getColorForHeader(
-                      itm.status,
-                    )} text-[1.5rem] font-secondary w-full rounded-t-lg p-4`}
-                  >
-                    {getIconHeader(itm.status)}{" "}
-                    {itm.tableNumber === DEFAULT_TABLE_LLEVAR
-                      ? "Para llevar"
-                      : "Mesa " + itm.tableNumber}
-                    <p className='font-secondary text-[1rem]'>
-                      Estatus:{" "}
-                      {itm.status === StatusEnum.SEND
-                        ? "PENDIENTE"
-                        : itm.status}
-                    </p>
-                    <p>
-                      Mesero: <WaiterName waiterId={itm.waiter} />
-                    </p>
-                  </div>
-                  <div className='bg-enabled rounded-b-lg flex flex-col flex-start justify-between'>
-                    <div className=''>
-                      <div className='w-full py-2 px-4 flex flex-row'>
-                        <div className='basis-5/6 font-bold text-[1.5rem] font-secondary'>
-                          Descripción
-                        </div>
-                        <div className='basis-1/6 font-bold text-[1.5rem] text-center font-secondary'>
-                          Cant.
-                        </div>
-                      </div>
-                      {orderView === OrdersStatusEnum.ACTIVE &&
-                        itm.dishesDescription
-                          ?.filter(
-                            (itm: any) =>
-                              itm.status === OrdersDishesStatus.ACTIVE,
-                          )
-                          .map((dish, indx) => (
-                            <div
-                              key={dish.uuid + "-" + indx}
-                              className='w-full py-2 px-4 text-[1.5rem] flex flex-row'
-                            >
-                              <div className='basis-5/6 font-secondary'>
-                                {dish.name}
-                              </div>
-                              <div className='basis-1/6 text-center font-secondary'>
-                                {dish.number}
-                              </div>
-                            </div>
-                          ))}
-                      {orderView !== OrdersStatusEnum.ACTIVE &&
-                        itm.dishesDescription?.map((dish, indx) => (
-                          <div
-                            key={dish.uuid + "-" + indx}
-                            className='w-full py-2 px-4 text-[1.5rem] flex flex-row'
-                          >
-                            <div className='basis-5/6 font-secondary'>
-                              {dish.name}
-                            </div>
-                            <div className='basis-1/6 text-center font-secondary'>
-                              {dish.number}
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                    <div className='p-1 bottom-1 w-full'>
-                      {loading ? (
-                        <div className='flex items-center'>
-                          <span className='loader mr-4'></span> Guardando
-                          información
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => hanndleStartPetition(itm)}
-                          className={`p-2 w-full bottom-0 rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
-                            itm.status,
-                          )} disabled:bg-gray`}
-                        >
-                          {getIconButton(itm.status)}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                <OrderKitchen
+                  key={itm.uuid}
+                  itm={itm}
+                  onClick={hanndleStartPetition}
+                />
               ))}
           </div>
         </div>

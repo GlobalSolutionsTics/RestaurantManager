@@ -22,7 +22,7 @@ import Head from "next/head";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { getActualDateDB } from "@/utils/formats";
 import { CHECKS, TOKEN } from "@/utils/users";
-import { OrdersDishesStatus } from "@/enums/orders.enum";
+import OrderDishSummary from "@/components/orders/OrderDishSummary";
 
 enum OptionEnum {
   ACTIVE = "ACTIVES",
@@ -94,19 +94,7 @@ const ToggleColumn = ({ element, push }: Props) => {
             <RoomService /> {element.dishes}
           </div>
         </div>
-        <div className='p-2 flex flex-col'>
-          {element?.dishesDescription?.map((dish, indx) => (
-            <div
-              key={dish.uuid + "-" + indx}
-              className={`flex flex-row font-secondary ${
-                dish.status === OrdersDishesStatus.READY && "line-through"
-              }`}
-            >
-              <div className='basis-5/6'>{dish.name}</div>
-              <div className='basis-1/6'>{dish.number}</div>
-            </div>
-          ))}
-        </div>
+        <OrderDishSummary dishes={element.dishesDescription} />
       </div>
       <div className='p-2'>
         <button

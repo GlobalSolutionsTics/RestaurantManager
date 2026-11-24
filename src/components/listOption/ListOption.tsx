@@ -61,10 +61,10 @@ const ListOptionComponent = ({
             />
             <Button
               variant='outlined'
-              className='bg-danger'
+              className='bg-success'
               onClick={handleOnCreate}
             >
-              <CheckIcon />
+              <CheckIcon className='fill-white' />
             </Button>
             <Button
               variant='contained'

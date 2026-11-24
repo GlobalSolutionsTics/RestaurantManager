@@ -1,3 +1,4 @@
+import { groupOrderDishes } from "@/utils/groupOrderDishes";
 import { useRouter } from "next/router";
 import { useReactToPrint } from "react-to-print";
 import { Analytics } from "@vercel/analytics/react";
@@ -218,8 +219,8 @@ const OrdersPage = () => {
               <div className='font-bold'>Precio Unit.</div>
               <div className='font-bold'>Importe</div>
             </div>
-            {dataOrderSelected.dishesDescription.map((itm) => (
-              <div className='grid grid-cols-4 font-secondary gap-4'>
+            {groupOrderDishes(dataOrderSelected.dishesDescription).map((itm) => (
+              <div key={itm.key} className='grid grid-cols-4 font-secondary gap-4'>
                 <div>{itm.number}</div>
                 <div>{itm.name}</div>
                 <div>{currencyFormat(itm.price)}</div>
@@ -241,8 +242,7 @@ const OrdersPage = () => {
                   (prev, next) => prev + next.number * next.price,
                   0,
                 ),
-              )}{" "}
-              pesos
+              )}
             </div>
           </div>
         </Box>

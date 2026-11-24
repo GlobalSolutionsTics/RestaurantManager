@@ -1,10 +1,4 @@
 import { createOrder } from "@/services/order";
-import {
-  IOrderSlice,
-  setDishesDescriptionRedux,
-  setOrderIdRedux,
-  setTableOrder,
-} from "@/store/slices/orders.slice";
 import { TMenuResponse } from "@/types/menu.types";
 import { Check, Edit } from "@mui/icons-material";
 import { OutlinedInput, Select, TextField } from "@mui/material";
@@ -26,6 +20,7 @@ import {
   setCreateIdOrderRDX,
   setCreateTableRDX,
 } from "@/store/slices/create.order.slice";
+import { useFinishOrder } from "@/hooks/Wainters/useFinishOrder";
 
 const MessageComponent = withReactContent(Swal);
 
@@ -134,92 +129,18 @@ const FieldEditedOption = ({
 };
 
 const FinishOrderPage = () => {
-  const [loading, setLoading] = useState(false);
-  const [kitchenList, setKitchen] = useState([]);
-  const [nameClient, setNameClient] = useState("");
-
-  const { push } = useRouter();
-  const orderStore = useSelector((store: RootRedux) => store.orderCreate);
-  const dispatch = useDispatch();
-  const userStore = useSelector((store: any) => store.user);
-
-  //Handlers
-  const handleChangeTable = (e: any) => {
-    const val = parseInt(e.target.value);
-    dispatch(setCreateTableRDX(val));
-  };
-
-  //Area para los servicios
-  const getConfigurationInfo = async () => {
-    const token = sessionStorage.getItem(TOKEN_ID);
-    setLoading(true);
-    if (token) {
-      const petition: TConifg = await listConfigurationService(token);
-      const list: any = new Array(petition.tablesActives).fill(0);
-      setKitchen(list);
-    } else {
-      push("/admin");
-    }
-    setLoading(false);
-  };
-
-  const onChangeDish = (
-    name: string,
-    dishNumber: number,
-    price: number,
-    uuid: string,
-  ) => {
-    const dishesDescription: Array<TMenuResponse> =
-      orderStore.dishesDescription;
-
-    const newDish = dishesDescription.map((itm) => {
-      if (itm.uuid === uuid) {
-        return { ...itm, name: name, price: price, number: dishNumber };
-      }
-      return itm;
-    });
-    dispatch(setCreateDishesDescriptionRDX(newDish));
-  };
-  //Handle functions
-  const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
-    const value: string = event.target.value;
-    setNameClient(value);
-  };
-
-  const handleSendOrder = async () => {
-    setLoading(true);
-    const nameOrder =
-      orderStore.tableNumber === DEFAULT_TABLE_LLEVAR
-        ? nameClient
-        : orderStore.name;
-
-    const payload = {
-      name: nameOrder,
-      dishes: orderStore.dishes,
-      tableNumber: orderStore.tableNumber,
-      dishesDescription: orderStore.dishesDescription,
-      waiter: userStore.uuid,
-    };
-    const { error, message } = await createOrder(payload);
-    if (!error) {
-      dispatch(setCreateIdOrderRDX(message));
-      push("/orders/qrcodePage");
-    } else {
-      MessageComponent.fire({
-        icon: "error",
-        title: "Ocurrio un error",
-        text: message,
-        confirmButtonText: "Entendido",
-        showLoaderOnConfirm: false,
-        showLoaderOnDeny: false,
-      });
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    getConfigurationInfo();
-  }, []);
+  const {
+    handleChangeName,
+    handleChangeTable,
+    handleSendOrder,
+    handleChangeDiners,
+    onChangeDish,
+    kitchenList,
+    loading,
+    orderStore,
+    nameClient,
+    diners,
+  } = useFinishOrder();
 
   return (
     <>
@@ -241,6 +162,16 @@ const FinishOrderPage = () => {
           </div>
           <div className='w-full'>
             <div className='flex flex-col flex-start mx-8 my-4'>
+              <div className='flex flex-col'>
+                <span className='font-primary text-[1.5rem] mb-2'>
+                  Numero de comensales
+                </span>
+                <TextField
+                  onChange={handleChangeDiners}
+                  value={diners}
+                  type='number'
+                />
+              </div>
               <span className='font-primary text-[1.5rem] mb-2'>
                 Mesa que está atendiendo
               </span>

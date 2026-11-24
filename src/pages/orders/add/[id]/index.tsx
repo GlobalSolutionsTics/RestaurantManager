@@ -3,35 +3,27 @@ import Dishes from "@/components/dishes/Dishes";
 import TypeComp from "@/components/typeSelector/TypeComponent";
 import ProtectPage from "@/pages/admin/components/protectPage";
 import { getCategories, getDishService } from "@/services/dishes";
-import {
-  IOrderSlice,
-  setDishesDescriptionRedux,
-  setDishesNumberRedux,
-  setOrderIdRedux,
-  setTableOrder,
-} from "@/store/slices/orders.slice";
+import { useOrderForEditing } from "@/hooks/Orders/useOrderForEditing";
+import { setAdditionDraft } from "@/store/slices/orders.slice";
+import { v4 as uuidv4 } from "uuid";
 import { TCatalog } from "@/types/catalog.types";
-import { TMenuResponse, TResponseOrders } from "@/types/menu.types";
+import { TMenuResponse } from "@/types/menu.types";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
-import { getActualDateDB } from "@/utils/formats";
-import { CHECKS, TOKEN } from "@/utils/users";
-import { realtimeDB } from "@firebase/config";
-import { RT_ORDER_TABLE_NAME } from "@models/names";
-import { ArrowBack, DoneAll, RoomService, Send } from "@mui/icons-material";
-import { getAuth, signInAnonymously } from "firebase/auth";
-import { onValue, ref } from "firebase/database";
+import { CHECKS } from "@/utils/users";
+import { ArrowBack, DoneAll, RoomService } from "@mui/icons-material";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 type TDish = TMenuResponse & { number?: number; image?: string };
 
 type TDishesDescription = Array<TDish>;
 
-const EditOrderPage = () => {
-  const [tableNumber, setTableNumber] = useState(0);
+const AddOrderDishes = ({ orderId }: { orderId: string }) => {
+  const order = useOrderForEditing(orderId);
+  const tableNumber = order?.tableNumber;
   const [showItems, setShowItems] = useState(false);
   //Dishes states
   const [imageItem, setImageItem] = useState("");
@@ -40,7 +32,6 @@ const EditOrderPage = () => {
   const [dishesList, setDishesList] = useState<Array<TMenuResponse>>([]);
   const [dishesDescription, setDishesDescription] =
     useState<TDishesDescription>([]);
-  const [dishState, setDishState] = useState("");
   const [uuidDish, setUUIDDish] = useState("");
   const [dishSelect, setDishSelect] = useState<TDish>({
     name: "",
@@ -55,11 +46,9 @@ const EditOrderPage = () => {
   const [calculatorVal, setCalculatorVal] = useState(0);
 
   const router = useRouter();
-  const { query } = useRouter();
 
   //Redux handlers
   const dispatch = useDispatch();
-  const dishStore: IOrderSlice = useSelector((itm: any) => itm.ordersDishes);
   //Taggle
   const toggleMenu = () => setShowItems(!showItems);
   const toggleCalculatorNew = () => {
@@ -113,10 +102,11 @@ const EditOrderPage = () => {
   const handleCreateNew = (value: number) => {
     if (uuidDish !== "" && value !== 0) {
       const newOrder = { ...dishSelect, number: value };
-      const newDishes = [...dishesDescription];
-
-      newDishes.push(newOrder);
-      setDishesDescription(newDishes);
+      setDishesDescription((current) =>
+        current.some((dish) => dish.uuid === uuidDish)
+          ? current
+          : [...current, newOrder],
+      );
       toggleCalculatorNew();
     } else {
       toggleCalculatorNew();
@@ -124,15 +114,15 @@ const EditOrderPage = () => {
   };
 
   const handleSendModification = () => {
-    const numberOfDishes = dishesDescription.reduce((prev, itm) => {
-      if (itm?.number) {
-        return prev + itm?.number;
-      }
-      return prev;
-    }, 0);
-    dispatch(setDishesNumberRedux(numberOfDishes));
-    dispatch(setDishesDescriptionRedux(dishesDescription));
-    router.push(`/orders/add/${query.id}/send`);
+    if (!order || dishesDescription.length === 0) return;
+    dispatch(
+      setAdditionDraft({
+        orderId,
+        submissionId: uuidv4(),
+        dishes: dishesDescription,
+      }),
+    );
+    router.push(`/orders/add/${orderId}/send`);
   };
   //Getter
   const getDishesInfo = async (dish: TCatalog) => {
@@ -160,32 +150,9 @@ const EditOrderPage = () => {
       setTypeDishes(obtainCategories);
     }
   }, []);
-  const init = useCallback(async () => {
-    const auth = getAuth();
-    await signInAnonymously(auth);
-    const date = getActualDateDB();
-    const DB_RT =
-      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
-    const connection = ref(realtimeDB, DB_RT);
-    return onValue(connection, (snapshot) => {
-      if (snapshot.exists() && query.id !== undefined) {
-        const id: any = query.id;
-        const arrayOrders: Array<TResponseOrders> = snapshot.val();
-        const data = arrayOrders[id];
-
-        dispatch(setTableOrder(data.tableNumber));
-        dispatch(setOrderIdRedux(data.uuid));
-        setDishState(data.status);
-        setTableNumber(data.tableNumber);
-        //setDishesDescription(data.dishesDescription);
-      }
-    });
-  }, [query]);
-
   useEffect(() => {
-    init();
     obtainCategories();
-  }, [query]);
+  }, [obtainCategories]);
 
   return (
     <ProtectPage push={router.push} requiredProfiles={CHECKS}>
@@ -208,7 +175,7 @@ const EditOrderPage = () => {
           </div>
           <div className='!text-[0.75rem] !font-bold basis-2/5'>
             <p className='text-center'>Estatus:</p>
-            <p className='text-center'>{dishState}</p>
+            <p className='text-center'>{order?.status}</p>
           </div>
         </div>
       </div>
@@ -293,12 +260,18 @@ const EditOrderPage = () => {
       />
       <button
         className='w-full fixed bottom-0 z-20 bg-success text-white text-[1.5rem] itmes-center justify-center flex font-secondary py-2'
+        disabled={!order || dishesDescription.length === 0}
         onClick={handleSendModification}
       >
-        <DoneAll /> Ver orden
+        <DoneAll /> Revisar adición
       </button>
     </ProtectPage>
   );
 };
 
-export default EditOrderPage;
+export default function AddOrderPage() {
+  const { query } = useRouter();
+  return typeof query.id === "string" ? (
+    <AddOrderDishes key={query.id} orderId={query.id} />
+  ) : null;
+}
