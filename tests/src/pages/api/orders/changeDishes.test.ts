@@ -147,7 +147,10 @@ it("rejects an edit opened before another addition was confirmed", async () => {
   });
   await editResult.response;
   expect(editResult.status).toHaveBeenCalledWith(409);
-  expect(orders.get(first)?.dishesDescription).toEqual([dish, dish]);
+  expect(orders.get(first)?.dishesDescription).toEqual([
+    dish,
+    { ...dish, status: OrdersDishesStatus.SENT },
+  ]);
 });
 
 it("applies parallel retries once and keeps separate additions of the same dish", async () => {
@@ -163,7 +166,13 @@ it("applies parallel retries once and keeps separate additions of the same dish"
   ];
   await Promise.all(responses.map(({ response }) => response));
   responses.forEach(({ status }) => expect(status).toHaveBeenCalledWith(200));
-  expect(orders.get(first)?.dishesDescription).toEqual([dish, dish, dish]);
+  expect(orders.get(first)?.dishesDescription).toEqual([
+    dish,
+    ...Array.from({ length: 2 }, () => ({
+      ...dish,
+      status: OrdersDishesStatus.SENT,
+    })),
+  ]);
 });
 
 it("does not confirm an addition before Firebase acknowledges the write", async () => {

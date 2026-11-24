@@ -1,3 +1,4 @@
+import type { KitchenOrderAction } from "@/utils/kitchenOrder";
 import { TResponseOrders } from "@/types/menu.types";
 
 export enum OrdersStatusEnum {
@@ -8,5 +9,6 @@ export enum OrdersStatusEnum {
 
 export type Props = {
   itm: TResponseOrders;
-  onClick: (val: TResponseOrders) => Promise<void>;
+  kitchenType?: string;
+  onClick: (val: TResponseOrders, action: KitchenOrderAction) => Promise<void>;
 };

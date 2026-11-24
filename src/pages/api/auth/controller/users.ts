@@ -3,13 +3,14 @@ import jwt from "jsonwebtoken";
 import { firestore } from "@firebase/config";
 import { DB_USERS } from "@models/names";
 import { v4 as uuidv4 } from "uuid";
-import { useRouter } from "next/router";
+import { KITCHEN } from "@/utils/users";
 export interface IUsersResponse {
   user: string;
   password: string;
   name: string;
   type: string;
   uuid: string;
+  kitchenType?: string;
 }
 
 export const ERROR_NOT_CONNECTION = "Erro no se pudo encontrar la colección";
@@ -36,11 +37,12 @@ export const loginUsers = async (user: string, pass: string) => {
         name: find.name,
         type: find.type,
         uuid: find.uuid,
+        kitchenType: find.type === KITCHEN ? find.kitchenType : undefined,
       };
 
       const token = jwt.sign(payload, SEED_OF_JWT, { expiresIn: "12h" });
 
-      return { token: token, type: find.type };
+      return { token, type: find.type, kitchenType: payload.kitchenType };
     } else {
       return false;
     }
@@ -68,6 +70,7 @@ export const createUser = async (
   user: string,
   password: string,
   type: string,
+  kitchenType?: string,
 ) => {
   const existUser = await searchUserByUser(user);
   if (existUser) {
@@ -86,6 +89,13 @@ export const createUser = async (
       type,
       uuid,
     };
+    if (
+      type === KITCHEN &&
+      typeof kitchenType === "string" &&
+      kitchenType.trim()
+    ) {
+      userPayload.kitchenType = kitchenType.trim();
+    }
     usersItems.push(userPayload);
     const payload = {
       data: usersItems,
@@ -146,6 +156,14 @@ export const updateUser = async (payload: IUsersResponse) => {
         type: payload.type,
         user: payload.user,
       };
+      if (payload.type !== KITCHEN) {
+        delete newUserData.kitchenType;
+      } else if (
+        typeof payload.kitchenType === "string" &&
+        payload.kitchenType.trim()
+      ) {
+        newUserData.kitchenType = payload.kitchenType.trim();
+      }
       users.push(newUserData);
       const payloadData = { data: users };
 

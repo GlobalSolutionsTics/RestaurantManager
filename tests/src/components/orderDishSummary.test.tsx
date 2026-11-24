@@ -60,3 +60,31 @@ it("sums quantities across statuses while keeping different unit prices separate
     groups.reduce((total, dish) => total + dish.number * dish.price, 0),
   ).toBe(125);
 });
+
+it("keeps a repeated dish from another kitchen in a separate gray row", () => {
+  render(
+    <OrderDishSummary
+      kitchen={{ type: "plancha" }}
+      dishes={[
+        {
+          ...taco,
+          number: 2,
+          kitchenType: "plancha",
+          status: OrdersDishesStatus.IN_PREPARATION,
+        },
+        {
+          ...taco,
+          number: 1,
+          kitchenType: "barra",
+          status: OrdersDishesStatus.SENT,
+        },
+      ]}
+    />,
+  );
+  expect(
+    screen.getByRole("row", { name: "Taco 0 2 0" }).className,
+  ).not.toContain("bg-slate-200");
+  expect(
+    screen.getByRole("row", { name: /Taco.*otra cocina.*1 0 0/ }).className,
+  ).toContain("bg-slate-200");
+});

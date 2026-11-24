@@ -47,7 +47,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         ...(diners !== undefined && { diners }),
         dishesDescription: body.dishesDescription.map((dish) => ({
           ...dish,
-          status: OrdersDishesStatus.ACTIVE,
+          status: OrdersDishesStatus.SENT,
         })),
       },
       uuid,

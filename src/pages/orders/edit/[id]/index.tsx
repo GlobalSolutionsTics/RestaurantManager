@@ -1,10 +1,10 @@
-import { OrdersDishesStatus } from "@/enums/orders.enum";
+import { isDishFinished, isDishSent } from "@/utils/kitchenOrder";
 import ProtectPage from "@/pages/admin/components/protectPage";
 import { sendApplicationOrderEdit } from "@/services/order";
 import { useOrderForEditing } from "@/hooks/Orders/useOrderForEditing";
 import type { RootRedux } from "@/store/store";
 import { IUserRedux } from "@/store/slices/user.slice";
-import { TMenuResponse } from "@/types/menu.types";
+import type { DishesWithOrder } from "@/pages/api/types/Order/order.type";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { TOKEN_ID } from "@/utils/strings";
 import { CHECKS } from "@/utils/users";
@@ -19,14 +19,6 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 const MessageComponent = withReactContent(Swal);
-
-type TDish = TMenuResponse & {
-  number?: number;
-  image?: string;
-  status?: string;
-};
-
-type TDishesDescription = Array<TDish>;
 
 type Props = {
   name: string;
@@ -87,24 +79,24 @@ const FieldEditedOption = ({
     <>
       <div
         className={`w-full flex justify-between ${
-          status === OrdersDishesStatus.READY ? "bg-success" : "bg-enabled-dark"
+          isDishFinished(status) ? "bg-success" : "bg-enabled-dark"
         } bg-enabled-dark py-2 px-2 `}
       >
         <div
           className={`text-secondary text-[1rem] basis-4/6 ${
-            status === OrdersDishesStatus.READY && "line-through"
+            isDishFinished(status) && "line-through"
           }`}
         >
           {formik.values.name}
         </div>
         <div
           className={`text-secondary text-[1rem] basis-1/6 ${
-            status === OrdersDishesStatus.READY && "line-through"
+            isDishFinished(status) && "line-through"
           }`}
         >
           {formik.values.dishesNumber}
         </div>
-        {status == OrdersDishesStatus.ACTIVE ? (
+        {isDishSent(status) ? (
           <div className='basis-1/6 flex justify-end'>
             {editValues ? (
               <button onClick={handleChangeEdit}>
@@ -163,7 +155,7 @@ const OrderForm = ({ orderId }: { orderId: string }) => {
   const sending = useRef(false);
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
-  const [editedDishes, setEditedDishes] = useState<TDishesDescription>();
+  const [editedDishes, setEditedDishes] = useState<DishesWithOrder[]>();
   const userStore: IUserRedux = useSelector((store: RootRedux) => store.user);
   const dishes = editedDishes ?? order?.dishesDescription ?? [];
   const tableNumber = order?.tableNumber;

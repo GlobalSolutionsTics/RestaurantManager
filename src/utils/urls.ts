@@ -10,6 +10,7 @@ export const URL_API_EXPENSES = `${URL_BASE}/api/expenses`;
 export const URL_API_INVENTARY = `${URL_BASE}/api/inventary`;
 
 export const URL_ADMIN_DISHES = "/admin/dishes";
+export const URL_ADMIN_KITCHEN_TYPES = "/admin/kitchens_types";
 export const URL_ADMIN_USERS = "/admin/users";
 export const URL_ADMIN_DIRECTORY = "/admin/directory";
 export const URL_ADMIN_ORDERS = "/admin/orders";

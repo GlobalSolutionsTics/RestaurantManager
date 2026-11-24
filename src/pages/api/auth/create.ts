@@ -24,6 +24,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
             body.user,
             body.password,
             body.type,
+            body.kitchenType,
           );
 
           res.status(201).send({ error, message });

@@ -3,6 +3,7 @@ import { ContentTypeEnum } from "@/enums/contentType.enum";
 import { HttpMethodsEnum } from "@/enums/http.enum";
 import { StatusEnum } from "@/enums/states.enum";
 import type { AddDishesRequest, EditDishesRequest, UpdateDinersDivisionRequest } from "@/pages/api/types/Order/order.type";
+import type { KitchenOrderAction } from "@/utils/kitchenOrder";
 import { URL_API_ORDER } from "@/utils/urls";
 
 export const createOrder = async (payload: any, submissionKey?: string) => {
@@ -76,6 +77,26 @@ export const updateOrderService = async (
     return false;
   }
 };
+
+export async function advanceKitchenOrderService(
+  token: string,
+  uuid: string,
+  expectedStatus: string,
+  expectedAction: KitchenOrderAction,
+) {
+  const response = await fetch(`${URL_API_ORDER}/update/${uuid}/v2/status`, {
+    method: HttpMethodsEnum.PUT,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": ContentTypeEnum.JSON,
+    },
+    body: JSON.stringify({ expectedStatus, expectedAction }),
+  });
+  const result = await response.json();
+  if (!response.ok || result.error) {
+    throw new Error(result.message ?? "No se pudo actualizar la comanda.");
+  }
+}
 
 export const sendApplicationOrderAdd = async (
   token: string,

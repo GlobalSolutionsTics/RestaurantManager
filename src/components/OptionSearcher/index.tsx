@@ -1,4 +1,7 @@
-import { TOptionSearcher } from "@/pages/admin/dishes/type";
+type TOptionSearcher = {
+  children: any;
+  onClick: (itm: any) => void;
+};
 
 const OptionSearcher = ({ children, onClick }: TOptionSearcher) => {
   return (

@@ -69,11 +69,14 @@ const IndexComp = () => {
       //Token validation
       const separate = token.split(".");
       const information = separate[1];
-      const decodeInfo: IUserRedux = JSON.parse(atob(information));
+      const decodeInfo: IUserRedux = JSON.parse(
+        atob(information.replace(/-/g, "+").replace(/_/g, "/")),
+      );
       const payloadUser: IUserRedux = {
         name: decodeInfo.name,
         type: decodeInfo.type,
         uuid: decodeInfo.uuid,
+        kitchenType: login.kitchenType ?? decodeInfo.kitchenType,
       };
       dispatch(saveUserInRedux(payloadUser));
       sessionStorage.setItem(TOKEN_ID, token);

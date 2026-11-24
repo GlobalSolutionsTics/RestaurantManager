@@ -1,8 +1,6 @@
 import { getDishService, updateDishesInformation } from "@/services/dishes";
-import { TCatalog } from "@/types/catalog.types";
 import { TMenuResponse } from "@/types/menu.types";
 import { TOKEN_ID } from "@/utils/strings";
-import { SelectChangeEvent } from "@mui/material";
 import { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -12,8 +10,7 @@ const MessageComponent = withReactContent(Swal);
 
 export const useExcelEditor = () => {
   const [isChangesItems, setIsChangesItems] = useState(false);
-  const [isErrorModal, setIsErrorModal] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [categorySelect, setCategorySelect] = useState("");
   const [dishes, setDishes] = useState<Array<TMenuResponse>>([]);
   const [loading, setLoading] = useState(false);
@@ -25,21 +22,32 @@ export const useExcelEditor = () => {
 
   const { categories, searcherItems } = useDishes();
 
-  const handleBackEditSection = () => {
-    if (isChangesItems) {
-      setIsErrorModal(true);
-    } else {
-      setOpenEdit(false);
-    }
+  const confirmDiscardChanges = async () => {
+    if (!isChangesItems) return true;
+
+    const confirmation = await MessageComponent.fire({
+      icon: "warning",
+      title: "¿Descartar cambios?",
+      text: "Los cambios de esta categoría se perderán.",
+      showCancelButton: true,
+      confirmButtonText: "Descartar",
+      cancelButtonText: "Seguir editando",
+      focusCancel: true,
+    });
+    return confirmation.isConfirmed;
   };
 
   const handleSaveChanges = async () => {
     const token = sessionStorage.getItem(TOKEN_ID);
+    setSaving(true);
     const payload = {
       category: categorySelect,
-      dishes: dishes,
+      dishes: dishes.map(({ kitchenType, ...dish }) =>
+        kitchenType ? { ...dish, kitchenType } : dish,
+      ),
     };
     const update = await updateDishesInformation(payload, token);
+    setSaving(false);
     if (update) {
       MessageComponent.fire({
         icon: "success",
@@ -67,21 +75,22 @@ export const useExcelEditor = () => {
     setDishes([]);
     const dishesObtained = await getDishService(id);
     setLoading(false);
-    if (dishesObtained) {
+    if (Array.isArray(dishesObtained)) {
       setDishes(dishesObtained);
       return true;
     }
     return false;
   };
 
-  const handleEditingCategory = (e: SelectChangeEvent) => {
-    const value = e.target.value;
+  const handleEditingCategory = async (id: string) => {
+    if (!(await confirmDiscardChanges())) return;
 
-    setDishes([]);
-    setCategorySelect("");
+    setCategorySelect(id);
     setIsChangesItems(false);
-    setCategorySelect(value);
-    getDishForId(value);
+    setIdItemSelect("");
+    setPosibleOptions([]);
+    setTextToSearch("");
+    await getDishForId(id);
   };
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
@@ -102,39 +111,33 @@ export const useExcelEditor = () => {
     }
   };
 
-  const handleOptionSelected = (itm: TMenuResponse) => {
-    const categoryId = itm.type;
-    setCategorySelect(categoryId);
-    setTextToSearch(itm.name);
+  const handleOptionSelected = async (dish: TMenuResponse) => {
+    if (dish.type !== categorySelect) {
+      if (!(await confirmDiscardChanges())) return;
+      setCategorySelect(dish.type);
+      setIsChangesItems(false);
+      void getDishForId(dish.type);
+    }
+    setTextToSearch(dish.name);
     setPosibleOptions([]);
-    setIdItemSelect(itm.uuid || "");
-    getDishForId(categoryId);
+    setIdItemSelect(dish.uuid ?? "");
   };
 
-  const handleChangeEditCol = (obj: any) => {
-    const newItems = [...dishes];
-    const mapper = newItems.map((itm) => {
-      if (itm.uuid === obj.uuid) {
-        return obj;
-      }
-      return itm;
-    });
-    setDishes(mapper);
+  const handleChangeEditCol = (index: number, dish: TMenuResponse) => {
+    setDishes((current) =>
+      current.map((item, row) => (row === index ? dish : item)),
+    );
     setIsChangesItems(true);
   };
 
-  const handleDeleteColum = (obj: any) => {
-    const idToken = obj.uuid;
-    const newItems = [...dishes];
-    const findIndex = newItems.findIndex((itm) => itm.uuid === idToken);
-    newItems.splice(findIndex, 1);
-    setDishes(newItems);
+  const handleDeleteColum = (index: number) => {
+    setDishes((current) => current.filter((_, row) => row !== index));
     setIsChangesItems(true);
   };
 
   return {
-    isErrorModal,
-    openEdit,
+    saving,
+    confirmDiscardChanges,
     isChangesItems,
     loading,
     categories,
@@ -145,7 +148,6 @@ export const useExcelEditor = () => {
     categorySelect,
     dishes,
     handleOptionSelected,
-    handleBackEditSection,
     handleSaveChanges,
     handleEditingCategory,
     handleSearch,

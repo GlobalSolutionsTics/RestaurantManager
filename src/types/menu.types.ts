@@ -1,6 +1,8 @@
-import type { TOrder } from "@/pages/api/types/Order/order.type";
+import type {
+  DishesWithOrder,
+  TOrder,
+} from "@/pages/api/types/Order/order.type";
 import { Payment } from "@/components/admin/paymentForm/types";
-import { OrdersDishesStatus } from "@/enums/orders.enum";
 
 export type TMenuResponse = {
   name: string;
@@ -8,7 +10,7 @@ export type TMenuResponse = {
   isUniquePrice: boolean;
   type: string;
   uuid?: string;
-  status?: OrdersDishesStatus;
+  kitchenType?: string;
 };
 
 export type TResponseCollection = {
@@ -28,12 +30,14 @@ enum EButtonActives {
   COUTERSY = "CORTESIA",
 }
 
-export type TResponseOrders = Partial<Pick<TOrder, "diners" | "dinersDivisionTotal">> & {
+export type TResponseOrders = Partial<
+  Pick<TOrder, "diners" | "dinersDivisionTotal">
+> & {
   name: string;
   dishes: number;
   uuid: string;
   tableNumber: number;
-  dishesDescription: Array<TMenuResponse & { number: number }>;
+  dishesDescription: DishesWithOrder[];
   status: string;
   waiter?: string;
   payWith?: number;

@@ -10,16 +10,23 @@ import {
   PowerSettingsNew,
 } from "@mui/icons-material";
 import { getAuth, signInAnonymously } from "firebase/auth";
-import { onValue, ref } from "firebase/database";
+import { onValue, ref, type Unsubscribe } from "firebase/database";
 import { TResponseOrders } from "@/types/menu.types";
 import { useRouter } from "next/router";
 import ProtectPage from "../admin/components/protectPage";
 import { StatusEnum } from "@/enums/states.enum";
 import Head from "next/head";
-import { updateOrderService } from "@/services/order";
+import { advanceKitchenOrderService } from "@/services/order";
 import { TOKEN_ID } from "@/utils/strings";
 import { Button } from "@mui/material";
 import { getActualDateDB } from "@/utils/formats";
+import {
+  belongsToKitchen,
+  getKitchenIdentity,
+  type KitchenOrderAction,
+} from "@/utils/kitchenOrder";
+import type { RootRedux } from "@/store/store";
+import { useSelector } from "react-redux";
 import { KITCHEN } from "@/utils/users";
 import { OrderKitchen } from "@/components/OrderKitchen";
 
@@ -29,69 +36,49 @@ const HomeOrderPage = () => {
   const [orderView, setOrderView] = useState<OrdersStatusEnum>(
     OrdersStatusEnum.ACTIVE,
   );
-  const [orders, setOrders] = useState<Array<TResponseOrders>>([]);
-  const [ordersActived, setOrdersActived] = useState<Array<TResponseOrders>>(
-    [],
+  const [orders, setOrders] = useState<
+    Array<TResponseOrders & { orderId?: number }>
+  >([]);
+  const { type, kitchenType, uuid } = useSelector(
+    (state: RootRedux) => state.user,
   );
-  const [ordersClose, setOrdersClose] = useState<Array<TResponseOrders>>([]);
-  const [ordersReady, setOrdersReady] = useState<Array<TResponseOrders>>([]);
-
-  //router controller
+  const kitchenIdentity = getKitchenIdentity(kitchenType, uuid);
   const router = useRouter();
-
-  //Fullscreen controller
   const handleFullscreen = useFullScreenHandle();
 
-  const autheticate = useCallback(async () => {
-    const auth = getAuth();
-    await signInAnonymously(auth);
-    const date = getActualDateDB();
-    const DB_RT =
-      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
-    const connection = ref(realtimeDB, DB_RT);
-    return onValue(connection, (snapshot) => {
-      const data: Array<TResponseOrders> = snapshot.val();
-      if (snapshot.exists()) {
-        const elements = Object.values(data).sort(
-          (a: any, b: any) => a.orderId - b.orderId,
-        );
-        const ordersActived = elements.filter(
-          (itm) =>
-            itm.status !== StatusEnum.CLOSED &&
-            itm.status !== StatusEnum.ORDER_READY &&
-            itm.status !== StatusEnum.CANCELED,
-        );
-        const ordersClose = elements.filter(
-          (itm) =>
-            itm.status === StatusEnum.CLOSED ||
-            itm.status === StatusEnum.CANCELED,
-        );
-        const ordersReady = elements.filter(
-          (itm) => itm.status === StatusEnum.ORDER_READY,
-        );
-
-        setOrders(ordersActived);
-        setOrdersClose(ordersClose);
-        setOrdersReady(ordersReady);
-        setOrdersActived(ordersActived);
+  const { active, ready, closed } = useMemo(() => {
+    const active: TResponseOrders[] = [];
+    const ready: TResponseOrders[] = [];
+    const closed: TResponseOrders[] = [];
+    for (const order of orders) {
+      if (
+        order.status === StatusEnum.CLOSED ||
+        order.status === StatusEnum.CANCELED
+      ) {
+        closed.push(order);
+      } else if (order.status === StatusEnum.ORDER_READY) {
+        ready.push(order);
+      } else if (
+        type === KITCHEN &&
+        order.dishesDescription?.some(
+          (dish) =>
+            Number(dish.number) > 0 && belongsToKitchen(dish, kitchenIdentity),
+        )
+      ) {
+        active.push(order);
       }
-    });
-  }, []);
+    }
+    return { active, ready, closed };
+  }, [orders, type, kitchenIdentity]);
+  const visibleOrders =
+    orderView === OrdersStatusEnum.ACTIVE
+      ? active
+      : orderView === OrdersStatusEnum.READY
+        ? ready
+        : closed;
 
-  //Handle functions
   const sentFullscreen = async () => {
     await handleFullscreen.enter();
-  };
-
-  const handleChangeView = (status: OrdersStatusEnum) => {
-    if (status === OrdersStatusEnum.ACTIVE) {
-      setOrders(ordersActived);
-    } else if (status === OrdersStatusEnum.READY) {
-      setOrders(ordersReady);
-    } else {
-      setOrders(ordersClose);
-    }
-    setOrderView(status);
   };
 
   const handleClose = useCallback(() => {
@@ -100,33 +87,46 @@ const HomeOrderPage = () => {
     }
     sessionStorage.removeItem(TOKEN_ID);
     router.push("/admin");
-  }, []);
+  }, [router]);
 
-  const hanndleStartPetition = async (order: TResponseOrders) => {
-    let nextStatus = null;
-    if (order.status === StatusEnum.SEND) {
-      nextStatus = StatusEnum.IN_PROGRESS;
-    } else if (order.status === StatusEnum.IN_PROGRESS) {
-      nextStatus = StatusEnum.ORDER_READY;
-    } else if (order.status === StatusEnum.EDITED) {
-      nextStatus = StatusEnum.IN_PROGRESS;
-    }
-
-    //Send a next status
-    if (nextStatus !== null) {
-      const token = sessionStorage.getItem(TOKEN_ID);
-      if (token) {
-        const update = await updateOrderService(token, order.uuid, nextStatus);
-        if (!update) {
-          console.error("Error al hacer el update");
-        }
-      }
-    }
+  const hanndleStartPetition = async (
+    order: TResponseOrders,
+    action: KitchenOrderAction,
+  ) => {
+    const token = sessionStorage.getItem(TOKEN_ID);
+    if (!token) throw new Error("Inicia sesión para actualizar la comanda.");
+    await advanceKitchenOrderService(token, order.uuid, order.status, action);
   };
 
   useEffect(() => {
-    autheticate();
-  }, []);
+    if (type !== KITCHEN) return;
+    let disposed = false;
+    let unsubscribe: Unsubscribe | undefined;
+
+    const subscribe = async () => {
+      await signInAnonymously(getAuth());
+      if (disposed) return;
+      const { fullDate } = getActualDateDB();
+      const connection = ref(realtimeDB, `${RT_ORDER_TABLE_NAME}/${fullDate}`);
+      unsubscribe = onValue(connection, (snapshot) => {
+        const data: Record<string, TResponseOrders & { orderId?: number }> =
+          snapshot.val() ?? {};
+        setOrders(
+          Object.values(data).sort(
+            (a, b) => (a.orderId ?? 0) - (b.orderId ?? 0),
+          ),
+        );
+      });
+    };
+
+    void subscribe().catch((error) =>
+      console.error("No se pudieron cargar las comandas:", error),
+    );
+    return () => {
+      disposed = true;
+      unsubscribe?.();
+    };
+  }, [type]);
 
   return (
     <FullScreen handle={handleFullscreen}>
@@ -143,9 +143,9 @@ const HomeOrderPage = () => {
                     ? "!bg-blue-light !text-blue-dark"
                     : "!text-white"
                 }
-                onClick={() => handleChangeView(OrdersStatusEnum.ACTIVE)}
+                onClick={() => setOrderView(OrdersStatusEnum.ACTIVE)}
               >
-                <Checklist /> Activas ({ordersActived.length})
+                <Checklist /> Activas ({active.length})
               </Button>
               <Button
                 className={
@@ -153,9 +153,9 @@ const HomeOrderPage = () => {
                     ? "!bg-blue-light !text-blue-dark"
                     : "!text-white"
                 }
-                onClick={() => handleChangeView(OrdersStatusEnum.READY)}
+                onClick={() => setOrderView(OrdersStatusEnum.READY)}
               >
-                <Check /> Listas ({ordersReady.length})
+                <Check /> Listas ({ready.length})
               </Button>
               <Button
                 className={
@@ -163,9 +163,9 @@ const HomeOrderPage = () => {
                     ? "!bg-blue-light !text-blue-dark"
                     : "!text-white"
                 }
-                onClick={() => handleChangeView(OrdersStatusEnum.CLOSE)}
+                onClick={() => setOrderView(OrdersStatusEnum.CLOSE)}
               >
-                <Close /> Cerradas ({ordersClose.length})
+                <Close /> Cerradas ({closed.length})
               </Button>
             </div>
             <div className='text-white p-4'>
@@ -178,14 +178,14 @@ const HomeOrderPage = () => {
             </div>
           </div>
           <div className='bg-black h-auto min-h-[calc(100vh_-_3.5rem)] p-6 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4 overflow-y-auto overflow-x-hidden'>
-            {orders.length > 0 &&
-              orders.map((itm) => (
-                <OrderKitchen
-                  key={itm.uuid}
-                  itm={itm}
-                  onClick={hanndleStartPetition}
-                />
-              ))}
+            {visibleOrders.map((itm) => (
+              <OrderKitchen
+                key={itm.uuid}
+                itm={itm}
+                kitchenType={kitchenIdentity}
+                onClick={hanndleStartPetition}
+              />
+            ))}
           </div>
         </div>
       </ProtectPage>

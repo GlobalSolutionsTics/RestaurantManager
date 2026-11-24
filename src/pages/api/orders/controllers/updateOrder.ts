@@ -2,6 +2,7 @@ import { Payment } from "@/components/admin/paymentForm/types";
 import { OrdersDishesStatus } from "@/enums/orders.enum";
 import { StatusApplicationEnum, StatusEnum } from "@/enums/states.enum";
 import { TResponseOrders } from "@/types/menu.types";
+import { isDishSent } from "@/utils/kitchenOrder";
 import { getActualDateDB } from "@/utils/formats";
 import { firestore, realtimeDB } from "@firebase/config";
 import { DB_ORDERS_APPLICATION, RT_ORDER_TABLE_NAME } from "@models/names";
@@ -143,7 +144,7 @@ export const updateDishesAndNumber = async (
       const currentDishes = order.dishesDescription ?? [];
       // Apply field edits to their original lines and keep dish identity and status.
       const editedDishes = originalDishes.map((dish, index) => {
-        if (dish.status !== OrdersDishesStatus.ACTIVE) return dish;
+        if (!isDishSent(dish.status)) return dish;
         const { name, number, price } = dishesDescription[index];
         return { ...dish, name, number, price };
       });

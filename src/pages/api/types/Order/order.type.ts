@@ -1,8 +1,11 @@
 import type { TMenuResponse } from "@/types/menu.types";
+import type { OrdersDishesStatus } from "@/enums/orders.enum";
 import { StatusEnum } from "@/enums/states.enum";
 
 export type DishesWithOrder = TMenuResponse & {
   number: number;
+  status?: OrdersDishesStatus;
+  preparingKitchen?: string;
 };
 
 export type DinersDivisioTotal = {
@@ -33,7 +36,7 @@ export type TOrder = {
   version?: number;
 };
 
-type OrderDish = TMenuResponse & { number?: number };
+type OrderDish = Omit<DishesWithOrder, "number"> & { number?: number };
 
 type DishModification = {
   orderUUID: string;

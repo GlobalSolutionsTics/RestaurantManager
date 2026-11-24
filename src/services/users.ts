@@ -17,11 +17,12 @@ export const listUserSerive = async (token: string) => {
   }
 };
 
-type TCreateUser = {
+export type TCreateUser = {
   name: string;
   user: string;
   password: string;
   type: string;
+  kitchenType?: string;
 };
 
 export const createUserService = async (

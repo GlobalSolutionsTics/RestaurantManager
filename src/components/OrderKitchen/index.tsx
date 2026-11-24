@@ -10,10 +10,12 @@ import {
   Timer,
 } from "@mui/icons-material";
 import { useState } from "react";
-import { TResponseOrders } from "@/types/menu.types";
+import { getKitchenOrderAction } from "@/utils/kitchenOrder";
 
-export const OrderKitchen = ({ itm, onClick }: Props) => {
+export const OrderKitchen = ({ itm, kitchenType, onClick }: Props) => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const action = getKitchenOrderAction(itm, kitchenType);
   const STATUS_TXT = itm.status === StatusEnum.SEND ? "PENDIENTE" : itm.status;
   const IS_TO_GONE = itm.tableNumber === DEFAULT_TABLE_LLEVAR;
   const TABLE = IS_TO_GONE ? "Para llevar" : "Mesa " + itm.tableNumber;
@@ -26,22 +28,6 @@ export const OrderKitchen = ({ itm, onClick }: Props) => {
     }
 
     return <Timer className='animate-pulse' />;
-  };
-
-  const getIconButton = (status: string) => {
-    if (status === StatusEnum.IN_PROGRESS) {
-      return (
-        <>
-          <Notifications /> Terminar Orden
-        </>
-      );
-    }
-
-    return (
-      <>
-        <KeyboardArrowRight /> Iniciar Orden
-      </>
-    );
   };
 
   const getColorForHeader = (status: string) => {
@@ -72,10 +58,21 @@ export const OrderKitchen = ({ itm, onClick }: Props) => {
     return "bg-danger hover:bg-danger-dark text-white";
   };
 
-  const handleClick = async (val: TResponseOrders) => {
+  const handleClick = async () => {
+    if (!action) return;
     setLoading(true);
-    await onClick(val);
-    setLoading(false);
+    setError("");
+    try {
+      await onClick(itm, action);
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "No se pudo actualizar la comanda.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -89,21 +86,39 @@ export const OrderKitchen = ({ itm, onClick }: Props) => {
         <p className='font-secondary text-[1rem]'>Estatus: {STATUS_TXT}</p>
       </div>
       <div className='bg-enabled rounded-b-lg flex flex-col flex-start justify-between'>
-        <OrderDishSummary dishes={itm.dishesDescription} />
+        <OrderDishSummary
+          dishes={itm.dishesDescription}
+          kitchen={{ type: kitchenType }}
+        />
+        {error && (
+          <p role='alert' className='px-2 text-sm text-danger-dark'>
+            {error}
+          </p>
+        )}
         <div className='p-1 bottom-1 w-full'>
           {loading ? (
             <div className='flex items-center'>
               <span className='loader mr-4'></span> Guardando información
             </div>
           ) : (
-            <button
-              onClick={() => handleClick(itm)}
-              className={`p-2 w-full bottom-0 rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
-                itm.status,
-              )} disabled:bg-gray`}
-            >
-              {getIconButton(itm.status)}
-            </button>
+            action && (
+              <button
+                onClick={handleClick}
+                className={`p-2 w-full bottom-0 rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
+                  itm.status,
+                )} disabled:bg-gray`}
+              >
+                {action === "finish" ? (
+                  <>
+                    <Notifications /> Terminar platillos
+                  </>
+                ) : (
+                  <>
+                    <KeyboardArrowRight /> Iniciar preparación
+                  </>
+                )}
+              </button>
+            )
           )}
         </div>
       </div>

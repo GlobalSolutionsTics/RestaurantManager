@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { forwardRef } from "react";
 import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
-import { currencyFormat, formatDateTime, textToString } from "@/utils/formats";
+import { currencyFormat, formatDateTime } from "@/utils/formats";
 import { groupOrderDishes } from "@/utils/groupOrderDishes";
+import { usePaymentTicketComponent } from "./hooks/usePaymentTicketComponent";
 import type { PaymentTicketProps } from "./interfaces";
 
 export const PaymentTicketComponent = forwardRef<
@@ -19,6 +20,7 @@ export const PaymentTicketComponent = forwardRef<
   },
   ref,
 ) {
+  const { paymentTotalInWords } = usePaymentTicketComponent(information);
   const division = information.dinersDivisionTotal ?? [];
   const unassignedCents =
     Math.round((total || 0) * 100) -
@@ -138,7 +140,7 @@ export const PaymentTicketComponent = forwardRef<
         </tr>
       </table>
       <div className='font-secondary text-[1.25rem] w-full my-2 print-text'>
-        {textToString(information.payment?.total)}
+        {paymentTotalInWords}
       </div>
       {division.length > 0 && (
         <section className='mb-2'>

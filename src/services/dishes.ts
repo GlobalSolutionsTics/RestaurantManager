@@ -20,6 +20,8 @@ export const getCategories = async () => {
 export const getDishService = async (id: string) => {
   try {
     const petition = await fetch(`${URL_API_MENU}/list/${id}`);
+    if (petition.status === 404) return [];
+    if (!petition.ok) return;
     const response: Array<TMenuResponse> = await petition.json();
     return response;
   } catch (e) {

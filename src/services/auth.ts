@@ -17,8 +17,8 @@ export const loginService = async (user: string, pass: string) => {
     };
     const petition = await fetch(`${URL_API_AUTH}/login`, header);
     if (petition.status === 200) {
-      const { token, type } = await petition.json();
-      return { token: token, type: type };
+      const { token, type, kitchenType } = await petition.json();
+      return { token, type, kitchenType };
     }
     return false;
   } catch (e: any) {

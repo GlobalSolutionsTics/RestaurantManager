@@ -1,13 +1,15 @@
 import EditionTableCol from "@/components/editionTableCol";
 import OptionSearcher from "@/components/OptionSearcher";
 import { useExcelEditor } from "@/hooks/Dishes/admin/useExcelEditor";
-import { ArrowBack, Done, Save } from "@mui/icons-material";
-import { MenuItem, OutlinedInput, Select, Tooltip } from "@mui/material";
-import { ExcelEditorProps } from "./type";
+import { ArrowBack, SaveOutlined } from "@mui/icons-material";
+import { MenuItem, TextField } from "@mui/material";
+import type { ExcelEditorProps } from "./type";
 
-export const AdminExcelEditor = ({
+export function AdminExcelEditor({
   handleBackEditSection,
-}: ExcelEditorProps) => {
+  kitchens,
+  kitchensDisabled,
+}: ExcelEditorProps) {
   const {
     handleSaveChanges,
     handleEditingCategory,
@@ -20,130 +22,128 @@ export const AdminExcelEditor = ({
     textToSearch,
     posibleOptions,
     loading,
+    saving,
     categorySelect,
     dishes,
     idItemSelect,
+    confirmDiscardChanges,
   } = useExcelEditor();
+
   return (
-    <div className='flex flex-col w-full'>
-      <div className='bg-blue font-secondary text-[1.25rem] w-full p-4 flex justify-between'>
-        <div className='flex flex-row items-center'>
-          <div className='flex items-center justify-center mr-4'>
-            <Tooltip title='Regresar' arrow>
-              <button onClick={handleBackEditSection} className='text-white'>
-                <ArrowBack />
-              </button>
-            </Tooltip>
-          </div>
-          <div className='text-white flex items-center'>Editar precios</div>
-        </div>
-        {isChangesItems && (
-          <div className='text-white text-[1.25rem]'>
-            Tienes platillos con cambios sin guardar
-          </div>
-        )}
-        <div className='flex items-center justify-center mr-4'>
-          {isChangesItems ? (
-            <Tooltip title='Guardar precios' arrow>
-              <button onClick={handleSaveChanges} className='text-white'>
-                <Save />
-              </button>
-            </Tooltip>
-          ) : (
-            <Tooltip title='Precios guardados' arrow>
-              <span className='text-white'>
-                <Done />
-              </span>
-            </Tooltip>
+    <section className='min-w-0 space-y-4'>
+      <div className='flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm'>
+        <div className='flex flex-wrap items-center gap-3'>
+          <button
+            type='button'
+            disabled={saving}
+            onClick={async () => {
+              if (await confirmDiscardChanges()) handleBackEditSection();
+            }}
+            className='inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-blue-dark hover:bg-slate-100 disabled:opacity-60'
+          >
+            <ArrowBack fontSize='small' /> Volver
+          </button>
+          <h2 className='text-lg font-semibold'>Editar precios</h2>
+          {isChangesItems && (
+            <span className='text-sm text-amber-800'>Cambios sin guardar</span>
           )}
         </div>
-      </div>
-      <div className='flex flex-row p-4 bg-enabled'>
-        <Select
-          className='h-[2rem] outline-none w-full basis-1/6 rounded-none mr-4'
-          placeholder='Categoría'
-          onChange={handleEditingCategory}
+        <button
+          type='button'
+          disabled={!isChangesItems || saving}
+          onClick={handleSaveChanges}
+          className='inline-flex min-h-[2.5rem] items-center gap-2 rounded-xl bg-blue-dark px-4 text-sm font-semibold text-white hover:bg-slate-900 disabled:bg-slate-200 disabled:text-slate-600'
         >
-          {categories.length > 0 &&
-            categories.map((itm, index) => (
-              <MenuItem key={"itm-" + itm.id + "-" + index} value={itm.id}>
-                {itm.value}
-              </MenuItem>
-            ))}
-        </Select>
-        <div className='w-full basis-5/6 relative'>
-          <OutlinedInput
-            className='h-[2rem] outline-none w-full rounded-none bg-white'
-            id='outline-input-platillo'
-            placeholder='Buscar platillo'
+          <SaveOutlined fontSize='small' />{" "}
+          {saving ? "Guardando…" : "Guardar cambios"}
+        </button>
+      </div>
+
+      <div className='grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-[minmax(10rem,1fr)_2fr]'>
+        <TextField
+          select
+          size='small'
+          label='Categoría'
+          value={categorySelect}
+          onChange={(event) => handleEditingCategory(event.target.value)}
+          disabled={loading || saving}
+        >
+          {categories.map(({ id, value }) => (
+            <MenuItem key={id} value={id}>
+              {value}
+            </MenuItem>
+          ))}
+        </TextField>
+        <div className='relative min-w-0'>
+          <TextField
+            fullWidth
+            size='small'
+            label='Buscar platillo'
             value={textToSearch}
             onChange={handleSearch}
+            disabled={loading || saving}
           />
           {posibleOptions.length > 0 && (
-            <div
-              className={`w-full absolute ${
-                posibleOptions.length >= 4
-                  ? "h-[10rem]"
-                  : posibleOptions.length === 3
-                    ? "h-[7.5rem]"
-                    : posibleOptions.length === 2
-                      ? "h-[5rem]"
-                      : "h-[2.5rem]"
-              } bg-white overflow-y-auto z-[20]`}
-            >
-              {posibleOptions.map((itm, idx) => (
+            <div className='absolute z-20 mt-1 max-h-48 w-full overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-lg'>
+              {posibleOptions.map((dish, index) => (
                 <OptionSearcher
-                  onClick={() => handleOptionSelected(itm)}
-                  key={"id-" + idx}
+                  key={dish.uuid ?? index}
+                  onClick={() => handleOptionSelected(dish)}
                 >
-                  {itm.type.replace("_", " ").toUpperCase()} - {itm.name}
+                  {categories.find(({ id }) => id === dish.type)?.value ??
+                    dish.type}{" "}
+                  · {dish.name}
                 </OptionSearcher>
               ))}
             </div>
           )}
         </div>
       </div>
-      <div className='text-center'>
-        {categorySelect !== "" ? (
-          <div className='flex flex-col'>
-            <div className='flex flex-row w-full bg-enabled-light'>
-              <div className='w-[60px] bg-white'></div>
-              <div className='basis-1/5 text-left px-4 py-2 border-[1px] border-enabled'>
-                Nombre
-              </div>
-              <div className='basis-1/5 text-left px-4 py-2 border-[1px] border-enabled'>
-                Precio
-              </div>
-              <div className='basis-1/5 text-left px-4 py-2 border-[1px] border-enabled'>
-                Categoría
-              </div>
-              <div className='basis-1/5 text-left px-4 py-2 border-[1px] border-enabled'>
-                ¿Es precio único?
-              </div>
-              <div className='basis-1/5 text-left px-4 py-2 border-[1px] border-enabled'>
-                Acciones
-              </div>
+
+      {loading ? (
+        <p className='rounded-2xl bg-white p-6 text-slate-600' role='status'>
+          Cargando platillos…
+        </p>
+      ) : categorySelect ? (
+        <div className='overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm'>
+          <div className='min-w-[58rem]'>
+            <div className='grid grid-cols-[3rem_minmax(10rem,1.4fr)_minmax(6rem,0.8fr)_minmax(9rem,1fr)_minmax(9rem,1fr)_minmax(12rem,1.3fr)_5rem] gap-2 border-b border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-700'>
+              <span aria-hidden='true'>#</span>
+              <span>Nombre</span>
+              <span>Precio</span>
+              <span>Categoría</span>
+              <span>¿Es precio único?</span>
+              <span>Cocina perteneciente</span>
+              <span>Acciones</span>
             </div>
-            {dishes.map((itm, index) => (
+            {dishes.map((dish, index) => (
               <EditionTableCol
                 index={index}
-                key={"key-" + index}
-                data={itm}
+                key={dish.uuid ?? index}
+                data={dish}
                 categories={categories}
-                handleChange={handleChangeEditCol}
-                handleDelete={() => handleDeleteColum(itm)}
-                isSelected={itm.uuid === idItemSelect}
+                kitchens={kitchens}
+                kitchensDisabled={kitchensDisabled}
+                disabled={saving}
+                handleChange={(updatedDish) =>
+                  handleChangeEditCol(index, updatedDish)
+                }
+                handleDelete={() => handleDeleteColum(index)}
+                isSelected={!!dish.uuid && dish.uuid === idItemSelect}
               />
             ))}
+            {dishes.length === 0 && (
+              <p className='p-4 text-sm text-slate-600'>
+                No hay platillos en esta categoría.
+              </p>
+            )}
           </div>
-        ) : loading ? (
-          <div className='flex items-center p-2 font-secondary'>
-            <span className='loader mr-4'></span> Cargando catálogo
-          </div>
-        ) : (
-          <span>Seleccione una categoría</span>
-        )}
-      </div>
-    </div>
+        </div>
+      ) : (
+        <p className='rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-slate-600'>
+          Selecciona una categoría para editar sus platillos.
+        </p>
+      )}
+    </section>
   );
-};
+}

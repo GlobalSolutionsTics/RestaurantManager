@@ -1,4 +1,5 @@
 import { OrdersDishesStatus } from "@/enums/orders.enum";
+import { isDishFinished } from "@/utils/kitchenOrder";
 import type { TResponseOrders } from "@/types/menu.types";
 
 type OrderDish = TResponseOrders["dishesDescription"][number];
@@ -14,6 +15,7 @@ type GroupedDish = {
   number: number;
   pending: number;
   ready: number;
+  preparing: number;
 };
 
 export function groupOrderDishes(
@@ -30,13 +32,17 @@ export function groupOrderDishes(
       number: 0,
       pending: 0,
       ready: 0,
+      preparing: 0,
     };
     const quantity = Number(dish.number) || 0;
     group.number += quantity;
-    if (dish.status === OrdersDishesStatus.READY) {
+    if (isDishFinished(dish.status)) {
       group.ready += quantity;
     } else {
       group.pending += quantity;
+      if (dish.status === OrdersDishesStatus.IN_PREPARATION) {
+        group.preparing += quantity;
+      }
     }
     groups.set(key, group);
   }

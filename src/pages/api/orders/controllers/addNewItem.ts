@@ -21,7 +21,7 @@ export const addNewItem = async (
   const { submissionId } = modifications;
   const newDishes = modifications.dishesDescription.map((dish) => ({
     ...dish,
-    status: OrdersDishesStatus.ACTIVE,
+    status: OrdersDishesStatus.SENT,
   }));
   const timestamp = new Date().toString();
 

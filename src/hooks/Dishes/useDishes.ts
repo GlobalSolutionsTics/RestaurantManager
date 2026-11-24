@@ -8,20 +8,10 @@ export const useDishes = () => {
   const [searcherItems, setSearcherItems] = useState<Array<TMenuResponse>>([]);
 
   const getAllDishes = async (categories: TCatalog[]) => {
-    let dishesForCategory: Array<any> = [];
-    const promises = [];
-    for (let a = 0; a < categories.length; a++) {
-      const promise = await getDishService(categories[a].id);
-      promises.push(promise);
-    }
-    const responses = await Promise.all(promises);
-    if (responses) {
-      responses.map((itm) => {
-        dishesForCategory = dishesForCategory.concat(itm);
-        return itm;
-      });
-      setSearcherItems(dishesForCategory);
-    }
+    const responses = await Promise.all(
+      categories.map(({ id }) => getDishService(id)),
+    );
+    setSearcherItems(responses.flatMap((dishes) => dishes ?? []));
   };
 
   const getAllCategories = useCallback(async () => {
@@ -33,8 +23,8 @@ export const useDishes = () => {
   }, []);
 
   useEffect(() => {
-    getAllCategories();
-  }, []);
+    void getAllCategories();
+  }, [getAllCategories]);
 
   return {
     categories,
