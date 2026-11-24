@@ -47,7 +47,7 @@ export const TableSalesForHour = ({ list }: Props) => {
           map
             .sort((a, b) => parseInt(a.hour) - parseInt(b.hour))
             .map((itm) => (
-              <div className='w-full flex flex-row p-2'>
+              <div key={itm.hour} className='w-full flex flex-row p-2'>
                 <div className='basis-1/2'>{parseInt(itm.hour) + 6}</div>
                 <div className='basis-1/2'>{currencyFormat(itm.total)}</div>
               </div>

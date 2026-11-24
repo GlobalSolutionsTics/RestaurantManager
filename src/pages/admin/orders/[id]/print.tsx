@@ -126,6 +126,7 @@ const PrintOrderPage = () => {
               <div>
                 {clientList.map((itm, ind) => (
                   <div
+                    key={itm.uuid}
                     className={`flex flex-row  ${
                       ind % 2 === 0 ? "bg-enabled-dark" : "bg-enabled-light"
                     } divide-x divide-slate-400`}

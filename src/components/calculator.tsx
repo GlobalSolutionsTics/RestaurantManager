@@ -87,6 +87,7 @@ const CalculatorComp = ({
           {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((itm) => {
             return (
               <button
+                key={itm}
                 onClick={() => handleChangeDishesNumber(itm)}
                 className='basis-1/4 w-[100px] h-[100px] text-center bg-enabled my-2 mx-2 text-[2rem]'
               >

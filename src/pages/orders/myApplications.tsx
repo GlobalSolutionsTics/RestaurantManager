@@ -33,8 +33,8 @@ const ColColumn = ({ tableNumber, status, detail }: PropsColumn) => {
       </div>
       {isOpen && (
         <div className='px-8 py-4'>
-          {detail.map((itm: any) => (
-            <div className='flex flex-row justify-between'>
+          {detail.map((itm, index) => (
+            <div key={`${itm.uuid ?? itm.name}-${index}`} className='flex flex-row justify-between'>
               <div>{itm.name}</div>
               <div>{itm.number}</div>
             </div>

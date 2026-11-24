@@ -65,7 +65,7 @@ export const TableSalesForDays = ({ list }: Props) => {
           map
             .sort((a, b) => a.day - b.day)
             .map((itm) => (
-              <div className='w-full flex flex-row p-2'>
+              <div key={itm.day} className='w-full flex flex-row p-2'>
                 <div className='basis-1/2'>{getDay(Number(itm.day))}</div>
                 <div className='basis-1/2'>{currencyFormat(itm.total)}</div>
               </div>

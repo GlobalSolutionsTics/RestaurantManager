@@ -23,7 +23,7 @@ const TableDishes = ({ list, onCheck }: Props) => {
       <div className='flex flex-col overflow-y-auto max-h-[400px]'>
         {list.length > 0 &&
           list.map((itm) => (
-            <div className='w-full flex flex-col'>
+            <div key={itm.date} className='w-full flex flex-col'>
               {itm?.data?.length > 0 && (
                 <p className='sticky top-0 p-2 bg-white'>{itm.date}</p>
               )}
@@ -34,6 +34,7 @@ const TableDishes = ({ list, onCheck }: Props) => {
                   const propine = getFloat(dish.propine);
                   return (
                     <div
+                      key={dish.uuid}
                       className='w-full flex flex-row p-2 hover:cursor'
                       onClick={() => handleCheck(dish)}
                     >
