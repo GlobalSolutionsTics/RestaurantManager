@@ -1,10 +1,11 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { saveUserInRedux as saveUser } from "../reducers/user.reducers";
 
 export interface IUserRedux {
   type: string;
   name: string;
   uuid: string;
+  kitchenType?: string;
 }
 
 const INITIAL_STATE: IUserRedux = {

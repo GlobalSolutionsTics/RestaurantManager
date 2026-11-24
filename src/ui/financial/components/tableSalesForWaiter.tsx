@@ -56,7 +56,7 @@ export const TableSalesForWaiter = ({ list }: Props) => {
         </thead>
         <tbody className='[&>*]:bg-enabled [&>*:nth-child(odd)]:!bg-blue-dark [&>*:nth-child(odd)]:!text-white'>
           {map.map((itm) => (
-            <tr>
+            <tr key={itm.uuid}>
               <td className='p-2'>
                 <WaiterName waiterId={itm.uuid} />
               </td>

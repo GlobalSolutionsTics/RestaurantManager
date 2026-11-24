@@ -10,147 +10,113 @@ export const currencyFormat = (val: number) => {
   return newValue;
 };
 
-const units = (val: number) => {
-  switch (val) {
-    case 1:
-      return "un";
-    case 2:
-      return "dos";
-    case 3:
-      return "tres";
-    case 4:
-      return "cuatro";
-    case 5:
-      return "cinco";
-    case 6:
-      return "seis";
-    case 7:
-      return "siete";
-    case 8:
-      return "ocho";
-    case 9:
-      return "nueve";
-    default:
-      return "";
+const smallNumbers = [
+  "cero",
+  "un",
+  "dos",
+  "tres",
+  "cuatro",
+  "cinco",
+  "seis",
+  "siete",
+  "ocho",
+  "nueve",
+  "diez",
+  "once",
+  "doce",
+  "trece",
+  "catorce",
+  "quince",
+  "dieciséis",
+  "diecisiete",
+  "dieciocho",
+  "diecinueve",
+  "veinte",
+  "veintiún",
+  "veintidós",
+  "veintitrés",
+  "veinticuatro",
+  "veinticinco",
+  "veintiséis",
+  "veintisiete",
+  "veintiocho",
+  "veintinueve",
+];
+const tens = [
+  "",
+  "",
+  "",
+  "treinta",
+  "cuarenta",
+  "cincuenta",
+  "sesenta",
+  "setenta",
+  "ochenta",
+  "noventa",
+];
+const hundreds = [
+  "",
+  "ciento",
+  "doscientos",
+  "trescientos",
+  "cuatrocientos",
+  "quinientos",
+  "seiscientos",
+  "setecientos",
+  "ochocientos",
+  "novecientos",
+];
+
+const integerToWords = (value: number): string => {
+  if (value < 30) return smallNumbers[value];
+  if (value < 100) {
+    const remainder = value % 10;
+    return (
+      tens[Math.floor(value / 10)] +
+      (remainder ? ` y ${smallNumbers[remainder]}` : "")
+    );
   }
+  if (value === 100) return "cien";
+
+  const scale =
+    value >= 1e12 ? 1e12 : value >= 1e6 ? 1e6 : value >= 1000 ? 1000 : 100;
+  const count = Math.floor(value / scale);
+  const remainder = value % scale;
+  const suffix = remainder ? ` ${integerToWords(remainder)}` : "";
+  if (scale === 100) return hundreds[count] + suffix;
+  if (scale === 1000)
+    return (count === 1 ? "mil" : `${integerToWords(count)} mil`) + suffix;
+  const label =
+    scale === 1e12
+      ? count === 1
+        ? "billón"
+        : "billones"
+      : count === 1
+        ? "millón"
+        : "millones";
+  return `${integerToWords(count)} ${label}${suffix}`;
 };
 
-const principalDecimal = (rest: number) => {
-  switch (rest) {
-    case 0:
-      return "diez";
-    case 1:
-      return "once";
-    case 2:
-      return "doce";
-    case 3:
-      return "trece";
-    case 4:
-      return "catorce";
-    case 5:
-      return "quince";
-    default:
-      return "dieci" + units(rest);
-  }
-};
+const amountFormatter = new Intl.NumberFormat("en", {
+  useGrouping: false,
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
 
-const decimals = (val: number) => {
-  const rest = val % 10;
-  const divi = Math.floor(val / 10);
-  switch (divi) {
-    case 1:
-      return principalDecimal(rest);
-    case 2:
-      if (rest === 0) {
-        return "veinte";
-      } else {
-        return "veinti" + units(rest);
-      }
-    case 3:
-      if (rest === 0) {
-        return "treinta";
-      } else {
-        return "treinta y " + units(rest);
-      }
-    case 4:
-      if (rest === 0) {
-        return "cuarenta";
-      } else {
-        return "cuarenta y " + units(rest);
-      }
-    case 5:
-      if (rest === 0) {
-        return "cincuenta";
-      } else {
-        return "cincuenta y " + units(rest);
-      }
-    case 6:
-      if (rest === 0) {
-        return "sesenta";
-      } else {
-        return "sesenta y " + units(rest);
-      }
-    case 7:
-      if (rest === 0) {
-        return "setenta";
-      } else {
-        return "setenta y " + units(rest);
-      }
-    case 8:
-      if (rest === 0) {
-        return "ochenta";
-      } else {
-        return "ochenta y " + units(rest);
-      }
-    case 9:
-      if (rest === 0) {
-        return "noventa";
-      } else {
-        return "noventa y " + units(rest);
-      }
-    default:
-      return units(rest);
-  }
-};
-
-const centcimals = (val: number) => {
-  const rest = val % 100;
-  const divi = Math.floor(val / 100);
-  switch (divi) {
-    case 0:
-      return decimals(rest);
-    case 1:
-      if (rest === 0) {
-        return "cien";
-      }
-      return "ciento " + decimals(rest);
-    case 5:
-      return "quinientos " + decimals(rest);
-    case 7:
-      return "setecientos " + decimals(rest);
-    case 9:
-      return "novecientos " + decimals(rest);
-    default:
-      return units(divi) + "cientos " + decimals(rest);
-  }
-};
-
-const milesimas = (val: number) => {
-  const rest = val % 1000;
-  const divi = Math.floor(val / 1000);
-  switch (divi) {
-    case 0:
-      return centcimals(rest);
-    case 1:
-      return "mil " + centcimals(rest);
-    default:
-      return centcimals(divi) + " mil " + centcimals(rest);
-  }
-};
-
-export const textToString = (val: number) => {
-  const value = milesimas(val);
-  return value.charAt(0).toUpperCase() + value.slice(1);
+export const textToString = (value?: number | null) => {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "Cero pesos";
+  const parts = amountFormatter.formatToParts(Math.abs(value));
+  const pesos = Number(parts.find((part) => part.type === "integer")?.value);
+  const cents = Number(parts.find((part) => part.type === "fraction")?.value);
+  const sign = value < 0 && (pesos || cents) ? "menos " : "";
+  const unit = pesos === 1 ? "peso" : "pesos";
+  const connector = pesos > 0 && pesos % 1e6 === 0 ? " de " : " ";
+  const centavos =
+    cents > 0
+      ? ` con ${integerToWords(cents)} ${cents === 1 ? "centavo" : "centavos"}`
+      : "";
+  const text = `${sign}${integerToWords(pesos)}${connector}${unit}${centavos}`;
+  return text.charAt(0).toUpperCase() + text.slice(1);
 };
 
 export const formatDate = (date: string) => {

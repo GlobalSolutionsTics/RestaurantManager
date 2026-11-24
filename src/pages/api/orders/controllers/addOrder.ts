@@ -1,67 +1,64 @@
 import { realtimeDB } from "@firebase/config";
-import { child, get, getDatabase, ref, set } from "firebase/database";
+import { ref, runTransaction } from "firebase/database";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { StatusEnum } from "@/enums/states.enum";
-import { getActualDateDB } from "@/utils/formats";
+import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
+import type { TOrder } from "../../types/Order/order.type";
+
+type NewOrder = Pick<
+  TOrder,
+  "name" | "dishes" | "tableNumber" | "dishesDescription" | "waiter"
+> &
+  Partial<Pick<TOrder, "diners" | "notes">>;
 
 const addOrder = async (
-  name: string,
-  dishes: number,
+  order: NewOrder,
   uuid: string,
-  tableNumber: number,
-  dishesDescription: Array<any>,
-  waiter: string,
+  date: string,
+  canCreate: boolean,
 ) => {
-  try {
-    let preId = 0;
-    let isError = false;
-    const auth = getAuth();
-    await signInAnonymously(auth);
-    const dbRef = ref(getDatabase());
-    const date = getActualDateDB();
-    const DB_RT =
-      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
-    const snapshot = await get(child(dbRef, DB_RT));
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      const array = Object.keys(data).map((el) => el);
-      preId = array.length;
-      set(ref(realtimeDB, DB_RT + "/" + uuid), {
-        name: name,
-        dishes: dishes,
-        dishesDescription: dishesDescription,
-        orderId: preId + 1,
-        uuid: uuid,
-        tableNumber: tableNumber,
-        status: StatusEnum.SEND,
-        waiter,
-        creatAt: new Date().toString(),
-        updateAt: new Date().toString(),
-      });
-    } else {
-      set(ref(realtimeDB, DB_RT + "/" + uuid), {
-        name: name,
-        dishes: dishes,
-        dishesDescription: dishesDescription,
-        orderId: preId + 1,
-        uuid: uuid,
-        tableNumber: tableNumber,
-        status: StatusEnum.SEND,
-        waiter,
-        creatAt: new Date().toString(),
-        updateAt: new Date().toString(),
-      });
-    }
+  await signInAnonymously(getAuth());
+  const ordersRef = ref(realtimeDB, `${RT_ORDER_TABLE_NAME}/${date}`);
+  const timestamp = new Date().toString();
 
-    if (isError) {
-      return false;
-    }
-    return true;
-  } catch (e) {
-    console.log("Error al insertar en DB:", e);
-    return false;
-  }
+  const result = await runTransaction(
+    ordersRef,
+    (orders: Record<string, TOrder> | null) => {
+      // Returning the current value lets Firebase verify it even on a cold cache.
+      if (!canCreate || orders?.[uuid]) return orders;
+
+      let lastOrderId = 0;
+      for (const existing of Object.values(orders ?? {})) {
+        if (
+          order.tableNumber !== DEFAULT_TABLE_LLEVAR &&
+          existing.tableNumber === order.tableNumber &&
+          existing.status !== StatusEnum.CLOSED &&
+          existing.status !== StatusEnum.CANCELED
+        ) {
+          return orders;
+        }
+        lastOrderId = Math.max(lastOrderId, Number(existing.orderId) || 0);
+      }
+
+      return {
+        ...orders,
+        [uuid]: {
+          ...order,
+          orderId: lastOrderId + 1,
+          uuid,
+          status: StatusEnum.SEND,
+          version: 2,
+          creatAt: timestamp,
+          updateAt: timestamp,
+        },
+      };
+    },
+    { applyLocally: false },
+  );
+
+  if (!result.committed) throw new Error("La transacción no se confirmó");
+  return result.snapshot.child(uuid).exists();
 };
 
 export default addOrder;

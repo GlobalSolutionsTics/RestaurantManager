@@ -2,7 +2,7 @@ import { ContentTypeEnum } from "@/enums/contentType.enum";
 import { HttpMethodsEnum, HttpStatusEnum } from "@/enums/http.enum";
 import { DishesEnum } from "@/pages/api/menu/controller/enum/dishes.enum";
 import { TCatalog } from "@/types/catalog.types";
-import { TMenuResponse } from "@/types/menu.types";
+import { DishCatalogCategory, TMenuResponse } from "@/types/menu.types";
 import { URL_API_DISHES, URL_API_MENU, URL_API_ORDER } from "@/utils/urls";
 
 export const getCategories = async () => {
@@ -20,6 +20,8 @@ export const getCategories = async () => {
 export const getDishService = async (id: string) => {
   try {
     const petition = await fetch(`${URL_API_MENU}/list/${id}`);
+    if (petition.status === 404) return [];
+    if (!petition.ok) return;
     const response: Array<TMenuResponse> = await petition.json();
     return response;
   } catch (e) {
@@ -106,3 +108,14 @@ export const updateDishesInformation = async (
     return false;
   }
 };
+
+export async function getDishCatalog(
+  signal?: AbortSignal,
+): Promise<DishCatalogCategory[]> {
+  const response = await fetch("/api/menu/catalog", { signal });
+  if (!response.ok)
+    throw new Error("No se pudo cargar el catálogo de platillos.");
+
+  const { data } = await response.json();
+  return data;
+}

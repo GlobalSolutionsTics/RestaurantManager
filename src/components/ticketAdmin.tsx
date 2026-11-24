@@ -1,3 +1,4 @@
+import OrderDishSummary from "@/components/orders/OrderDishSummary";
 import { StatusEnum } from "@/enums/states.enum";
 import { updateOrderService } from "@/services/order";
 import { TResponseOrders } from "@/types/menu.types";
@@ -123,17 +124,7 @@ const TicketAdmin = ({ itm, onDelete }: TProps) => {
           </div>
         )}
         <div className='font-secondary w-full px-2'>Platillos {itm.dishes}</div>
-        {itm.dishesDescription?.map((itm) => (
-          <div
-            key={itm.uuid}
-            className={`flex flex-row w-full font-primary px-2 ${
-              itm.number === 0 ? "bg-danger text-white" : ""
-            }`}
-          >
-            <div className='basis-5/6'>{itm.name}</div>
-            <div className='basis-1/6 text-center'>{itm.number}</div>
-          </div>
-        ))}
+        <OrderDishSummary dishes={itm.dishesDescription} />
         <div className='flex flex-row w-full font-secondary px-2 pt-4 text-[1.5rem]'>
           Total:{" "}
           {currencyFormat(

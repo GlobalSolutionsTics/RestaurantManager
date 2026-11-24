@@ -1,27 +1,31 @@
 import { HttpMethodsEnum } from "@/enums/http.enum";
-import { IUsersResponse } from "@/pages/api/auth/controller/users";
+import type { IUsersResponse } from "@/pages/api/auth/controller/users";
 import { URL_API_AUTH } from "@/utils/urls";
 
-export const listUserSerive = async (token: string) => {
+export const listUserSerive = async (
+  token: string,
+): Promise<IUsersResponse[] | false> => {
   try {
     const petition = await fetch(`${URL_API_AUTH}/list`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+    if (!petition.ok) return false;
     const response = await petition.json();
-    return response.data;
+    return Array.isArray(response?.data) ? response.data : false;
   } catch (e: any) {
     console.error("Error al obtener el listado de usuarios: ", e);
     return false;
   }
 };
 
-type TCreateUser = {
+export type TCreateUser = {
   name: string;
   user: string;
   password: string;
   type: string;
+  kitchenType?: string;
 };
 
 export const createUserService = async (

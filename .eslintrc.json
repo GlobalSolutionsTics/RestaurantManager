@@ -4,5 +4,13 @@
   "rules": {
     "no-unused-vars": "error",
     "react/no-unescaped-entities": 0
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {
+        "no-unused-vars": "warn"
+      }
+    }
+  ]
 }

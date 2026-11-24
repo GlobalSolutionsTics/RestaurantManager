@@ -1,8 +1,11 @@
 import { validateTokneService } from "@/services/auth";
 import { IUserRedux, saveUserInRedux } from "@/store/slices/user.slice";
 import { TOKEN_ID } from "@/utils/strings";
+import { KITCHEN } from "@/utils/users";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+
+const TOKEN_CHECK_INTERVAL = 5 * 60 * 1000;
 
 type TProps = {
   children?: any;
@@ -10,63 +13,47 @@ type TProps = {
   requiredProfiles: string;
 };
 const ProtectPage = ({ children, push, requiredProfiles }: TProps) => {
-  const TIME = 5 * 60 * 1000;
-
   const dispatch = useDispatch();
-  const userStore: IUserRedux = useSelector((store: any) => store.user);
-  const userProfile = userStore.type;
-
-  const checkToken = () => {
-    const token = sessionStorage.getItem(TOKEN_ID);
-    if (!token || !userProfile || !requiredProfiles.includes(userProfile)) {
-      push("/admin");
-      return <div>Sin acceso</div>;
-    }
-  };
-
-  const validateToken = async () => {
-    const token = sessionStorage.getItem(TOKEN_ID);
-    if (token !== null) {
-      const validateToken = await validateTokneService(token);
-      if (!validateToken) {
-        push("/admin");
-      }
-    }
-  };
-
-  const generateInfoToken = () => {
-    //Token validation
-    const token = sessionStorage.getItem(TOKEN_ID);
-    if (token) {
-      const separate = token.split(".");
-      const information = separate[1];
-      const decodeInfo: IUserRedux = JSON.parse(atob(information));
-      const payloadUser: IUserRedux = {
-        name: decodeInfo.name,
-        type: decodeInfo.type,
-        uuid: decodeInfo.uuid,
-      };
-      dispatch(saveUserInRedux(payloadUser));
-    }
-  };
 
   useEffect(() => {
-    checkToken();
-    generateInfoToken();
+    let user: IUserRedux;
+    try {
+      const token = sessionStorage.getItem(TOKEN_ID);
+      const payload = token?.split(".")[1];
+      if (!payload) {
+        push("/admin");
+        return;
+      }
+      user = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
+      if (!user.type || !requiredProfiles.includes(user.type)) {
+        push("/admin");
+        return;
+      }
+      dispatch(
+        saveUserInRedux({
+          name: user.name,
+          type: user.type,
+          uuid: user.uuid,
+          kitchenType: user.kitchenType,
+        }),
+      );
+    } catch {
+      push("/admin");
+      return;
+    }
 
-    const init = async () => {
-      await validateToken();
+    const validateToken = async () => {
+      const token = sessionStorage.getItem(TOKEN_ID);
+      if (token !== null && !(await validateTokneService(token))) {
+        push("/admin");
+      }
     };
 
-    init();
-
-    const timeOut = setInterval(async () => {
-      if (userProfile !== "cocina") {
-        await validateToken();
-      }
-    }, TIME);
-    return () => clearInterval(timeOut);
-  }, []);
+    void validateToken();
+    if (user.type === KITCHEN) return;
+    const timeout = setInterval(validateToken, TOKEN_CHECK_INTERVAL);
+    return () => clearInterval(timeout);
+  }, [dispatch, push, requiredProfiles]);
 
   return <>{children}</>;
 };

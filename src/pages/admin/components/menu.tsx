@@ -5,6 +5,7 @@ import {
   URL_ADMIN_DIRECTORY,
   URL_ADMIN_DISHES,
   URL_ADMIN_INVENTORY,
+  URL_ADMIN_KITCHEN_TYPES,
   URL_ADMIN_ORDERS,
   URL_ADMIN_RECIP_BOOK,
   URL_ADMIN_USERS,
@@ -16,14 +17,14 @@ import {
   MenuBook,
   MiscellaneousServicesOutlined,
   PeopleOutline,
+  OutdoorGrill,
   PowerSettingsNewOutlined,
   RequestQuote,
   SetMealOutlined,
 } from "@mui/icons-material";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
-import { version as vapp } from "../../../../package.json";
+import { useCallback } from "react";
 
 type Props = {
   basePath: string;
@@ -34,12 +35,14 @@ type TMenuOpt = {
   path: string;
   href: string;
   children: any;
+  label?: string;
 };
 
-const MenuOption = ({ path, href, children }: TMenuOpt) => {
+const MenuOption = ({ path, href, children, label }: TMenuOpt) => {
   return (
     <Link
       href={href}
+      aria-label={label}
       className={`px-4 py-2 w-full flex items-left justify-left font-secondary block tracking-widest hover:bg-aqua hover:opacity-60 ${
         path === href ? "text-white bg-aqua" : ""
       }`}
@@ -56,7 +59,7 @@ const MenuAdmin = ({ basePath, router }: Props) => {
     }
     sessionStorage.removeItem(TOKEN_ID);
     router.push("/admin");
-  }, []);
+  }, [router]);
 
   return (
     <div className='h-[100vh] w-[70px] lg:w-[20%] overflow-y-auto bg-white top-0'>
@@ -73,12 +76,15 @@ const MenuAdmin = ({ basePath, router }: Props) => {
           Administrador
         </div>
         <div className='text-white font-secondary text-center pb-2 text-[0.5rem] lg:text-[1rem]'>
-          v {vapp}
+          v {process.env.version}
         </div>
       </div>
       <div className='hidden lg:block'>
         <MenuOption path={basePath} href={URL_ADMIN_DISHES}>
           <SetMealOutlined className='mr-4' /> Platillos
+        </MenuOption>
+        <MenuOption path={basePath} href={URL_ADMIN_KITCHEN_TYPES}>
+          <OutdoorGrill className='mr-4' /> Cocinas
         </MenuOption>
         <MenuOption path={basePath} href={URL_ADMIN_USERS}>
           <PeopleOutline className='mr-4' /> Usuarios
@@ -111,6 +117,13 @@ const MenuAdmin = ({ basePath, router }: Props) => {
       <div className='lg:hidden'>
         <MenuOption path={basePath} href={URL_ADMIN_DISHES}>
           <SetMealOutlined fontSize='large' />
+        </MenuOption>
+        <MenuOption
+          path={basePath}
+          href={URL_ADMIN_KITCHEN_TYPES}
+          label='Cocinas'
+        >
+          <OutdoorGrill fontSize='large' />
         </MenuOption>
         <MenuOption path={basePath} href={URL_ADMIN_USERS}>
           <PeopleOutline fontSize='large' />

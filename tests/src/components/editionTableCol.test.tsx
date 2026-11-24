@@ -52,3 +52,32 @@ describe("Edition Component Tool", () => {
     expect(INPUT_NAME).toHaveValue("Nombre cambiado");
   });
 });
+
+it("uses the kitchen UUID and omits kitchenType when selecting all kitchens", () => {
+  const kitchen = { id: "26bcca54-da1a-451c-9e1c-e15b190a40c7", name: "Barra" };
+  const handleChange = jest.fn();
+  const props = { kitchens: [kitchen], handleChange, handleDelete: jest.fn() };
+  const { rerender } = render(
+    <EditionTableCol {...props} data={INITAL_DATA} />,
+  );
+  const select = screen.getByRole("combobox", {
+    name: "Cocina perteneciente de Prueba Nombre",
+  });
+
+  expect(select).toHaveDisplayValue("Todas las cocinas");
+  fireEvent.change(select, { target: { value: kitchen.id } });
+  expect(handleChange).toHaveBeenLastCalledWith({
+    ...INITAL_DATA,
+    kitchenType: kitchen.id,
+  });
+
+  rerender(
+    <EditionTableCol
+      {...props}
+      data={{ ...INITAL_DATA, kitchenType: kitchen.id }}
+    />,
+  );
+  expect(select).toHaveDisplayValue("Barra");
+  fireEvent.change(select, { target: { value: "" } });
+  expect(handleChange.mock.lastCall?.[0]).not.toHaveProperty("kitchenType");
+});

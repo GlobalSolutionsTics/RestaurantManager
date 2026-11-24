@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { SEED_OF_JWT } from "./controllers/client";
 import { HttpMethodsEnum } from "@/enums/http.enum";
 import createClient from "./controllers/create.controller";
+import { v4 as uuidv4 } from "uuid";
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
   const method = req.method;
@@ -25,7 +26,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
               body.name,
               body.adress,
               body.phone,
-              body.uuidDirectory,
+              uuidv4(),
             );
             res.status(200).send({ error, message });
           } catch (e: any) {

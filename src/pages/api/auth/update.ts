@@ -24,6 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             name: body.name,
             password: body.password,
             type: body.type,
+            kitchenType: body.kitchenType,
           };
           const { error, message } = await updateUser(payload);
           if (error) {

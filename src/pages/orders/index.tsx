@@ -4,106 +4,81 @@ import { realtimeDB } from "@firebase/config";
 import { RT_ORDER_TABLE_NAME } from "@models/names";
 import {
   Check,
-  CheckCircle,
   Checklist,
   Close,
-  HourglassFull,
-  KeyboardArrowRight,
-  Notifications,
   OpenInFull,
   PowerSettingsNew,
-  Timer,
 } from "@mui/icons-material";
 import { getAuth, signInAnonymously } from "firebase/auth";
-import { onValue, ref } from "firebase/database";
+import { onValue, ref, type Unsubscribe } from "firebase/database";
 import { TResponseOrders } from "@/types/menu.types";
 import { useRouter } from "next/router";
 import ProtectPage from "../admin/components/protectPage";
 import { StatusEnum } from "@/enums/states.enum";
 import Head from "next/head";
-import { updateOrderService } from "@/services/order";
+import { advanceKitchenOrderService } from "@/services/order";
 import { TOKEN_ID } from "@/utils/strings";
-import { DEFAULT_TABLE_LLEVAR } from "@/utils/constants";
 import { Button } from "@mui/material";
-import { OrdersDishesStatus } from "@/enums/orders.enum";
 import { getActualDateDB } from "@/utils/formats";
-import { KITCHEN, TOKEN } from "@/utils/users";
-import WaiterName from "@/components/waiter/WaiterName";
+import {
+  belongsToKitchen,
+  getKitchenIdentity,
+  type KitchenOrderAction,
+} from "@/utils/kitchenOrder";
+import type { RootRedux } from "@/store/store";
+import { useSelector } from "react-redux";
+import { KITCHEN } from "@/utils/users";
+import { OrderKitchen } from "@/components/OrderKitchen";
 
-enum OrdersStatusEnum {
-  ACTIVE = "ACTIVAS",
-  READY = "LISTAS",
-  CLOSE = "CERRADAS",
-}
+import { OrdersStatusEnum } from "@/components/OrderKitchen/type";
 
 const HomeOrderPage = () => {
   const [orderView, setOrderView] = useState<OrdersStatusEnum>(
     OrdersStatusEnum.ACTIVE,
   );
-  const [orders, setOrders] = useState<Array<TResponseOrders>>([]);
-  const [ordersActived, setOrdersActived] = useState<Array<TResponseOrders>>(
-    [],
+  const [orders, setOrders] = useState<
+    Array<TResponseOrders & { orderId?: number }>
+  >([]);
+  const { type, kitchenType, uuid } = useSelector(
+    (state: RootRedux) => state.user,
   );
-  const [ordersClose, setOrdersClose] = useState<Array<TResponseOrders>>([]);
-  const [ordersReady, setOrdersReady] = useState<Array<TResponseOrders>>([]);
-  const [loading, setLoading] = useState(false);
-
-  //router controller
+  const kitchenIdentity = getKitchenIdentity(kitchenType, uuid);
   const router = useRouter();
-
-  //Fullscreen controller
   const handleFullscreen = useFullScreenHandle();
 
-  const autheticate = useCallback(async () => {
-    const auth = getAuth();
-    await signInAnonymously(auth);
-    const date = getActualDateDB();
-    const DB_RT =
-      RT_ORDER_TABLE_NAME + "/" + date.year + "/" + date.month + "/" + date.day;
-    const connection = ref(realtimeDB, DB_RT);
-    return onValue(connection, (snapshot) => {
-      const data: Array<TResponseOrders> = snapshot.val();
-      if (snapshot.exists()) {
-        const elements = Object.values(data).sort(
-          (a: any, b: any) => a.orderId - b.orderId,
-        );
-        const ordersActived = elements.filter(
-          (itm) =>
-            itm.status !== StatusEnum.CLOSED &&
-            itm.status !== StatusEnum.ORDER_READY &&
-            itm.status !== StatusEnum.CANCELED,
-        );
-        const ordersClose = elements.filter(
-          (itm) =>
-            itm.status === StatusEnum.CLOSED ||
-            itm.status === StatusEnum.CANCELED,
-        );
-        const ordersReady = elements.filter(
-          (itm) => itm.status === StatusEnum.ORDER_READY,
-        );
-
-        setOrders(ordersActived);
-        setOrdersClose(ordersClose);
-        setOrdersReady(ordersReady);
-        setOrdersActived(ordersActived);
+  const { active, ready, closed } = useMemo(() => {
+    const active: TResponseOrders[] = [];
+    const ready: TResponseOrders[] = [];
+    const closed: TResponseOrders[] = [];
+    for (const order of orders) {
+      if (
+        order.status === StatusEnum.CLOSED ||
+        order.status === StatusEnum.CANCELED
+      ) {
+        closed.push(order);
+      } else if (order.status === StatusEnum.ORDER_READY) {
+        ready.push(order);
+      } else if (
+        type === KITCHEN &&
+        order.dishesDescription?.some(
+          (dish) =>
+            Number(dish.number) > 0 && belongsToKitchen(dish, kitchenIdentity),
+        )
+      ) {
+        active.push(order);
       }
-    });
-  }, []);
+    }
+    return { active, ready, closed };
+  }, [orders, type, kitchenIdentity]);
+  const visibleOrders =
+    orderView === OrdersStatusEnum.ACTIVE
+      ? active
+      : orderView === OrdersStatusEnum.READY
+        ? ready
+        : closed;
 
-  //Handle functions
   const sentFullscreen = async () => {
     await handleFullscreen.enter();
-  };
-
-  const handleChangeView = (status: OrdersStatusEnum) => {
-    if (status === OrdersStatusEnum.ACTIVE) {
-      setOrders(ordersActived);
-    } else if (status === OrdersStatusEnum.READY) {
-      setOrders(ordersReady);
-    } else {
-      setOrders(ordersClose);
-    }
-    setOrderView(status);
   };
 
   const handleClose = useCallback(() => {
@@ -112,92 +87,46 @@ const HomeOrderPage = () => {
     }
     sessionStorage.removeItem(TOKEN_ID);
     router.push("/admin");
-  }, []);
+  }, [router]);
 
-  const hanndleStartPetition = async (order: TResponseOrders) => {
-    let nextStatus = null;
-    if (order.status === StatusEnum.SEND) {
-      nextStatus = StatusEnum.IN_PROGRESS;
-    } else if (order.status === StatusEnum.IN_PROGRESS) {
-      nextStatus = StatusEnum.ORDER_READY;
-    } else if (order.status === StatusEnum.EDITED) {
-      nextStatus = StatusEnum.IN_PROGRESS;
-    }
-
-    //Send a next status
-    if (nextStatus !== null) {
-      const token = sessionStorage.getItem(TOKEN_ID);
-      if (token) {
-        setLoading(true);
-        const update = await updateOrderService(token, order.uuid, nextStatus);
-        if (!update) {
-          console.error("Error al hacer el update");
-        }
-        setLoading(false);
-      }
-    }
+  const hanndleStartPetition = async (
+    order: TResponseOrders,
+    action: KitchenOrderAction,
+  ) => {
+    const token = sessionStorage.getItem(TOKEN_ID);
+    if (!token) throw new Error("Inicia sesión para actualizar la comanda.");
+    await advanceKitchenOrderService(token, order.uuid, order.status, action);
   };
 
-  //Color controller
-  const getColorForHeader = (status: string) => {
-    if (status === StatusEnum.IN_PROGRESS) {
-      return "bg-waiting-dark text-dark";
-    } else if (status === StatusEnum.ORDER_READY) {
-      return "bg-success-dark text-white";
-    } else if (status === StatusEnum.EDITED) {
-      return "bg-orange-dark text-dark";
-    }
-
-    return "bg-danger-dark text-white";
-  };
-
-  const getColorButton = (status: string) => {
-    if (status === StatusEnum.IN_PROGRESS) {
-      return "bg-waiting-dark hover:bg-waiting-dark hover:text-dark";
-    } else if (
-      status === StatusEnum.ORDER_READY ||
-      status === StatusEnum.CLOSED ||
-      status === StatusEnum.CANCELED
-    ) {
-      return "bg-success-dark text-white hidden";
-    } else if (status === StatusEnum.EDITED) {
-      return "bg-orange-dark hover:bg-orange hover:text-dark";
-    }
-
-    return "bg-danger hover:bg-danger-dark text-white";
-  };
-
-  //Icon and text controller
-  const getIconHeader = (status: string) => {
-    if (status === StatusEnum.IN_PROGRESS) {
-      return <HourglassFull className='animate-spin' />;
-    } else if (status === StatusEnum.ORDER_READY) {
-      return <CheckCircle />;
-    }
-
-    return <Timer className='animate-pulse' />;
-  };
-
-  const getIconButton = (status: string) => {
-    if (status === StatusEnum.IN_PROGRESS) {
-      return (
-        <>
-          <Notifications /> Terminar Orden
-        </>
-      );
-    }
-
-    return (
-      <>
-        <KeyboardArrowRight /> Iniciar Orden
-      </>
-    );
-  };
-
-  //Carga inicial
   useEffect(() => {
-    autheticate();
-  }, []);
+    if (type !== KITCHEN) return;
+    let disposed = false;
+    let unsubscribe: Unsubscribe | undefined;
+
+    const subscribe = async () => {
+      await signInAnonymously(getAuth());
+      if (disposed) return;
+      const { fullDate } = getActualDateDB();
+      const connection = ref(realtimeDB, `${RT_ORDER_TABLE_NAME}/${fullDate}`);
+      unsubscribe = onValue(connection, (snapshot) => {
+        const data: Record<string, TResponseOrders & { orderId?: number }> =
+          snapshot.val() ?? {};
+        setOrders(
+          Object.values(data).sort(
+            (a, b) => (a.orderId ?? 0) - (b.orderId ?? 0),
+          ),
+        );
+      });
+    };
+
+    void subscribe().catch((error) =>
+      console.error("No se pudieron cargar las comandas:", error),
+    );
+    return () => {
+      disposed = true;
+      unsubscribe?.();
+    };
+  }, [type]);
 
   return (
     <FullScreen handle={handleFullscreen}>
@@ -214,9 +143,9 @@ const HomeOrderPage = () => {
                     ? "!bg-blue-light !text-blue-dark"
                     : "!text-white"
                 }
-                onClick={() => handleChangeView(OrdersStatusEnum.ACTIVE)}
+                onClick={() => setOrderView(OrdersStatusEnum.ACTIVE)}
               >
-                <Checklist /> Activas ({ordersActived.length})
+                <Checklist /> Activas ({active.length})
               </Button>
               <Button
                 className={
@@ -224,9 +153,9 @@ const HomeOrderPage = () => {
                     ? "!bg-blue-light !text-blue-dark"
                     : "!text-white"
                 }
-                onClick={() => handleChangeView(OrdersStatusEnum.READY)}
+                onClick={() => setOrderView(OrdersStatusEnum.READY)}
               >
-                <Check /> Listas ({ordersReady.length})
+                <Check /> Listas ({ready.length})
               </Button>
               <Button
                 className={
@@ -234,9 +163,9 @@ const HomeOrderPage = () => {
                     ? "!bg-blue-light !text-blue-dark"
                     : "!text-white"
                 }
-                onClick={() => handleChangeView(OrdersStatusEnum.CLOSE)}
+                onClick={() => setOrderView(OrdersStatusEnum.CLOSE)}
               >
-                <Close /> Cerradas ({ordersClose.length})
+                <Close /> Cerradas ({closed.length})
               </Button>
             </div>
             <div className='text-white p-4'>
@@ -249,92 +178,14 @@ const HomeOrderPage = () => {
             </div>
           </div>
           <div className='bg-black h-auto min-h-[calc(100vh_-_3.5rem)] p-6 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4 overflow-y-auto overflow-x-hidden'>
-            {orders.length > 0 &&
-              orders.map((itm) => (
-                <div key={itm.uuid} className='rounded-lg mb-4'>
-                  <div
-                    className={`transition ease-in-out delay-150 ${getColorForHeader(
-                      itm.status,
-                    )} text-[1.5rem] font-secondary w-full rounded-t-lg p-4`}
-                  >
-                    {getIconHeader(itm.status)}{" "}
-                    {itm.tableNumber === DEFAULT_TABLE_LLEVAR
-                      ? "Para llevar"
-                      : "Mesa " + itm.tableNumber}
-                    <p className='font-secondary text-[1rem]'>
-                      Estatus:{" "}
-                      {itm.status === StatusEnum.SEND
-                        ? "PENDIENTE"
-                        : itm.status}
-                    </p>
-                    <p>
-                      Mesero: <WaiterName waiterId={itm.waiter} />
-                    </p>
-                  </div>
-                  <div className='bg-enabled rounded-b-lg flex flex-col flex-start justify-between'>
-                    <div className=''>
-                      <div className='w-full py-2 px-4 flex flex-row'>
-                        <div className='basis-5/6 font-bold text-[1.5rem] font-secondary'>
-                          Descripción
-                        </div>
-                        <div className='basis-1/6 font-bold text-[1.5rem] text-center font-secondary'>
-                          Cant.
-                        </div>
-                      </div>
-                      {orderView === OrdersStatusEnum.ACTIVE &&
-                        itm.dishesDescription
-                          ?.filter(
-                            (itm: any) =>
-                              itm.status === OrdersDishesStatus.ACTIVE,
-                          )
-                          .map((dish, indx) => (
-                            <div
-                              key={dish.uuid + "-" + indx}
-                              className='w-full py-2 px-4 text-[1.5rem] flex flex-row'
-                            >
-                              <div className='basis-5/6 font-secondary'>
-                                {dish.name}
-                              </div>
-                              <div className='basis-1/6 text-center font-secondary'>
-                                {dish.number}
-                              </div>
-                            </div>
-                          ))}
-                      {orderView !== OrdersStatusEnum.ACTIVE &&
-                        itm.dishesDescription?.map((dish, indx) => (
-                          <div
-                            key={dish.uuid + "-" + indx}
-                            className='w-full py-2 px-4 text-[1.5rem] flex flex-row'
-                          >
-                            <div className='basis-5/6 font-secondary'>
-                              {dish.name}
-                            </div>
-                            <div className='basis-1/6 text-center font-secondary'>
-                              {dish.number}
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                    <div className='p-1 bottom-1 w-full'>
-                      {loading ? (
-                        <div className='flex items-center'>
-                          <span className='loader mr-4'></span> Guardando
-                          información
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => hanndleStartPetition(itm)}
-                          className={`p-2 w-full bottom-0 rounded-lg transition ease-in-out delay-150 duration-300 ${getColorButton(
-                            itm.status,
-                          )} disabled:bg-gray`}
-                        >
-                          {getIconButton(itm.status)}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
+            {visibleOrders.map((itm) => (
+              <OrderKitchen
+                key={itm.uuid}
+                itm={itm}
+                kitchenType={kitchenIdentity}
+                onClick={hanndleStartPetition}
+              />
+            ))}
           </div>
         </div>
       </ProtectPage>

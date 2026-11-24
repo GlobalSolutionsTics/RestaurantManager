@@ -215,6 +215,7 @@ const ApplicationAdminPage = () => {
             {viewSelected === StatusApplicationEnum.SEND &&
               listSended.map((itm: any) => (
                 <ToggleColumn
+                  key={itm.uuid}
                   element={itm.modifications}
                   itemComplete={itm}
                   acceptFn={init}
@@ -223,6 +224,7 @@ const ApplicationAdminPage = () => {
             {viewSelected === StatusApplicationEnum.ACTIVE &&
               listActived.map((itm: any) => (
                 <ToggleColumn
+                  key={itm.uuid}
                   element={itm.modifications}
                   itemComplete={itm}
                   acceptFn={init}
@@ -231,6 +233,7 @@ const ApplicationAdminPage = () => {
             {viewSelected === StatusApplicationEnum.CLOSE &&
               listRejected.map((itm: any) => (
                 <ToggleColumn
+                  key={itm.uuid}
                   element={itm.modifications}
                   itemComplete={itm}
                   acceptFn={init}

@@ -58,7 +58,7 @@ export const TableSalesForDishes = ({ list }: Props) => {
           map
             .sort((a, b) => b.units - a.units)
             .map((itm) => (
-              <div className='w-full flex flex-row p-2'>
+              <div key={itm.uuid} className='w-full flex flex-row p-2'>
                 <div className='basis-1/4 text-center'>{itm.name}</div>
                 <div className='basis-1/4 text-center'>{itm.units}</div>
                 <div className='basis-1/4 text-center'>

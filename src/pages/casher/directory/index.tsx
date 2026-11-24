@@ -550,8 +550,8 @@ const DirectoryPage = () => {
               Maris Querida
             </p>
             <div>
-              {clientList.map((itm, ind) => (
-                <div>
+              {clientList.map((itm) => (
+                <div key={itm.uuid}>
                   <div className='font-bold'> Cliente:</div>
                   <div> {itm.name}</div>
                   <div className='font-bold'>Direccion:</div>
